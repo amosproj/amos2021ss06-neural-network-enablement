@@ -6,10 +6,10 @@
   </a>
 </p>
 
-**Industry Partner** 
+**Industry Partner:** 
 Heiko Schick, Huawei Germany
 
-**Project Description**
+**Project Description:**
 The goal of the project is to transfer existing neural networks onto Huawei provided hardware (Atlas 200 DK System) and software and to turn the use of those neural networks into a (web service mediated) service.
 
     The service shall: 
@@ -20,9 +20,9 @@ The goal of the project is to transfer existing neural networks onto Huawei prov
     ● Have to be transferred, configured, and possibly trained
     ● Onto dedicated hardware attached to a student workstation
     
-The main function of the nueral network allows for colorization of black & white images, but other functions might be added.   
+The main function of the neural network allows for colorization of black & white images, but other functions might be added.   
 
-**Project Constraints**
+**Project Constraints:**
 Core technologies: Python, Python frameworks, and Linux
 Team language: English
 Needed resources: The Atlas 200DK System 
