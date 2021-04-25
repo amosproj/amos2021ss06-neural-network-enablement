@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Colorization - Uploaded</title>
+</head>
+<body>
+    <h1>Colorization - Uploaded</h1>
+    <a href="javascript:history.back()">Back</a>
+        <div>
+        <input type="submit" value="Colorize">
+    </div>
+{#    video part is not finished#}
+{#    <video width="320" height="240" controls>#}
+{#      <source src="{{ url_for('uploaded_file',filename = filename) }}" type="video/mp4">#}
+{#      Your browser does not support the video tag.#}
+{#    </video>#}
+    <div>
+        <table>
+        {% for filename in files_l %}
+        <tr>
+            <td><img src="{{ url_for('uploaded_file',filename = filename) }}" alt="uploaded pic"></td>
+            <td></td>
+        </tr>
+        {% endfor %}
+        </table>
+    </div>
+</body>
+</html>
