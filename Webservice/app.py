@@ -13,9 +13,9 @@ app.secret_key = b'wu8QvPtCDIM1/9ceoUS'
 
 @app.route('/')
 def index():
-    return redirect("/upload")
+    return render_template("index.html")
 
-@app.route('/upload', methods=['GET', 'POST'])
+@app.route('/upload/', methods=['GET', 'POST'])
 def upload():
     # POST
     # get the pics and videos
