@@ -7,6 +7,10 @@ $(document).ready(function(){
 }); */
 
 
+
+
+// dropzone initialization stuff
+
 let config = {
   url: "upload/",
   disablePreviews: true,
@@ -33,6 +37,23 @@ function thumbnailHandler(file, dataUrl) {
 }
 
 function addedFileHandler(file) {
-// console.log("A file has been added: " + JSON.stringify(file, null, 4));
+  // console.log("A file has been added: " + JSON.stringify(file, null, 4));
 }
 
+
+let before = document.getElementById("upload-button");
+
+
+// preload images in gallery
+$.get('/all', null, function(data) {
+  data.reverse().forEach( function(url) {
+
+    let img = document.createElement('img');
+    img.setAttribute('src', url);
+    img.classList = "w-40 h-40 object-cover";
+
+    let div = document.createElement('div');
+    div.appendChild(img);
+    document.getElementById("drpzn").insertBefore(div, before)
+  })
+});
