@@ -11,3 +11,7 @@ instance/
 .venv
 env/
 venv/
+
+# Uploaded images
+
+Webservice/uploaded
