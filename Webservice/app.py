@@ -54,6 +54,10 @@ def all():
     urls = []
     for name in names:
         urls.append(url_for("uploaded_file",filename = name))
+
+    urls.sort()
+    urls.reverse()
+
     return jsonify(urls)
 
 # #delete files

@@ -1,20 +1,11 @@
-//console.log('test');
-/*
-$(document).ready(function(){
-    $('#upload-button').on('click',function(){
-        alert("JQuery Running!");
-    });
-}); */
-
-
-
-
 // dropzone initialization stuff
 
 let config = {
   url: "upload/",
   disablePreviews: true,
   thumbnail: thumbnailHandler,
+  renameFile: renameFileHandler,
+  acceptedFiles: ".jpeg,.jpg,.png,.gif,.mp4,.mkv,.webm"
 };
 
 let myDropzone1 = new Dropzone("#upload-button", config);
@@ -25,6 +16,8 @@ myDropzone2.on("addedfile", addedFileHandler);
 
 
 function thumbnailHandler(file, dataUrl) {
+  console.log("thumbnailHandler");
+
   let img = document.createElement('img');
   img.setAttribute('src', dataUrl);
   img.classList = "w-40 h-40 object-cover";
@@ -37,14 +30,22 @@ function thumbnailHandler(file, dataUrl) {
 }
 
 function addedFileHandler(file) {
-  // console.log("A file has been added: " + JSON.stringify(file, null, 4));
+  console.log("A file has been added: " + JSON.stringify(file, null, 4));
+}
+
+function renameFileHandler(file) {
+  let name = new Date().getTime() + "_" + file.name
+  console.log(name)
+//  console.log("A file has been renamed: " + JSON.stringify(file, null, 4));
+  return name
 }
 
 
-let before = document.getElementById("upload-button");
 
 
 // preload images in gallery
+let before = document.getElementById("upload-button");
+
 $.get('/all', null, function(data) {
   data.reverse().forEach( function(url) {
 
