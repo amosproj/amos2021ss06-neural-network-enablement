@@ -10,9 +10,11 @@ let config = {
 
 let myDropzone1 = new Dropzone("#upload-button", config);
 let myDropzone2 = new Dropzone("#upload-button-img", config);
+let myDropzone3 = new Dropzone("#upload-button-text", config);
 
 myDropzone1.on("addedfile", addedFileHandler);
 myDropzone2.on("addedfile", addedFileHandler);
+myDropzone3.on("addedfile", addedFileHandler);
 
 
 function thumbnailHandler(file, dataUrl) {
@@ -25,8 +27,7 @@ function thumbnailHandler(file, dataUrl) {
   let div = document.createElement('div');
   div.appendChild(img);
 
-  let before = document.getElementById("upload-button");
-  document.getElementById("drpzn").insertBefore(div, before);
+  document.getElementById("drpzn").appendChild(div);
 }
 
 function addedFileHandler(file) {
@@ -44,8 +45,6 @@ function renameFileHandler(file) {
 
 
 // preload images in gallery
-let before = document.getElementById("upload-button");
-
 $.get('/all', null, function(data) {
   data.reverse().forEach( function(url) {
 
@@ -55,6 +54,6 @@ $.get('/all', null, function(data) {
 
     let div = document.createElement('div');
     div.appendChild(img);
-    document.getElementById("drpzn").insertBefore(div, before)
+    document.getElementById("drpzn").appendChild(div)
   })
 });
