@@ -16,31 +16,27 @@ app.secret_key = b'wu8QvPtCDIM1/9ceoUS'
 def index():
     return render_template("index.html")
 
+
 @app.route('/upload/', methods=['GET', 'POST'])
 def upload():
     # POST
     # get the pics and videos
     if request.method == 'POST':
         # get uploaded pics/videos list
-        files = request.files.getlist("file")
-        files_l = []
-
-        for file in files:
-            if file and allowed_file(file.filename):
-                filename = secure_filename(file.filename)
-                files_l.append(filename)
-                # save file
-                filepath = os.path.join(UPLOAD_FOLDER,filename)
-                file.save(filepath)
-            elif file and not allowed_file(file.filename):
-                flash('The format is not supported. Please change and reload. ')
-                return render_template("upload.html")
-            else:
-                return render_template("upload.html")
-        return render_template("uploaded.html", uploaded_file=filepath, files_l=files_l)
-
+        # 4/29 by Xiangxiang Chen, remove loop for file list
+        file = request.files.get("file")
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            # save file
+            filepath = os.path.join(UPLOAD_FOLDER,filename)
+            file.save(filepath)
+            return jsonify(status_code=200, msg="Upload successfully")
+        elif file and not allowed_file(file.filename):
+            return jsonify(status_code = 200, msg ="The file format is not supported")
+        else:
+            return jsonify(status_code = 200, msg ="No upload file")
     else:
-        return render_template("upload.html")
+        return render_template("index.html")
 
 # create url to sent files
 @app.route('/uploaded/<filename>')
@@ -65,17 +61,18 @@ def all():
 @app.route('/delete',methods=['GET','POST'])
 def delete():
     if request.method == 'POST':
-        files = request.form.getlist("files")
+        files = request.form.get('files')
         if files:
-            for file in files:
-                fpath = os.path.join(app.config['UPLOAD_FOLDER'], file)
-                if os.path.exists(fpath):
-                    os.remove(fpath)
+            deletepath = os.path.join(app.config['UPLOAD_FOLDER'],files)
+            if os.path.exists(deletepath):
+                os.remove(deletepath)
+                return jsonify(status_code = 200, msg = "Deleted!")
+            else:
+                return jsonify(status_code = 200, msg = "Pictures not found!")
         else:
-            return jsonify("request is empty")
-        return render_template("uploaded.html")
+            return jsonify(statue_code = 200, msg = "request is empty")
     else:
-        return render_template("upload.html")
+        return render_template("index.html")
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
