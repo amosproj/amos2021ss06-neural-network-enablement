@@ -9,7 +9,6 @@ ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif','mp4', 'mkv', 'webm'}
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-app.config['TEMPLATES_AUTO_RELOAD'] = True
 app.secret_key = b'wu8QvPtCDIM1/9ceoUS'
 
 @app.route('/')
@@ -78,4 +77,5 @@ def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 if __name__ == '__main__':
+    os.environ['FLASK_ENV'] = "development"
     app.run()
