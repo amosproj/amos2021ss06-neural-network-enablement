@@ -19,8 +19,12 @@ The goal of the project is to transfer existing neural networks onto Huawei prov
     The neural networks:
     ● Have to be transferred, configured, and possibly trained
     ● Onto dedicated hardware attached to a student workstation
-    
-The main function of the neural network allows for colorization of black & white images, but other functions might be added.   
+
+The main function of the neural network allows for colorization of black & white images, but other functions might be added.
+
+**Setting up and running the webservice**
+Run the script `Webservice/scripts/setup.sh` to setup the environment initially.
+Run the script `Webservice/scripts/run.sh` to start the service.
 
 **Project Constraints:**
 Core technologies: Python, Python frameworks, and Linux
