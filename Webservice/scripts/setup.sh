@@ -38,6 +38,8 @@ if [ $? -ne 0 ]; then
     echo
     echo "This script shall be run on $SUPPORTED_OS."
     echo "Couldn't detect your OS."
+    echo "If you think this is a mistake, please make sure, the command 'lsb_release' is available."
+    echo "On Debian/Ubuntu you can do this using 'sudo apt install lsb-release'."
     echo
 
     yes_or_no "Do you want to continue at your own risk?" || exit 1
