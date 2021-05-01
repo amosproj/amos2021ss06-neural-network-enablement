@@ -32,16 +32,28 @@ echo "If you're already set up, it will update the dependencies."
 echo "========================"
 
 
-# check Ubuntu version
-os=`lsb_release -d`
-
-if [[ "$os" != *"$SUPPORTED_OS"* ]]; then
+# lsb_release is not available on Windows
+which "lsb_release" > /dev/null
+if [ $? -ne 0 ]; then
     echo
     echo "This script shall be run on $SUPPORTED_OS."
-    echo "You are running ${os:13}"
+    echo "Couldn't detect your OS."
     echo
 
     yes_or_no "Do you want to continue at your own risk?" || exit 1
+
+else
+    # check os version
+    os=`lsb_release -d`
+
+    if [[ "$os" != *"$SUPPORTED_OS"* ]]; then
+        echo
+        echo "This script shall be run on $SUPPORTED_OS."
+        echo "You are running ${os:13}"
+        echo
+
+        yes_or_no "Do you want to continue at your own risk?" || exit 1
+    fi
 fi
 
 echo
@@ -52,7 +64,8 @@ py_version=`python3 --version`
 
 if [[ "$py_version" != *"$SUPPORTED_PYTHON" ]]; then
     echo
-    echo "$py_version found. Have you installed version $SUPPORTED_PYTHON and made it the default?"
+    echo "The supported python version is $SUPPORTED_PYTHON."
+    echo "You have $py_version. Have you installed version $SUPPORTED_PYTHON and made it the default?"
     echo "(When you type 'python3' a python shell with version $SUPPORTED_PYTHON should open)"
     echo
 
