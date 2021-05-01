@@ -11,6 +11,7 @@ instance/
 .venv
 env/
 venv/
+.idea
 
 # Uploaded images
 
