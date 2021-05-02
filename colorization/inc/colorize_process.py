@@ -25,33 +25,32 @@ import pyACL # tollkit library
 import model_process #//另一个已定义的头文件
 
 class ColorizeProcess(object):
-    int32_t deviceId_ # type: int32_t
+    deviceId_           # type: int32_t
     ModelProcess model_ # type: ModelProcess
-    modelPath_ # type: const char*
-    modelWidth_ # type: uint32_t
-    modelHeight_ # type: uint32_t
-    inputDataSize_ # type: uint32_t
-    inputBuf_ # type: void*
-    runMode_ # type: aclrtRunMode
-    isInited_ # type: boolean
+    modelPath_          # type: const char*
+    modelWidth_         # type: uint32_t
+    modelHeight_        # type: uint32_t
+    inputDataSize_      # type: uint32_t
+    inputBuf_           # type: void*
+    runMode_            # type: aclrtRunMode
+    isInited_           # type: boolean
 
     def __init__(self, modelPath, modelWidth, modelHeight):
         self.modelPath = modelPath
         self.modelWidth = modelWidth
         self.modelHeight = modelHeight
     def __del__(self):
-    def Init(self) # return type:no，parameter:no
-    def Preprocess(imageFile)# return type: Result. parameter: const string& imageFile
-        return Result
+    def Init(self)              # return type:no，parameter:no
+    def Preprocess(imageFile)   # return type: Result. parameter: const string& imageFile
+        return Result           # Result is: 0 fail, 1 success
     def Inference(inferenceOutput) # return type: Result. parameter:aclmdlDataset*& inferenceOutput
         return Result
     def Postprocess(origImageFile, modelOutput) # return type:Result，parameter:const string& origImageFile,aclmdlDataset* modelOutput
         return Result
-
-    def InitResource(self) # return type:Result，parameter:no
+    def InitResource(self)      # return type:Result，parameter:no
         return Result
     def InitModel(omModelPath)  # return type:Result，parameter: const char* omModelPath
         return Result
     def GetInferenceOutputItem(itemDataSize, inferenceOutput) # return type:no，parameter: uint32_t& itemDataSize, aclmdlDataset* inferenceOutput
     def SaveImage(origImageFile, image) # return type:no，parameter:const string& origImageFile, cv::Mat& image
-    def DestroyResource(self) # return type:no，parameter:no
+    def DestroyResource(self)   # return type:no，parameter:no

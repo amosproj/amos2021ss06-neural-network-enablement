@@ -1,7 +1,3 @@
-"""This file is written by Qi AN, translated from HUAWEI provided c++ program main,cpp, it could contain errors, since not all sources were availiable. 
-This file is translated based on abstract programming, requires peer-view due to somme crossed function and variable calls!
-Below is the copyright of HUAWEI's program:"""
-
 '''
 /**
 * Copyright 2020 Huawei Technologies Co., Ltd
@@ -23,14 +19,14 @@ Below is the copyright of HUAWEI's program:"""
 */
 '''
 
-
-import numpy
+import cv2
 import sys
-
+import numpy
 import 印度妹子的程序 # THE PROGRAMM FOR LOAD AND STORE FILE， IS MISSING
 import colorize_process
+import pyACL
 import utils
-import alc* #I'm not sure with this
+
 
 kModelWidth = numpy.uint32(224);
 kModelHeight = numpy.uint32(224);
@@ -39,7 +35,7 @@ KMODELPATH = "../model/colorization.om"
 '''检查应用程序执行时的输入,程序执行要求输入图片目录参数'''
 '''Getting a folder path, in which the original pictured are stored'''
 inputImageDir = 印度妹子的程序.传我一个路径() #THE LOAD AND STORE PROGRAM SHOULD PASS ME A FOLDER PATH
-if path == "":
+if not inputImageDir:
 	print("path is wrong")
 	sys.exit(1)
 
@@ -51,38 +47,40 @@ colorize = colorize_process.ColorizeProcess(KMODELPATH, kModelWidth, kModelHeigh
 '''初始化分类推理的acl资源, 模型和内存'''
 '''Initialize the acl resources, models and memory for classification inference'''
 ret = colorize.Init()
-if ret != SUCCESS: #check in the colorize_process.py, what is the return value
+if ret != 1: #check in the colorize_process.py, what is the return value
 	print("Classification Init resource failed")
-	sys.exit(1)
+	sys.exit(0)
 	
 '''获取图片目录下所有的图片文件名'''
 '''Get the names of all stored images in the folder path'''
 '''ATTENTION!!! The atributes of function Utils.GetAllFiles(inoutImageDir) should be reduced! It should return a string list: fileVec'''
-fileVec = Utils.GetAllFiles(inputImageDir) #talk with utils.py responsor about the input and output value (fileVec = [], global fileVec?)
+fileVec = utils.GetAllFiles(inputImageDir) #talk with utils.py responsor about the input and output value (fileVec = [], global fileVec?)
 if len(fileVec) == 0:
 	print("Failed to deal all empty path=", inputImageDir)
-	sys.exit(1)
+	sys.exit(0)
 	
 '''逐张图片推理'''
 '''Inference the pictures one by one'''
-for imageFIle in fileVec:
+for imageFile in fileVec:
 	"""预处理图片:读取图片,将图片缩放到模型输入要求的尺寸"""
 	"""preprocess: read the picture, reset to required size"""
 	ret = colorize.Preprocess(imageFile)
-	if ret != SUCCESS: # Check in colorize_process.py, what is the return value
-		print("Read file ", imageFIle, " failed, continue to read next")
+	if ret != 1: # Check in colorize_process.py, what is the return value
+		print("Read file ", imageFile, " failed, continue to read next")
 		continue
 	"""将预处理的图片送入模型推理,并获取推理结果"""
 	"""send the picture into inference model and get the result back"""
-	InferenceOutput = []
-	global inferenceOutput
-	ret = colorize.Inference(aclmdlDataset)
-	if ret != SUCCESS or InferenceOutput == []: # check the return value
+	inferenceOutput = []
+	ret = colorize.Inference(inferenceOutput)
+	if ret != 1 or inferenceOutput == []: # check the return value
 		print("Inference model inference output data failed")
-		sys.exit(1)
+		sys.exit(0)
 	"""解析推理输出,并将推理得到的物体类别标记到图片上"""
 	"""analyze the output and mark the type onto the picture"""
 	ret = colorize.Postprocess(imageFile, inferenceOutput)
-	if ret != SUCCESS: # check the return value
+	if ret != 1: # check the return value
 		print("Process model inference output data failed")
-		sys.exit(1)
+		sys.exit(0)
+
+print("Execute sample success")
+sys.exit(1)
