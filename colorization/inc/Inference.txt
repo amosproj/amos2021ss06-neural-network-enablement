@@ -1,0 +1,8 @@
+def inference(inferenceOutput):
+	ret = model_.Execute() # No idea what this model_.Execute() is, copied from c++ version
+	if ret != SUCCESS: # check about the return value
+		print("Execute model inerence failed")
+		sys.exit(1) # should the program quit now?
+	inferenceOouput = model_.GetModelOutputData() # deto check
+	return Success #The return value and quit critetia should be unified in general!!!
+	
