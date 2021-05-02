@@ -29,11 +29,11 @@ def upload():
             # save file
             filepath = os.path.join(UPLOAD_FOLDER,filename)
             file.save(filepath)
-            return jsonify(status_code=200, msg="Upload successfully")
+            return jsonify(msg="Upload successfully"), 200
         elif file and not allowed_file(file.filename):
-            return jsonify(status_code = 200, msg ="The file format is not supported")
+            return jsonify(msg ="The file format is not supported"), 400
         else:
-            return jsonify(status_code = 200, msg ="No upload file")
+            return jsonify(msg ="No upload file"), 400
     else:
         return render_template("index.html")
 
@@ -65,11 +65,11 @@ def delete():
             deletepath = os.path.join(app.config['UPLOAD_FOLDER'],files)
             if os.path.exists(deletepath):
                 os.remove(deletepath)
-                return jsonify(status_code = 200, msg = "Deleted!")
+                return jsonify(msg = "Deleted!"), 200
             else:
-                return jsonify(status_code = 200, msg = "Pictures not found!")
+                return jsonify(msg = "Pictures not found!"), 404
         else:
-            return jsonify(statue_code = 200, msg = "request is empty")
+            return jsonify(msg = "request is empty"), 400
     else:
         return render_template("index.html")
 
