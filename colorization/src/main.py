@@ -74,10 +74,10 @@ for imageFIle in fileVec:
 		continue
 	"""将预处理的图片送入模型推理,并获取推理结果"""
 	"""send the picture into inference model and get the result back"""
-	Inferenceoutput = []
+	InferenceOutput = []
 	global inferenceOutput
 	ret = colorize.Inference(aclmdlDataset)
-	if ret != SUCCESS or Inferenceoutput == []: # check the return value
+	if ret != SUCCESS or InferenceOutput == []: # check the return value
 		print("Inference model inference output data failed")
 		sys.exit(1)
 	"""解析推理输出,并将推理得到的物体类别标记到图片上"""
