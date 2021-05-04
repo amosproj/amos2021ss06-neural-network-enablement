@@ -1,30 +1,31 @@
 import cv2
 import os
 
-def loadimage(self,inputImageDir):
-    self.inputImageDir = inputImageDir
-    if os.path.isdir(self.inputImageDir):
-        return self.inputImageDir
+def loadimage(inputImageDir):
+    if os.path.isdir(inputImageDir):
+        return inputImageDir
     else:
         return "path not found"
 
-def storeimage(self,path,colorized_data):
-    filename = os.path.join(path,'saved_images','savedImage.jpg')
-    cv2.imwrite(filename, colorized_data)  # saving image
+def storeimage(directory,colorized_data):
+    newpath = os.path.join(directory, "Saved_images")
+    os.makedirs(newpath)
+    image = cv2.imread(colorized_data)
+    cv2.imwrite(os.path.join(newpath, "Saved_image.png"), image)   # Saving images
     cv2.waitKey(0)
     cv2.destroyAllWindows()
-    return filename
+    return newpath
 
-def processVideo(self,path,videoName):
+def processVideo(path,videoName):
     videoName = os.path.join(path,videoName)
-    self.video = cv2.VideoCapture(videoName)
-    if (self.video.isOpened() == False):
+    video = cv2.VideoCapture(videoName)
+    if (video.isOpened() == False):
         print("Error opening video")
     FPS = 60
-    self.video.set(cv2.CAP_PROP_FPS, FPS)
+    video.set(cv2.CAP_PROP_FPS, FPS)
     currentFrame = 0
-    while (self.video.isOpened()):
-        ret,frame = self.video.read()
+    while (video.isOpened()):
+        ret,frame = video.read()
         if ret == True:
             folder_name = os.path.join(path,'saved_frames', str(currentFrame) + '.png')
             print('Creating...' + folder_name)
@@ -35,7 +36,7 @@ def processVideo(self,path,videoName):
                 break
         else:
             break
-    self.video.release()
+    video.release()
     cv2.destroyAllWindows()
     return folder_name
 
