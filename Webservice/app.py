@@ -4,8 +4,8 @@ from werkzeug.utils import secure_filename
 
 # set path to store uploaded pics and videos
 UPLOAD_FOLDER = os.path.abspath(os.path.dirname(__file__)) + "/uploaded/"
-# limit type of extensions
-ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif','mp4', 'mkv', 'webm'}
+# limit type of extensions  'jpg',
+ALLOWED_EXTENSIONS = {'png',  'jpeg', 'gif','mp4', 'mkv', 'webm'}
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -15,7 +15,7 @@ app.secret_key = b'wu8QvPtCDIM1/9ceoUS'
 def index():
     return render_template("index.html")
 
-
+# comments
 @app.route('/upload/', methods=['GET', 'POST'])
 def upload():
     # POST
