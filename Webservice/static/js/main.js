@@ -3,7 +3,7 @@
 let config = {
   url: "upload/",
   disablePreviews: true,
-  thumbnail: thumbnailHandler,
+  //  thumbnail: thumbnailHandler,
   renameFile: renameFileHandler,
   //  acceptedFiles: ".jpeg,.jpg,.png,.gif,.mp4,.mkv,.webm"
 };
@@ -24,6 +24,7 @@ myDropzone1.on("error", errorHandler);
 myDropzone2.on("error", errorHandler);
 myDropzone3.on("error", errorHandler);
 
+
 function thumbnailHandler(file, dataUrl) {
   console.log("thumbnailHandler");
 
@@ -37,9 +38,11 @@ function thumbnailHandler(file, dataUrl) {
   document.getElementById("drpzn").appendChild(div);
 }
 
+
 function addedFileHandler(file) {
   console.log("A file has been added: " + JSON.stringify(file, null, 4));
 }
+
 
 function renameFileHandler(file) {
   let name = new Date().getTime() + "_" + file.name
@@ -53,7 +56,10 @@ function successHandler(file, resp) {
   console.log('success!')
   console.log(file)
   console.log(resp)
+
+  window.location.reload(true);
 }
+
 
 function errorHandler(file, error, xhr) {
   console.log('error!')
