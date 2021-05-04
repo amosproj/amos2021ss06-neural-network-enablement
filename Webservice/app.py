@@ -56,12 +56,14 @@ def all():
     return jsonify(urls)
 
 # #delete files
-@app.route('/delete',methods=['GET','POST'])
+@app.route('/delete/', methods=['POST'])
 def delete():
     if request.method == 'POST':
-        files = request.form.get('files')
-        if files:
-            deletepath = os.path.join(app.config['UPLOAD_FOLDER'],files)
+
+        filename = request.get_json()['name'] if 'name' in request.get_json() else None
+
+        if filename:
+            deletepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             if os.path.exists(deletepath):
                 os.remove(deletepath)
                 return jsonify(msg = "Deleted!"), 200
