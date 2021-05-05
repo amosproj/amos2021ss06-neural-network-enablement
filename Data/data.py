@@ -39,5 +39,3 @@ def processVideo(path,videoName):
     video.release()
     cv2.destroyAllWindows()
     return folder_name
-
-
