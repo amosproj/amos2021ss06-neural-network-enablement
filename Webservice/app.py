@@ -1,4 +1,4 @@
-from flask import Flask, flash, redirect, jsonify,render_template, request, url_for, send_from_directory
+from flask import Flask, jsonify,render_template, request, url_for, send_from_directory
 import os
 from werkzeug.utils import secure_filename
 
