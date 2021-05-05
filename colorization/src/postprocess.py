@@ -23,7 +23,7 @@ def postprocess(origImageFile,modelOutput):
      bgrtolab = cv2.cvtColor(input_image, cv2.COLOR_BGR2LAB)
      cv2.imshow("Lab_channel", bgrtolab)
      (L,A,B) = cv2.split(bgrtolab)
-     cv2.imshow("L_channel",L)
+     cv2.imshow("L_channel", L)
      cv2.imshow("A_channel", A)
      cv2.imshow("B_channel", B)
      cv2.waitKey(0)

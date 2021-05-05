@@ -157,19 +157,15 @@ def Preprocess(imageFile):
     return 1
 
 
+def inference(inferenceOutput):
+	ret = model_.Execute() # No idea what this model_.Execute() is, copied from c++ version
+	if ret != 1: # check about the return value
+		print("Execute model inerence failed")
+		sys.exit(1) # should the program quit now?
+	inferenceOutput = model_.GetModelOutputData() # deto check
+	return 1 #The return value and quit critetia should be unified in general!!!
 
 
-Result ColorizeProcess::Inference(aclmdlDataset*& inferenceOutput) {
-    Result ret = model_.Execute();
-    if (ret != SUCCESS) {
-        ERROR_LOG("Execute model inference failed");
-        return FAILED;
-    }
-
-    inferenceOutput = model_.GetModelOutputData();
-
-    return SUCCESS;
-}
 
 Result ColorizeProcess::Postprocess(const string& imageFile, aclmdlDataset* modelOutput)
 {
