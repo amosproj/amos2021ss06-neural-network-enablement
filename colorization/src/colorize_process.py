@@ -1,4 +1,4 @@
-'''/**
+/**
 * Copyright 2020 Huawei Technologies Co., Ltd
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,111 +15,147 @@
 
 * File sample_process.cpp
 * Description: handle acl resource
-*/'''
+*/
 
-import cv2
+
+# in general: check parameters, check methode (model_), check return values!
+
+
+'''Python'''
 import numpy
 import pyACL
 import model_process
 import utils
 
-kTopNConfidenceLevels = numpy.uint32_t(5);
+kTopNConfidenceLevels = numpy.uint32(5)
+'''C++
+#include "colorize_process.h"
+#include <iostream>
 
+#include "acl/acl.h"
+#include "model_process.h"
+#include "utils.h"
 
-ColorizeProcess::ColorizeProcess(const char* modelPath,
+using namespace std;
+
+namespace {
+    uint32_t kTopNConfidenceLevels = 5;
+}
+'''
+
+'''Python'''
+class ColorizeProcess():
+	modelPath_ = ""
+	#inputDataSize_ = RGBF32_CHAN_SIZE(modelWidth_, modelHeight_) ## what is this??
+	def __init__(self, modelPath, modelWidth, modelHeight):
+		self.modelPath = modelpath
+		self.modelWidth = modelWidth
+		self.modelHeight = modelHeight
+		self.deviceId_ = 0
+		self.inputBuf_ = ""
+		self.modelWidth_ = modelWidth
+		self.modelHeight_ = modelHeight
+		self.isInited_ = false
+		ColorizeProcess.modelPath_ = modelPath
+
+# TODO
+'''C++
+ColorizeProcess::ColorizeProcess(const char* modelPath, 
                                  uint32_t modelWidth, uint32_t modelHeight)
 :deviceId_(0), inputBuf_(nullptr),
 modelWidth_(modelWidth), modelHeight_(modelHeight), isInited_(false){
     modelPath_ = modelPath;
     inputDataSize_ = RGBF32_CHAN_SIZE(modelWidth_, modelHeight_);
 }
+'''
 
+'''Python'''
+# TODO: not needed in Python?
+'''C++
 ColorizeProcess::~ColorizeProcess() {
     DestroyResource();
 }
+'''
 
-Result ColorizeProcess::InitResource() {
-    // ACL init
-    const char *aclConfigPath = "../src/acl.json";
-    aclError ret = aclInit(aclConfigPath);
-    if (ret != ACL_ERROR_NONE) {
-        ERROR_LOG("Acl init failed");
-        return FAILED;
-    }
-    INFO_LOG("Acl init success");
+'''Python'''
+def InitResource():
+	ACLCONFIGPATH = ".../src/acl.json"
+	ret = pyACL.aclInit(ACLCONFIGPATH) # check methode in pyACL
+	if ret != ACL_ERROR_NONE:
+		print("Acl init failed")
+		return 0
+	print("Acl init success")
 
-    // open device
-    ret = aclrtSetDevice(deviceId_);
-    if (ret != ACL_ERROR_NONE) {
-        ERROR_LOG("Acl open device %d failed", deviceId_);
-        return FAILED;
-    }
-    INFO_LOG("Open device %d success", deviceId_);
+	// open device
+	ret = pyACL.aclrtSetDevice(deviceId_) # check methode in pyACL
+	if ret != ACL_ERROR_NONE:
+		print("Acl open device ", deviceId_, " failed.")
+		return 0
+	print("Open device ", deviceId_, " success.")
 
-    ret = aclrtGetRunMode(&runMode_);
-    if (ret != ACL_ERROR_NONE) {
-        ERROR_LOG("acl get run mode failed");
-        return FAILED;
-    }
+	ret = pyACL.aclrtGetRunMode(runMode_) # check adresse vs. variable etc.
+	if ret != ACL_ERROR_NONE:
+		print("acl get run mode failed.")
+		return 0
 
-    return SUCCESS;
-}
+	return 1
 
-Result ColorizeProcess::InitModel(const char* omModelPath) {
-    Result ret = model_.LoadModelFromFileWithMem(omModelPath);
-    if (ret != SUCCESS) {
-        ERROR_LOG("execute LoadModelFromFileWithMem failed");
-        return FAILED;
-    }
 
-    ret = model_.CreateDesc();
-    if (ret != SUCCESS) {
-        ERROR_LOG("execute CreateDesc failed");
-        return FAILED;
-    }
 
-    ret = model_.CreateOutput();
-    if (ret != SUCCESS) {
-        ERROR_LOG("execute CreateOutput failed");
-        return FAILED;
-    }
+'''Python'''
+# TODO: check what model_. is, and its return value???
+def InitModel(OMMODELPATH): # check parameter
+	ret = model_.LoadModelFromFileWithMem(OMMODELPATH)
+	if ret != 1:
+		print("execute LoadModelFromFileWithMem failed")
+		return 0
 
-    aclrtMalloc(&inputBuf_, (size_t)(inputDataSize_), ACL_MEM_MALLOC_HUGE_FIRST);
-    if (inputBuf_ == nullptr) {
-        ERROR_LOG("Acl malloc image buffer failed.");
-        return FAILED;
+	ret = model.CreateDesc()
+	if ret != 1:
+		print("execute CreateDesc failed")
+		return 0
+
+	ret =model_.CreateOutput()
+    if ret != 1:
+        print("execute CreateOutput failed")
+        return 0
+
+    pyACL.aclrtMalloc(inputBuf_, inputDataSize_, ACL_MEM_MALLOC_HUGE_FIRST) # check methode and parameter in pyACL
+    if inputBuf_ == "" # check return value
+        print("Acl malloc image buffer failed.")
+        return 0
     }
 
-    ret = model_.CreateInput(inputBuf_, inputDataSize_);
-    if (ret != SUCCESS) {
-        ERROR_LOG("Create mode input dataset failed");
-        return FAILED;
+    ret = model_.CreateInput(inputBuf_, inputDataSize_)
+    if ret != 1: # check return value
+        print("Create mode input dataset failed")
+        return 0
     }
 
-    return SUCCESS;
-}
+    return 1
 
-Result ColorizeProcess::Init() {
-    if (isInited_) {
-        INFO_LOG("Classify instance is initied already!");
-        return SUCCESS;
+'''Python'''
+# TODO
+def Init():
+	if isInited_:
+		print("Classify instance is initied already!")
+		return 1
+
+	ret = InitResource()
+    if ret != 1:
+        print("Init acl resource failed")
+        return 0
+
+    ret = InitModel(modelPath_) # check parameter
+    if ret != 1:
+        print("Init model failed")
+        return 0
     }
 
-    Result ret = InitResource();
-    if (ret != SUCCESS) {
-        ERROR_LOG("Init acl resource failed");
-        return FAILED;
-    }
+    isInited_ = true
+    return 1
 
-    ret = InitModel(modelPath_);
-    if (ret != SUCCESS) {
-        ERROR_LOG("Init model failed");
-        return FAILED;
-    }
 
-    isInited_ = true;
-    return SUCCESS;
-}
 
 
 def Preprocess(imageFile):
