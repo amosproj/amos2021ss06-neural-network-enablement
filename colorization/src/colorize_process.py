@@ -18,7 +18,7 @@
 */
 
 
-# in general: check parameters, check methode (model_), check return values!
+# in general: should check parameters, check methode (model_), check return values!
 
 
 '''Python'''
