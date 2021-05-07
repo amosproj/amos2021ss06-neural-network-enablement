@@ -6,12 +6,10 @@
 
     <link href="static/css/tailwind.min.css" rel="stylesheet">
     <link href="static/css/dropzone.min.css" rel="stylesheet">
-
     <link href="static/css/toastify.css" rel="stylesheet">
 
     <script src="static/js/jquery.min.js"></script>
     <script src="static/js/dropzone.min.js"></script>
-
     <script src="static/js/toastify.js"></script>
 
   </head>
@@ -20,11 +18,12 @@
     <div class="justify-items-center m-auto align-middle max-w-4xl">
 
       <div id="drpzn" class="rounded p-6 bg-indigo-100 shadow-xl mx-auto overflow-y-auto max-h-96
-                             grid grid-flow-row lg:grid-cols-4 md:grid-cols-3 gap-4 justify-items-center">
-        <!-- add images via js -->
+                               grid grid-flow-row lg:grid-cols-4 md:grid-cols-3 gap-4 justify-items-center">
+
+        <!-- images are added via javascript. the template is below: template-gallery-image-->
       </div>
 
-      <div id="upload-button" class="h-20 mt-8 bg-white hover:bg-indigo-100 cursor-pointer border-dashed border-2 border-indigo-400 flex justify-center">
+      <div id="upload-button" class="h-20 mt-8 px-8 bg-white hover:bg-indigo-100 cursor-pointer border-dashed border-2 border-indigo-400 flex justify-center">
         <img id="upload-button-img" src="static/img/upload-solid.svg" class="w-7 h-7 fill-current my-auto">
         <p id="upload-button-text" class="my-auto text-gray-400 ml-5 text-xl"> Drag image here or click to upload. </p>
       </div>
@@ -34,4 +33,30 @@
 
 
   </body>
+
+  <!-- --------------------------------------------------------------------------------------------------------------------------------- -->
+  <!-- html components, that are not shown immediately, but are added with javascript -->
+
+
+  <!-- This template is for a single image with a button to delete it -->
+  <template id="template-gallery-image">
+    <div class="transform hover:scale-105 relative">
+      <div id="delete-image-button"
+           class="w-10 h-10 bg-red-500 hover:bg-red-600 text-red-100 cursor-pointer absolute top-0 right-0 flex justify-center items-center">
+
+        <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" /></svg>
+
+      </div>
+
+      <img id="gallery-image" class="w-40 h-40 object-cover">
+    </div>
+  </template>
+
+  <!-- This template is shown as a toast, when an error occurs. -->
+  <template id="template-toast-warn">
+    <div class="bg-yellow-200 border-l-4 border-yellow-600 text-yellow-700 p-4" role="alert">
+      <p id="toast-headline" class="font-bold"></p>
+      <p id="toast-message"></p>
+    </div>
+  </template>
 </html>
