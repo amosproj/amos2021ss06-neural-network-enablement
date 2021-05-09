@@ -99,7 +99,7 @@ function deleteImage(imgName) {
 
 // load images in gallery
 $.get('/all', null, function(data) {
-  data.reverse().forEach( function(url) {
+  data.sort().forEach( function(url) {
     console.log(url);
 
     var div = document.createElement('div');
