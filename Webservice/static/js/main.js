@@ -3,7 +3,6 @@
 let config = {
   url: "upload/",
   disablePreviews: true,
-  renameFile: renameFileHandler,
   //  acceptedFiles: ".jpeg,.jpg,.png,.gif,.mp4,.mkv,.webm"
 };
 
@@ -18,13 +17,6 @@ myDropzone3.on("success", successHandler);
 myDropzone1.on("error", errorHandler);
 myDropzone2.on("error", errorHandler);
 myDropzone3.on("error", errorHandler);
-
-
-function renameFileHandler(file) {
-  let name = new Date().getTime() + "_" + file.name
-  //  console.log("A file has been renamed: " + JSON.stringify(file, null, 4));
-  return name
-}
 
 
 function successHandler(file, resp) {
