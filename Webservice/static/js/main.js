@@ -24,7 +24,7 @@ function showWarningToast(headline, message) {
 // dropzone initialization stuff
 
 let config = {
-  url: "upload/",
+  url: "/upload/",
   disablePreviews: true,
   //  acceptedFiles: ".jpeg,.jpg,.png,.gif,.mp4,.mkv,.webm"
 };
@@ -107,7 +107,7 @@ function deleteImage(imgName) {
 
 
 // load images in gallery
-$.get('/all', null, function(data) {
+$.get('/all/', null, function(data) {
   data.sort().forEach( function(url) {
     console.log(url);
 
@@ -120,7 +120,12 @@ $.get('/all', null, function(data) {
     let imgNameParts = url.split('/')
     let imgName = imgNameParts[imgNameParts.length - 1]
 
-    div.querySelector('#delete-image-button').onclick = function() {
+    let imgButton = div.querySelector('#delete-image-button');
+
+    imgButton.onclick = function() {
+      // only allow one mouseclick, remove the eventlistener after first click
+      imgButton.onclick = function() {}
+
       deleteImage(imgName);
     }
 
