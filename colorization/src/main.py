@@ -22,7 +22,6 @@
 import cv2
 import sys
 import numpy
-import 印度妹子的程序 # THE PROGRAMM FOR LOAD AND STORE FILE， IS MISSING
 import colorize_process
 import pyACL
 import utils
@@ -58,7 +57,7 @@ fileVec = utils.GetAllFiles(inputImageDir) #talk with utils.py responsor about t
 if len(fileVec) == 0:
 	print("Failed to deal all empty path=", inputImageDir)
 	sys.exit(0)
-	
+
 '''逐张图片推理'''
 '''Inference the pictures one by one'''
 for imageFile in fileVec:
