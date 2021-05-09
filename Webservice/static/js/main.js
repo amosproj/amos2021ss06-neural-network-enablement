@@ -1,3 +1,26 @@
+// helpers
+
+function showWarningToast(headline, message) {
+  var node = document.createElement('div');
+  node.innerHTML = document.querySelector('#template-toast-warn').innerHTML;
+
+  node.querySelector('#toast-headline').textContent = headline;
+  node.querySelector('#toast-message').textContent = message;
+
+  Toastify({
+    node: node,
+    duration: 5000,
+    close: true,
+    gravity: "top", // `top` or `bottom`
+    position: "right", // `left`, `center` or `right`
+    stopOnFocus: true, // Prevents dismissing of toast on hover
+    backgroundColor: '#FDE68A', // bg-yellow-200 TODO: use style attribute
+  }).showToast();
+}
+
+// -------------------------------------------------------------------------
+
+
 // dropzone initialization stuff
 
 let config = {
@@ -37,7 +60,7 @@ function errorHandler(file, error, xhr) {
 
     if (error === 'Server responded with 0 code.') {
       // Improve default error message by dropzone
-      message = "Couldn't connect to localhost, is the backend running?"
+      message = "Couldn't connect to localhost, is the backend still running?"
     } else {
       message = error;
     }
@@ -45,23 +68,9 @@ function errorHandler(file, error, xhr) {
   } else {
     // print response by api
     message = error['msg']
+
+    showWarningToast('File upload failed', message);
   }
-
-  var node = document.createElement('div');
-  node.innerHTML = document.querySelector('#template-toast-warn').innerHTML
-
-  node.querySelector('#toast-headline').textContent = 'File upload failed.';
-  node.querySelector('#toast-message').textContent = message
-
-  Toastify({
-    node: node,
-    duration: 5000,
-    close: true,
-    gravity: "top", // `top` or `bottom`
-    position: "right", // `left`, `center` or `right`
-    stopOnFocus: true, // Prevents dismissing of toast on hover
-    backgroundColor: '#FDE68A', // bg-yellow-200 TODO: use style attribute
-  }).showToast();
 }
 
 // end dropzone stuff
@@ -87,7 +96,7 @@ function deleteImage(imgName) {
       setTimeout(reload, 500);
     },
     error: function () {
-      console.log('error');
+      showWarningToast("Deleting image failed.", "Couldn't connect to server.  Is the backend running?");
     },
     dataType: 'json',
     contentType: 'application/json',
