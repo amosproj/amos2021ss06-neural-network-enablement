@@ -1,5 +1,6 @@
 # import subtask functions
 from postprocess import postprocess
+import cv2
 
 # import splitVideo
 
@@ -34,10 +35,22 @@ def colorize_image(image_path_input, image_path_output):
 
     # TODO: load image located at <image_path_input>
     # TODO: preprocess (do preprocessing on the device itself?)
+    if Preprocess(image_path_input) == FAILED:
+        print("Read file ", image_path_input, " failed, continue to read next")
+        return FAILED
     # TODO: upload to device
+    inferenceOutput = []
+    if Inference(inferenceOutput) == FAILED:
+        print("Inference model inference output data failed")
+        return FAILED
     # TODO: colorize
     # TODO: postprocess
+    if Postprocess(image_path_input, inferenceOutput) == FAILED:
+        print("Process model inference output data failed")
+        return FAILED
     # TODO: save at <image_path_output>
+    if SaveImage(image_path_input, image_path_output):
+        # TODO
     # TODO: return success code -> talk with webservice people
     pass
 
