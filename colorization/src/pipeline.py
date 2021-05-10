@@ -1,10 +1,13 @@
 # import subtask functions
-from postprocess import postprocess
+import colorize_process
 from utils import CopyDataDeviceToHost
+import numpy
 import cv2
 
 # import splitVideo
 
+FAILED = 1
+SUCCESS = 0
 
 # This file combines all of the single tasks to a complete working pipeline
 # It does NOT contain the code of each task!
@@ -33,25 +36,26 @@ def colorize_image(image_path_input, image_path_output):
     image_path_output : str
         the path of the (colorized) image after processing
     """
-
+    kModelWidth = numpy.uint32(224)
+    kModelHeight = numpy.uint32(224)
+    KMODELPATH = "../model/colorization.om"
+    colorize = colorize_process.ColorizeProcess(KMODELPATH, kModelWidth, kModelHeight)
     # TODO: load image located at <image_path_input>
     # TODO: preprocess (do preprocessing on the device itself?)
-    if Preprocess(image_path_input) == FAILED:
+    if colorize.preprocess(image_path_input) == FAILED:
         print("Read file ", image_path_input, " failed, continue to read next")
-        return FAILED
+        return SUCCESS
     # TODO: upload to device
-    inferenceOutput = []
-    if Inference(inferenceOutput) == FAILED:
+    (inferenceOutput, ret) = colorize.inference()
+    if ret == FAILED:
         print("Inference model inference output data failed")
         return FAILED
     # TODO: colorize
     # TODO: postprocess
-    if Postprocess(image_path_input, inferenceOutput) == FAILED:
-        print("Process model inference output data failed")
-        return FAILED
-    # TODO: save at <image_path_output>
-    if SaveImage(image_path_input, image_path_output):
-        # TODO
+    image = colorize.postprocess(image_path_input, inferenceOutput)
+    cv2.imwrite(image_path_output, image)
+    # sprich mit R und S
+
     # TODO: return success code -> talk with webservice people
     pass
 
