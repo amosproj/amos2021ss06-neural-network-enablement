@@ -7,7 +7,7 @@ def loadimage(inputImageDir):
     else:
         return "path not found"
 
-def storeimage(directory,colorized_data):
+def saveimage(directory,colorized_data):
     newpath = os.path.join(directory, "Saved_images")
     os.makedirs(newpath)
     image = cv2.imread(colorized_data)

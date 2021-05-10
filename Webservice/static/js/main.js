@@ -1,9 +1,31 @@
+// helpers
+
+function showWarningToast(headline, message) {
+  var node = document.createElement('div');
+  node.innerHTML = document.querySelector('#template-toast-warn').innerHTML;
+
+  node.querySelector('#toast-headline').textContent = headline;
+  node.querySelector('#toast-message').textContent = message;
+
+  Toastify({
+    node: node,
+    duration: 5000,
+    close: true,
+    gravity: "top", // `top` or `bottom`
+    position: "right", // `left`, `center` or `right`
+    stopOnFocus: true, // Prevents dismissing of toast on hover
+    backgroundColor: '#FDE68A', // bg-yellow-200 TODO: use style attribute
+  }).showToast();
+}
+
+// -------------------------------------------------------------------------
+
+
 // dropzone initialization stuff
 
 let config = {
-  url: "upload/",
+  url: "/upload/",
   disablePreviews: true,
-  renameFile: renameFileHandler,
   //  acceptedFiles: ".jpeg,.jpg,.png,.gif,.mp4,.mkv,.webm"
 };
 
@@ -18,13 +40,6 @@ myDropzone3.on("success", successHandler);
 myDropzone1.on("error", errorHandler);
 myDropzone2.on("error", errorHandler);
 myDropzone3.on("error", errorHandler);
-
-
-function renameFileHandler(file) {
-  let name = new Date().getTime() + "_" + file.name
-  //  console.log("A file has been renamed: " + JSON.stringify(file, null, 4));
-  return name
-}
 
 
 function successHandler(file, resp) {
@@ -45,7 +60,7 @@ function errorHandler(file, error, xhr) {
 
     if (error === 'Server responded with 0 code.') {
       // Improve default error message by dropzone
-      message = "Couldn't connect to localhost, is the backend running?"
+      message = "Couldn't connect to localhost, is the backend still running?"
     } else {
       message = error;
     }
@@ -53,23 +68,9 @@ function errorHandler(file, error, xhr) {
   } else {
     // print response by api
     message = error['msg']
+
+    showWarningToast('File upload failed', message);
   }
-
-  var node = document.createElement('div');
-  node.innerHTML = document.querySelector('#template-toast-warn').innerHTML
-
-  node.querySelector('#toast-headline').textContent = 'File upload failed.';
-  node.querySelector('#toast-message').textContent = message
-
-  Toastify({
-    node: node,
-    duration: 5000,
-    close: true,
-    gravity: "top", // `top` or `bottom`
-    position: "right", // `left`, `center` or `right`
-    stopOnFocus: true, // Prevents dismissing of toast on hover
-    backgroundColor: '#FDE68A', // bg-yellow-200 TODO: use style attribute
-  }).showToast();
 }
 
 // end dropzone stuff
@@ -95,7 +96,7 @@ function deleteImage(imgName) {
       setTimeout(reload, 500);
     },
     error: function () {
-      console.log('error');
+      showWarningToast("Deleting image failed.", "Couldn't connect to server.  Is the backend running?");
     },
     dataType: 'json',
     contentType: 'application/json',
@@ -106,8 +107,8 @@ function deleteImage(imgName) {
 
 
 // load images in gallery
-$.get('/all', null, function(data) {
-  data.reverse().forEach( function(url) {
+$.get('/all/', null, function(data) {
+  data.sort().forEach( function(url) {
     console.log(url);
 
     var div = document.createElement('div');
@@ -119,7 +120,12 @@ $.get('/all', null, function(data) {
     let imgNameParts = url.split('/')
     let imgName = imgNameParts[imgNameParts.length - 1]
 
-    div.querySelector('#delete-image-button').onclick = function() {
+    let imgButton = div.querySelector('#delete-image-button');
+
+    imgButton.onclick = function() {
+      // only allow one mouseclick, remove the eventlistener after first click
+      imgButton.onclick = function() {}
+
       deleteImage(imgName);
     }
 

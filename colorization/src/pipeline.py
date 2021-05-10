@@ -1,5 +1,6 @@
 # import subtask functions
 from postprocess import postprocess
+from utils import CopyDataDeviceToHost
 import cv2
 
 # import splitVideo
@@ -79,5 +80,6 @@ def colorize_video(video_path_input, video_path_output):
     # TODO: call <processImage> on each image
     # TODO: combine to video
     # TODO: save at <video_path_output>
+
     # TODO: return success code -> talk with webservice people
     pass

@@ -1,11 +1,14 @@
-from flask import Flask, jsonify,render_template, request, url_for, send_from_directory
-import os
+from flask import Flask, jsonify, render_template, request, url_for, send_from_directory
 from werkzeug.utils import secure_filename
+import os
+import datetime
+import shutil
+#from pipeline import colorize_image
 
 # set path to store uploaded pics and videos
 UPLOAD_FOLDER = os.path.abspath(os.path.dirname(__file__)) + "/uploaded/"
 # limit type of extensions
-ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif','mp4', 'mkv', 'webm'}
+ALLOWED_EXTENSIONS = {'pic' : ['png', 'jpg', 'jpeg', 'gif'],'video' : ['mp4', 'mkv', 'webm']}
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -15,67 +18,109 @@ app.secret_key = b'wu8QvPtCDIM1/9ceoUS'
 def index():
     return render_template("index.html")
 
-@app.route('/upload/', methods=['GET', 'POST'])
+
+@app.route('/upload/', methods=['POST'])
 def upload():
-    # POST
     # get the pics and videos
-    if request.method == 'POST':
-        # get uploaded pics/videos list
-        # 4/29 by Xiangxiang Chen, remove loop for file list
-        file = request.files.get("file")
-        if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            # save file
-            filepath = os.path.join(UPLOAD_FOLDER,filename)
-            file.save(filepath)
-            return jsonify(msg="Upload successfully"), 200
-        elif file and not allowed_file(file.filename):
-            return jsonify(msg ="The file format is not supported"), 400
-        else:
-            return jsonify(msg ="No upload file"), 400
+    file = request.files.get("file")
+    if file and allowed_file(file.filename):
+        sfilename = secure_filename(file.filename)
+        # add timestamp at the beginning of filename
+        nowTime = datetime.datetime.now().strftime('%Y%m%d%H%M%S')
+        filename = str(nowTime) + "_" + sfilename
+        # create folder and save file
+        folderpath = os.path.join(UPLOAD_FOLDER,filename.rsplit('.', 1)[0])
+        os.mkdir(folderpath)
+        filepath = os.path.join(folderpath,filename)
+        file.save(filepath)
+        return jsonify(msg="Upload successfully"), 200
+    elif file and not allowed_file(file.filename):
+        return jsonify(msg ="The file format is not supported"), 400
     else:
-        return render_template("index.html")
+        return jsonify(msg ="No upload file"), 400
+
 
 # create url to sent files
 @app.route('/uploaded/<filename>')
 def uploaded_file(filename):
-    return send_from_directory(UPLOAD_FOLDER,
+    folderpath = os.path.join(UPLOAD_FOLDER,filename.rsplit('.', 1)[0])
+    return send_from_directory(folderpath,
                                filename)
 
+
 #return list of all urls of uploaded files
-@app.route('/all')
+@app.route('/all/')
 def all():
-    names = os.listdir(app.config['UPLOAD_FOLDER'])
-    urls = []
-    for name in names:
-        urls.append(url_for("uploaded_file",filename = name))
-
-    urls.sort()
-    urls.reverse()
-
+    urls =[]
+    for root,dirs,files in os.walk(app.config['UPLOAD_FOLDER']):
+        for file in files:
+            if file.rsplit('.', 1)[1].lower() in (ALLOWED_EXTENSIONS['pic'] or ALLOWED_EXTENSIONS['video']):
+                urls.append(url_for("uploaded_file", filename=file))
     return jsonify(urls)
+
 
 # #delete files
 @app.route('/delete/', methods=['POST'])
 def delete():
-    if request.method == 'POST':
+    filename = request.get_json()['name'] if 'name' in request.get_json() else None
 
-        filename = request.get_json()['name'] if 'name' in request.get_json() else None
-
-        if filename:
-            deletepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-            if os.path.exists(deletepath):
-                os.remove(deletepath)
-                return jsonify(msg = "Deleted!"), 200
-            else:
-                return jsonify(msg = "Pictures not found!"), 404
+    if filename:
+        deletepath = os.path.join(app.config['UPLOAD_FOLDER'],filename.rsplit('.', 1)[0])
+        if os.path.exists(deletepath):
+            shutil.rmtree(deletepath)
+            return jsonify(msg = "Deleted!"), 200
         else:
-            return jsonify(msg = "request is empty"), 400
+            return jsonify(msg = "Pictures not found!"), 404
     else:
-        return render_template("index.html")
+        return jsonify(msg = "request is empty"), 400
+
+
+# colorize files
+# @app.route('/colorize/',methods=['POST'])
+# def colorize():
+#
+#     filename = request.get_json()['name'] if 'name' in request.get_json() else None
+#     if filename:
+#         fpath = os.path.join(UPLOAD_FOLDER, filename.rsplit('.', 1)[0])
+#         # colorize_image
+#         if filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS['pic']:
+#             colorize_image(fpath, fpath)
+#         # colorize_image
+#         # elif filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS['video']:
+#         #     colorize_video(fpath, fpath)
+#         else:
+#             return jsonify("The format is not supported"),400
+#         # return value need further discussion
+#         return render_template("result.html")
+#     else:
+#         return jsonify("No input gray file"), 400
+
+
+# # if this router is needed then present result on a webpage, if not then just delete
+# @app.route('/result/')
+# def result():
+#     # TODO
+#     return render_template("result.html")
+
+#return json for all orgin and colorized pics
+# @app.route('/showresults/')
+# def showresults():
+#     # TODO
+#     # an example
+#     # {
+#     #     all: [
+#     #         {original_image: uploaded / image.png,
+#     #          converted_image: url / converted.png,
+#     #          thumbnail_image: url / thumbnail.png, (needed for videos)
+#     #          },
+#     #         {next image...}
+#     # ]
+#     # }
+#     return jsonify(results)
 
 def allowed_file(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in (ALLOWED_EXTENSIONS['pic'] or ALLOWED_EXTENSIONS['video'])
+
 
 if __name__ == '__main__':
     os.environ['FLASK_ENV'] = "development"
