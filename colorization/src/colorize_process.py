@@ -161,13 +161,13 @@ class ColorizeProcess:
         return SUCCESS
 
 
-    def inference(inferenceOutput):
-        ret = model_.Execute() # No idea what this model_.Execute() is, copied from c++ version
-        if ret != SUCCESS: # check about the return value
-            print("Execute model inerence failed")
-            sys.exit(1) # should the program quit now?
-        inferenceOutput = model_.GetModelOutputData() # deto check
-        return SUCCESS #The return value and quit critetia should be unified in general!!!
+    def inference():
+	    ret = model_.Execute() # No idea what this model_.Execute() is, copied from c++ version
+	    if ret != 1: # check about the return value
+		    print("Execute model inerence failed")
+		    sys.exit(1) # should the program quit now?
+	    inferenceOutput = model_.GetModelOutputData() # deto check
+	    return inferenceOutput, SUCCESS #The return value and quit critetia should be unified in general!!!
 
 
     def postprocess(imageFile, modelOutput):

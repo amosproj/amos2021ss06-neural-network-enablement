@@ -27,8 +27,8 @@ import pyACL
 import utils
 
 
-kModelWidth = numpy.uint32(224);
-kModelHeight = numpy.uint32(224);
+kModelWidth = numpy.uint32(224)
+kModelHeight = numpy.uint32(224)
 KMODELPATH = "../model/colorization.om"
 
 '''检查应用程序执行时的输入,程序执行要求输入图片目录参数'''
