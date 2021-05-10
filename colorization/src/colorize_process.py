@@ -17,7 +17,7 @@
 * Description: handle acl resource
 '''
 
-
+import sys
 import numpy
 import acl
 import model_process
@@ -35,11 +35,11 @@ SUCCESS = 0
 
 
 class ColorizeProcess:
-	modelPath_ = ""
+    modelPath_ = ""
 
 	def __init__(self, modelPath, modelWidth, modelHeight):
-	    self.modelPath = modelPath
-	    self.modelWidth = modelWidth
+        self.modelPath = modelPath
+        self.modelWidth = modelWidth
 	    self.modelHeight = modelHeight
 	    self.deviceId = 0
 	    self.inputBuf = ""
@@ -47,7 +47,7 @@ class ColorizeProcess:
 	    self.modelHeight = modelHeight
 	    self.isInited = False
         self.inputDataSize = modelWidth * modelHeight * 4
-		self.modelPath = modelPath
+        self.modelPath = modelPath
 
     def InitResource(self):
         ACLCONFIGPATH = ".../src/acl.json"
@@ -106,20 +106,20 @@ class ColorizeProcess:
     def Init(self):
         if self.isInited:
             print("Classify instance is initied already!")
-            return 1
+            return SUCCESS
 
         ret = InitResource()
-        if ret != 1:
+        if ret != SUCCESS:
             print("Init acl resource failed")
-            return 0
+            return FAILED
 
         ret = InitModel(modelPath_) # check parameter
-        if ret != 1:
+        if ret != SUCCESS:
             print("Init model failed")
-            return 0
+            return FAILED
 
 
-        self.isInited_ = 1
+        self.isInited = 1
         return SUCCESS
 
 
@@ -165,7 +165,7 @@ class ColorizeProcess:
         ret = model_.Execute() # No idea what this model_.Execute() is, copied from c++ version
         if ret != SUCCESS: # check about the return value
             print("Execute model inerence failed")
-            sys.exit(1) # should the program quit now?
+            sys.exit(1)
         inferenceOutput = model_.GetModelOutputData() # deto check
         return SUCCESS #The return value and quit critetia should be unified in general!!!
 
@@ -174,7 +174,7 @@ class ColorizeProcess:
         # reading the inference_image
 
         inference_result = cv2.imread(modelOutput)
-        inference_result = cv2.resize(inference_result, (300, 300))
+        inference_result = cv2.resize(inference_result, (modelWidth , modelHeight))
 
 
         # get ab channels from the model output
@@ -213,64 +213,64 @@ class ColorizeProcess:
         output_image = output_image * 255
         cv2.imshow('output_image', output_image)
 
-        return output_image
+        return SUCCESS
 
-    def saveimage(directory,colorized_data):
-        newpath = os.path.join(directory, "Saved_images")
+    def SaveImage(origImageFile,image):
+        newpath = os.path.join(origImageFile, "Saved_images")
         os.makedirs(newpath)
-        image = cv2.imread(colorized_data)
+        image = cv2.imread(image)
         cv2.imwrite(os.path.join(newpath, "Saved_image.png"), image)   # Saving images
         cv2.waitKey(0)
         cv2.destroyAllWindows()
-        return newpath
 
-    def GetInferenceOutputItem(itemDataSize, inferenceOutput)  # input: uint32_t& itemDataSize, aclmdlDataset* inferenceOutput
-        dataBuffer = aclmdlGetDatasetBuffer(inferenceOutput, 0)
+
+    def GetInferenceOutputItem(itemDataSize, inferenceOutput, self)  # input: uint32_t& itemDataSize, aclmdlDataset* inferenceOutput
+        dataBuffer = acl.mdl.get_dataset_buffer(inferenceOutput, 0)
         if dataBuffer == None:
             print("Get the dataset buffer from model inference output failed")
             return None
 
 
-        dataBufferDev = aclGetDataBufferAddr(dataBuffer)
+        dataBufferDev = acl.mdl.get_data_buffer_addr(dataBuffer)
         if dataBufferDev == None:
             print("Get the dataset buffer address from model inference output failed")
             return None
 
 
-        bufferSize = aclGetDataBufferSize(dataBuffer)
+        bufferSize = acl.mdl.get_data_buffer_size(dataBuffer)
         if bufferSize == 0:
             print("The dataset buffer size of model inference output is 0 ")
             return None
 
         data = None
-        if runMode_ == ACL_HOST :
+        if self.runMode_ == self.ACL_HOST :
             data = utils.CopyDataDeviceToHost(dataBufferDev, bufferSize)
             if data == None :
                 print("Copy inference output to host failed")
                 return None
         else :
             data = dataBufferDev
-        itemDataSize = bufferSize
+        self.itemDataSize = bufferSize
         return data
 
 
-    def DestroyResource()
+    def DestroyResource(self)
         model_.Unload();
         model_.DestroyDesc();
         model_.DestroyInput();
         model_.DestroyOutput();
 
-        ret = aclrtResetDevice(deviceId_)
-        if ret != ACL_ERROR_NONE:
+        ret = acl.rt.reset_device(self.deviceId)
+        if ret != acl.ACL_ERROR_NONE:
             print("reset device failed")
 
-        print("end to reset device is %d", deviceId_)
+        print("end to reset device is %d", self.deviceId)
 
-        ret = aclFinalize()
-        if ret != ACL_ERROR_NONE:
+        ret = acl.finalize()
+        if ret != acl.ACL_ERROR_NONE:
             print("finalize acl failed")
 
         print("end to finalize acl")
-        aclrtFree(inputBuf_)
-        inputBuf_ = None
+        acl.rt.free(self.inputBuf)
+        self.inputBuf_ = None
 
