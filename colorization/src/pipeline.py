@@ -51,7 +51,7 @@ def colorize_image(image_path_input, image_path_output):
         return FAILED
     # TODO: save at <image_path_output>
     if SaveImage(image_path_input, image_path_output):
-        # TODO
+        #TODO
     # TODO: return success code -> talk with webservice people
     pass
 
