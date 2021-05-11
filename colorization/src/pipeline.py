@@ -1,5 +1,5 @@
-# import subtask functions
-import colorize_process
+
+from colorize_process import *
 from utils import CopyDataDeviceToHost
 import numpy
 import cv2
