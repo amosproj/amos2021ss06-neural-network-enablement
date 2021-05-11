@@ -84,9 +84,10 @@ def colorize_video(video_path_input, video_path_output):
     """
     # TODO: load video located at <video_path_input>
     # TODO: split video into images
+    split_video = video2frames(video_path_input,videoName='.mp4')
     # TODO: call <processImage> on each image
     # TODO: combine to video
     # TODO: save at <video_path_output>
 
     # TODO: return success code -> talk with webservice people
-    pass
+    return split_video
