@@ -3,7 +3,7 @@ from werkzeug.utils import secure_filename
 import os
 import datetime
 import shutil
-#from pipeline import colorize_image
+from pipeline import colorize_image
 
 # set path to store uploaded pics and videos
 UPLOAD_FOLDER = os.path.abspath(os.path.dirname(__file__)) + "/uploaded/"
@@ -75,48 +75,29 @@ def delete():
         return jsonify(msg = "request is empty"), 400
 
 
-# colorize files
-# @app.route('/colorize/',methods=['POST'])
-# def colorize():
-#
-#     filename = request.get_json()['name'] if 'name' in request.get_json() else None
-#     if filename:
-#         fpath = os.path.join(UPLOAD_FOLDER, filename.rsplit('.', 1)[0])
-#         # colorize_image
-#         if filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS['pic']:
-#             colorize_image(fpath, fpath)
-#         # colorize_image
-#         # elif filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS['video']:
-#         #     colorize_video(fpath, fpath)
-#         else:
-#             return jsonify("The format is not supported"),400
-#         # return value need further discussion
-#         return render_template("result.html")
-#     else:
-#         return jsonify("No input gray file"), 400
+#colorize files
+@app.route('/colorize/',methods=['POST'])
+def colorize():
+
+    filename = request.get_json()['name'] if 'name' in request.get_json() else None
+    if filename:
+        fpath = os.path.join(UPLOAD_FOLDER, filename.rsplit('.', 1)[0])
+        # colorize_image
+        if filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS['pic']:
+            # colorize_image() return value need further discussion
+            if colorize_image(fpath, fpath) == True:
+                # return page need further discussion
+                return render_template("result.html")
+            else:
+                return jsonify("Colorization failed"),400
+
+        else:
+            return jsonify("The format is not supported"),400
+    else:
+        return jsonify("No input file"), 400
 
 
-# # if this router is needed then present result on a webpage, if not then just delete
-# @app.route('/result/')
-# def result():
-#     # TODO
-#     return render_template("result.html")
 
-#return json for all orgin and colorized pics
-# @app.route('/showresults/')
-# def showresults():
-#     # TODO
-#     # an example
-#     # {
-#     #     all: [
-#     #         {original_image: uploaded / image.png,
-#     #          converted_image: url / converted.png,
-#     #          thumbnail_image: url / thumbnail.png, (needed for videos)
-#     #          },
-#     #         {next image...}
-#     # ]
-#     # }
-#     return jsonify(results)
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in (ALLOWED_EXTENSIONS['pic'] or ALLOWED_EXTENSIONS['video'])
