@@ -4,12 +4,15 @@
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
 * You may obtain a copy of the License at
+
 * http://www.apache.org/licenses/LICENSE-2.0
+
 * Unless required by applicable law or agreed to in writing, software
 * distributed under the License is distributed on an "AS IS" BASIS,
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the License for the specific language governing permissions and
 * limitations under the License.
+
 * File sample_process.cpp
 * Description: handle acl resource
 '''
@@ -17,11 +20,12 @@
 import sys
 import numpy
 import acl
-import model_process
-import utils
 import cv2
 import os
+import colorization as model_
+import utils
 
+# constant variables
 kTopNConfidenceLevels = numpy.uint32(5)
 modelWidth = numpy.uint32(224)
 modelHeight = numpy.uint32(224)
@@ -37,16 +41,14 @@ class ColorizeProcess:
         self.modelPath = modelPath
         self.modelWidth = modelWidth
         self.modelHeight = modelHeight
+        self.inputDataSize = 4 * modelWidth * modelHeight
         self.deviceId = 0
         self.inputBuf = ""
-        self.modelWidth = modelWidth
-        self.modelHeight = modelHeight
         self.isInited = False
-        self.inputDataSize = modelWidth * modelHeight * 4
-        self.modelPath = modelPath
 
     def InitResource(self):
         ACLCONFIGPATH = ".../src/acl.json"
+        ret = acl.init()
         ret = acl.init(ACLCONFIGPATH)
         if ret != acl.ACL_ERROR_NONE:
             print("Acl init failed")
@@ -68,7 +70,7 @@ class ColorizeProcess:
 
 
 
-    def InitModel(OMMODELPATH, self): # check parameter
+    def InitModel(self, OMMODELPATH): # check parameter
         ret = model_.LoadModelFromFileWithMem(OMMODELPATH)
         if ret != SUCCESS:
             print("execute LoadModelFromFileWithMem failed")
@@ -104,12 +106,12 @@ class ColorizeProcess:
             print("Classify instance is initied already!")
             return SUCCESS
 
-        ret = InitResource()
+        ret = self.InitResource()
         if ret != SUCCESS:
             print("Init acl resource failed")
             return FAILED
 
-        ret = InitModel(modelPath_) # check parameter
+        ret = self.InitModel(modelPath_) # check parameter
         if ret != SUCCESS:
             print("Init model failed")
             return FAILED
@@ -121,27 +123,34 @@ class ColorizeProcess:
 
 
 
-    def Preprocess(imageFile, self):
+    def Preprocess(self, imageFile):
         # read image using OPENCV
-        mat = cv2.imread(imageFile, cv2.IMREAD_COLOR)
+        mat = cv2.imread(imageFile, cv2.IMREAD_COLOR).astype(numpy.float32)
+
+
         #resize
-        reiszeMat = numpy.empty()
-        reiszeMat = cv2.resize(mat, reiszeMat, None, fx = 224, fy = 224,
-                                interpolation = cv2.INTER_CUBIC)
+        reiszeMat = numpy.zeros(modelWidth)
+        reiszeMat = cv2.resize(mat,(modelWidth, modelHeight), cv2.INTER_CUBIC)
 
         # deal image
-        reiszeMat.cv2.convertScaleAbs(reiszeMat, reiszeMat, cv2.CV_32FC3)
-        reiszeMat = reiszeMat / 255
-        cv2.cvtColor(reiszeMat, 44) # flag: cv::COLOR_BGR2Lab = 44,
+        reiszeMat = cv2.convertScaleAbs(reiszeMat, cv2.CV_32FC3)
+        reiszeMat = 1.0 * reiszeMat / 255
+
+        # cv2.imshow("the pic", reiszeMat)
+        # cv2.waitKey(0)
+        # cv2.destroyAllWindows()
+        reiszeMat = numpy.float32(reiszeMat)
+        reiszeMat = cv2.cvtColor(reiszeMat, cv2.COLOR_BGR2Lab)
 
         # pull out L channel and subtract 50 for mean-centering
         channels = cv2.split(reiszeMat)
         reiszeMatL = channels[0] - 50
 
-        if mat == numpy.empty():
+        if mat == numpy.empty(224):
             return FAILED
 
-        if run_mode == acl.ACL_HOST: # ACL_HOST = 1
+        # TODO
+        if run_mode == 1:
             #if run in AI1, need to copy the picture data to the device
             ret = acl.rt.memcpy(self.inputBuf, self.inputDataSize, reiszeMatL,
                                 self.inputDataSize, acl.ACL_MEMCPY_HOST_TO_DEVICE)# ACL_MEMCPY_HOST_TO_DEVICE = 1
@@ -220,7 +229,7 @@ class ColorizeProcess:
         cv2.destroyAllWindows()
 
 
-    def GetInferenceOutputItem(itemDataSize, inferenceOutput, self):  # input: uint32_t& itemDataSize, aclmdlDataset* inferenceOutput
+    def GetInferenceOutputItem(self, itemDataSize, inferenceOutput):  # input: uint32_t& itemDataSize, aclmdlDataset* inferenceOutput
         dataBuffer = acl.mdl.get_dataset_buffer(inferenceOutput, 0)
         if dataBuffer == None:
             print("Get the dataset buffer from model inference output failed")
@@ -269,3 +278,4 @@ class ColorizeProcess:
         print("end to finalize acl")
         acl.rt.free(self.inputBuf)
         self.inputBuf_ = None
+
