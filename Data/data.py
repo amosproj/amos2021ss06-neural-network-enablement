@@ -16,7 +16,10 @@ def saveimage(directory,colorized_data):
     cv2.destroyAllWindows()
     return newpath
 
-def processVideo(path,videoName):
+
+# Split video into images and return the folder name of images.
+
+def video2frames(path,videoName):
     videoName = os.path.join(path,videoName)
     video = cv2.VideoCapture(videoName)
     if (video.isOpened() == False):
