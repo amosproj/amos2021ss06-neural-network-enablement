@@ -4,20 +4,17 @@
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
 * You may obtain a copy of the License at
-
 * http://www.apache.org/licenses/LICENSE-2.0
-
 * Unless required by applicable law or agreed to in writing, software
 * distributed under the License is distributed on an "AS IS" BASIS,
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the License for the specific language governing permissions and
 * limitations under the License.
-
 * File sample_process.cpp
 * Description: handle acl resource
 '''
 
-
+import sys
 import numpy
 import acl
 import model_process
@@ -26,156 +23,165 @@ import cv2
 import os
 
 kTopNConfidenceLevels = numpy.uint32(5)
+modelWidth = numpy.uint32(224)
+modelHeight = numpy.uint32(224)
+KMODELPATH = "../model/colorization.om"
+run_mode = 0
+FAILED = 1
+SUCCESS = 0
+
 
 class ColorizeProcess:
-    def __init__(self,modelPath, modelWidth, modelHeight):
+    modelPath_ = ""
+
+    def __init__(self, modelPath, modelWidth, modelHeight):
         self.modelPath = modelPath
         self.modelWidth = modelWidth
         self.modelHeight = modelHeight
         self.deviceId = 0
-        self.inputDataSize = modelWidth * modelHeight * 4
         self.inputBuf = ""
+        self.modelWidth = modelWidth
+        self.modelHeight = modelHeight
         self.isInited = False
-        # call another initiation of class ModelProcess()
-        self.model = ModelProcess()
-        # ColorizeProcess.modelPath_ = modelPath?
+        self.inputDataSize = modelWidth * modelHeight * 4
+        self.modelPath = modelPath
 
-
-    def InitResource():
+    def InitResource(self):
         ACLCONFIGPATH = ".../src/acl.json"
-        ret = pyACL.aclInit(ACLCONFIGPATH) # check methode in pyACL
-        if ret != ACL_ERROR_NONE:
+        ret = acl.init(ACLCONFIGPATH)
+        if ret != acl.ACL_ERROR_NONE:
             print("Acl init failed")
-            return 0
+            return FAILED
         print("Acl init success")
 
         # open device
-        ret = pyACL.aclrtSetDevice(deviceId_) # check methode in pyACL
-        if ret != ACL_ERROR_NONE:
-            print("Acl open device ", deviceId_, " failed.")
-            return 0
-        print("Open device ", deviceId_, " success.")
+        ret = acl.rt.set_device(self.deviceId_)
+        if ret != acl.ACL_ERROR_NONE:
+            print("Acl open device ", self.deviceId, " failed.")
+            return FAILED
+        print("Open device ", self.deviceId_, " success.")
 
-        ret = pyACL.aclrtGetRunMode(runMode_) # check adresse vs. variable etc.
-        if ret != ACL_ERROR_NONE:
+        run_mode, ret = acl.re.get_run_mode()
+        if ret != acl.ACL_ERROR_NONE:
             print("acl get run mode failed.")
-            return 0
-        return 1
+            return FAILED
+        return SUCCESS
 
 
 
-    def InitModel(OMMODELPATH): # check parameter
+    def InitModel(OMMODELPATH, self): # check parameter
         ret = model_.LoadModelFromFileWithMem(OMMODELPATH)
-        if ret != 1:
+        if ret != SUCCESS:
             print("execute LoadModelFromFileWithMem failed")
-            return 0
+            return FAILED
 
         ret = model_.CreateDesc()
-        if ret != 1:
+        if ret != SUCCESS:
             print("execute CreateDesc failed")
-            return 0
+            return FAILED
 
         ret =model_.CreateOutput()
-        if ret != 1:
+        if ret != SUCCESS:
             print("execute CreateOutput failed")
-            return 0
+            return FAILED
 
-    pyACL.aclrtMalloc(inputBuf_, inputDataSize_, ACL_MEM_MALLOC_HUGE_FIRST) # check methode and parameter in pyACL
-    if inputBuf_ == "": # check return value
-        print("Acl malloc image buffer failed.")
-        return 0
-
-
-    ret = model_.CreateInput(inputBuf_, inputDataSize_)
-    if ret != 1: # check return value
-        print("Create mode input dataset failed")
-        return 0
+        dev_ptr, ret = acl.rt.malloc( self.inputDataSize, acl.ACL_MEM_MALLOC_HUGE_FIRST)# ACL_MEM_MALLOC_HUGE_FIRST = 0
+        if self.inputBuf == "": # check return value
+            print("Acl malloc image buffer failed.")
+            return FAILED
 
 
-    return 1
+        ret = model_.CreateInput(self.inputBuf, self.inputDataSize)
+        if ret != SUCCESS: # check return value
+            print("Create mode input dataset failed")
+            return FAILED
 
-    def Init():
-        if isInited_:
+
+        return SUCCESS
+
+
+    def Init(self):
+        if self.isInited:
             print("Classify instance is initied already!")
-            return 1
+            return SUCCESS
 
         ret = InitResource()
-        if ret != 1:
+        if ret != SUCCESS:
             print("Init acl resource failed")
-            return 0
+            return FAILED
 
         ret = InitModel(modelPath_) # check parameter
-        if ret != 1:
+        if ret != SUCCESS:
             print("Init model failed")
-            return 0
+            return FAILED
 
 
-        isInited_ = true
-        return 1
+        self.isInited = 1
+        return SUCCESS
 
 
 
 
-    def Preprocess(imageFile):
+    def Preprocess(imageFile, self):
         # read image using OPENCV
         mat = cv2.imread(imageFile, cv2.IMREAD_COLOR)
         #resize
         reiszeMat = numpy.empty()
-        reiszeMat = cv2.resize(mat, reiszeMat,None, fx = 224, fy = 224,
+        reiszeMat = cv2.resize(mat, reiszeMat, None, fx = 224, fy = 224,
                                 interpolation = cv2.INTER_CUBIC)
 
         # deal image
-        reiszeMat.cv2.convertScaleAbs(reiszeMat, reiszeMat, CV_32FC3)
+        reiszeMat.cv2.convertScaleAbs(reiszeMat, reiszeMat, cv2.CV_32FC3)
         reiszeMat = reiszeMat / 255
         cv2.cvtColor(reiszeMat, 44) # flag: cv::COLOR_BGR2Lab = 44,
 
         # pull out L channel and subtract 50 for mean-centering
-        channels = cv.split(resizeMat)
+        channels = cv2.split(reiszeMat)
         reiszeMatL = channels[0] - 50
 
         if mat == numpy.empty():
-            return 0
+            return FAILED
 
-        if runMode == ACL_HOST:
+        if run_mode == acl.ACL_HOST: # ACL_HOST = 1
             #if run in AI1, need to copy the picture data to the device
-            ret = aclrtMemcpy(inputBuf_, inputDataSize_, reiszeMatL,
-                                inputDataSize_, ACL_MEMCPY_HOST_TO_DEVICE)
-            if ret != ACL_ERROR_NONE:
+            ret = acl.rt.memcpy(self.inputBuf, self.inputDataSize, reiszeMatL,
+                                self.inputDataSize, acl.ACL_MEMCPY_HOST_TO_DEVICE)# ACL_MEMCPY_HOST_TO_DEVICE = 1
+
+            if ret != acl.ACL_ERROR_NONE:
                 print("Copy resized image data to device failed.")
-                return 0
+                return FAILED
             else:
                 #reiszeMat is local variable , cant pass out of funktion, need to copy it
-                memcpy(inputBuf_, reiszeMatL, inputDataSize_)
+                acl.rt.memcpy(self.inputBuf, self.inputDataSize, reiszeMatL,
+                              self.inputDataSize, acl.ACL_MEMCPY_DEVICE_TO_HOST)
 
-        return 1
+        return SUCCESS
 
 
     def inference(inferenceOutput):
         ret = model_.Execute() # No idea what this model_.Execute() is, copied from c++ version
-        if ret != 1: # check about the return value
+        if ret != SUCCESS: # check about the return value
             print("Execute model inerence failed")
-            sys.exit(1) # should the program quit now?
+            sys.exit(1)
         inferenceOutput = model_.GetModelOutputData() # deto check
-        return 1 #The return value and quit critetia should be unified in general!!!
+        return SUCCESS #The return value and quit critetia should be unified in general!!!
 
 
-    def postprocess(origImageFile, modelOutput):
+    def postprocess(imageFile, modelOutput):
         # reading the inference_image
 
         inference_result = cv2.imread(modelOutput)
-        inference_result = cv2.resize(inference_result, (300, 300))
-        cv2.imshow('Inference_result', inference_result)
-        cv2.waitKey(0)
-        cv2.destroyAllWindows()
+        inference_result = cv2.resize(inference_result, (modelWidth , modelHeight))
+
 
         # get ab channels from the model output
         a, b = cv2.split(inference_result)
 
         # pull out L channel in original/source image
 
-        input_image = cv2.imread(origImageFile, cv2.IMREAD_COLOR)  # reading input image
-        input_image = cv2.resize(input_image, (300, 300))
-        input_image = np.float32(input_image)
+        input_image = cv2.imread(imageFile, cv2.IMREAD_COLOR)  # reading input image
+        input_image = cv2.resize(input_image, (modelWidth , modelHeight))
+        input_image = numpy.float32(input_image)
         input_image = 1.0 * input_image / 255  # Normalizing the input image values
         bgrtolab = cv2.cvtColor(input_image, cv2.COLOR_BGR2LAB)
         cv2.imshow("Lab_channel", bgrtolab)
@@ -204,64 +210,63 @@ class ColorizeProcess:
         output_image = output_image * 255
         cv2.imshow('output_image', output_image)
 
-        return output_image
+        return SUCCESS
 
-    def saveimage(directory,colorized_data):
-        newpath = os.path.join(directory, "Saved_images")
+    def SaveImage(origImageFile,image):
+        newpath = os.path.join(origImageFile, "Saved_images")
         os.makedirs(newpath)
-        image = cv2.imread(colorized_data)
+        image = cv2.imread(image)
         cv2.imwrite(os.path.join(newpath, "Saved_image.png"), image)   # Saving images
         cv2.waitKey(0)
         cv2.destroyAllWindows()
-        return newpath
 
-    def GetInferenceOutputItem(itemDataSize, inferenceOutput)  # input: uint32_t& itemDataSize, aclmdlDataset* inferenceOutput
-        dataBuffer = aclmdlGetDatasetBuffer(inferenceOutput, 0)
+
+    def GetInferenceOutputItem(itemDataSize, inferenceOutput, self)  # input: uint32_t& itemDataSize, aclmdlDataset* inferenceOutput
+        dataBuffer = acl.mdl.get_dataset_buffer(inferenceOutput, 0)
         if dataBuffer == None:
             print("Get the dataset buffer from model inference output failed")
             return None
 
 
-        dataBufferDev = aclGetDataBufferAddr(dataBuffer)
+        dataBufferDev = acl.mdl.get_data_buffer_addr(dataBuffer)
         if dataBufferDev == None:
             print("Get the dataset buffer address from model inference output failed")
             return None
 
 
-        bufferSize = aclGetDataBufferSize(dataBuffer)
+        bufferSize = acl.mdl.get_data_buffer_size(dataBuffer)
         if bufferSize == 0:
             print("The dataset buffer size of model inference output is 0 ")
             return None
 
         data = None
-        if runMode_ == ACL_HOST :
+        if self.runMode_ == self.ACL_HOST :
             data = utils.CopyDataDeviceToHost(dataBufferDev, bufferSize)
             if data == None :
                 print("Copy inference output to host failed")
                 return None
         else :
             data = dataBufferDev
-        itemDataSize = bufferSize
+        self.itemDataSize = bufferSize
         return data
 
 
-    def DestroyResource()
+    def DestroyResource(self)
         model_.Unload();
         model_.DestroyDesc();
         model_.DestroyInput();
         model_.DestroyOutput();
 
-        ret = aclrtResetDevice(deviceId_)
-        if ret != ACL_ERROR_NONE:
+        ret = acl.rt.reset_device(self.deviceId)
+        if ret != acl.ACL_ERROR_NONE:
             print("reset device failed")
 
-        print("end to reset device is %d", deviceId_)
+        print("end to reset device is %d", self.deviceId)
 
-        ret = aclFinalize()
-        if ret != ACL_ERROR_NONE:
+        ret = acl.finalize()
+        if ret != acl.ACL_ERROR_NONE:
             print("finalize acl failed")
 
         print("end to finalize acl")
-        aclrtFree(inputBuf_)
-        inputBuf_ = None
-
+        acl.rt.free(self.inputBuf)
+        self.inputBuf_ = None
