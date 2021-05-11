@@ -3,7 +3,7 @@ import colorize_process
 from utils import CopyDataDeviceToHost
 import numpy
 import cv2
-
+from data import loadimage
 # import splitVideo
 
 FAILED = 1
@@ -18,7 +18,7 @@ SUCCESS = 0
 
 def colorize_image(image_path_input, image_path_output):
     """
-    This function does the complete processing of a given image.
+    This function does the com                                                                         plete processing of a given image.
     It combines all of the subtasks together:
        - preprocess the image
        - colorize the image
@@ -41,6 +41,9 @@ def colorize_image(image_path_input, image_path_output):
     KMODELPATH = "../model/colorization.om"
     colorize = colorize_process.ColorizeProcess(KMODELPATH, kModelWidth, kModelHeight)
     # TODO: load image located at <image_path_input>
+    image_path_input = loadimage(image_path_input)
+    if image_path_input == "path not found":
+        return FAILED
     # TODO: preprocess (do preprocessing on the device itself?)
     if colorize.preprocess(image_path_input) == FAILED:
         print("Read file ", image_path_input, " failed, continue to read next")

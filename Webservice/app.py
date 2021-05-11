@@ -85,12 +85,11 @@ def colorize():
         # colorize_image
         if filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS['pic']:
             # colorize_image() return value need further discussion
-            if colorize_image(fpath, fpath) == True:
+            if colorize_image(fpath, fpath) == 0:
                 # return page need further discussion
                 return render_template("result.html")
             else:
-                return jsonify("Colorization failed"),400
-
+                return jsonify("Path not found"),400
         else:
             return jsonify("The format is not supported"),400
     else:
