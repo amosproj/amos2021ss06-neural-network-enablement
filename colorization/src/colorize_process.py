@@ -33,7 +33,6 @@ SUCCESS = 0
 
 class ColorizeProcess:
     modelPath_ = ""
-
     def __init__(self, modelPath, modelWidth, modelHeight):
         self.modelPath = modelPath
         self.modelWidth = modelWidth
@@ -221,7 +220,7 @@ class ColorizeProcess:
         cv2.destroyAllWindows()
 
 
-    def GetInferenceOutputItem(itemDataSize, inferenceOutput, self)  # input: uint32_t& itemDataSize, aclmdlDataset* inferenceOutput
+    def GetInferenceOutputItem(itemDataSize, inferenceOutput, self):  # input: uint32_t& itemDataSize, aclmdlDataset* inferenceOutput
         dataBuffer = acl.mdl.get_dataset_buffer(inferenceOutput, 0)
         if dataBuffer == None:
             print("Get the dataset buffer from model inference output failed")
@@ -251,7 +250,7 @@ class ColorizeProcess:
         return data
 
 
-    def DestroyResource(self)
+    def DestroyResource(self):
         model_.Unload();
         model_.DestroyDesc();
         model_.DestroyInput();
