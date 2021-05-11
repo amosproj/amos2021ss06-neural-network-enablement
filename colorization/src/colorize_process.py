@@ -36,7 +36,7 @@ SUCCESS = 0
 
 
 class ColorizeProcess:
-    modelPath_ = ""
+    #modelPath_ = ""
     def __init__(self, modelPath, modelWidth, modelHeight):
         self.modelPath = modelPath
         self.modelWidth = modelWidth
@@ -111,7 +111,7 @@ class ColorizeProcess:
             print("Init acl resource failed")
             return FAILED
 
-        ret = self.InitModel(modelPath_) # check parameter
+        ret = self.InitModel(self.modelPath) # check parameter
         if ret != SUCCESS:
             print("Init model failed")
             return FAILED
@@ -119,9 +119,6 @@ class ColorizeProcess:
 
         self.isInited = 1
         return SUCCESS
-
-
-
 
     def Preprocess(self, imageFile):
         # read image using OPENCV
@@ -166,29 +163,35 @@ class ColorizeProcess:
         return SUCCESS
 
 
-    def inference(inferenceOutput):
-        ret = model_.Execute() # No idea what this model_.Execute() is, copied from c++ version
-        if ret != SUCCESS: # check about the return value
-            print("Execute model inerence failed")
-            sys.exit(1)
-        inferenceOutput = model_.GetModelOutputData() # deto check
-        return SUCCESS #The return value and quit critetia should be unified in general!!!
+    # def inference(inferenceOutput):
+    #     ret = model_.Execute() # No idea what this model_.Execute() is, copied from c++ version
+    #     if ret != SUCCESS: # check about the return value
+    #         print("Execute model inerence failed")
+    #         sys.exit(1)
+    #     inferenceOutput = model_.GetModelOutputData() # deto check
+    #     return SUCCESS #The return value and quit critetia should be unified in general!!!
 
 
-    def postprocess(imageFile, modelOutput):
+    def model_process(self,modelPath):
+        model_file = modelPath + 'colorization.prototxt'
+        pretrained_network = modelPath + 'colorization.caffemodel'
+        caffe_net = cv2.dnn.readNetFromCaffe(model_file, pretrained_network)
+        caffe_net.set_mode_cpu()
+        l_channel = self.Preprocess(self.imageFile)
+        caffe_net.setInput(cv2.dnn.blobFromImage(l_channel))
+        self.ab_channel = caffe_net.forward()[0, :, :, :].transpose((1, 2, 0))
+        return self.ab_channel
+
+    def postprocess(self,imageFile, modelOutput):
         # reading the inference_image
 
         inference_result = cv2.imread(modelOutput)
         inference_result = cv2.resize(inference_result, (modelWidth , modelHeight))
 
-
-        # get ab channels from the model output
-        a, b = cv2.split(inference_result)
-
         # pull out L channel in original/source image
 
         input_image = cv2.imread(imageFile, cv2.IMREAD_COLOR)  # reading input image
-        input_image = cv2.resize(input_image, (modelWidth , modelHeight))
+        input_image = cv2.resize(input_image, (modelWidth, modelHeight))
         input_image = numpy.float32(input_image)
         input_image = 1.0 * input_image / 255  # Normalizing the input image values
         bgrtolab = cv2.cvtColor(input_image, cv2.COLOR_BGR2LAB)
@@ -204,12 +207,11 @@ class ColorizeProcess:
 
         height = input_image[0]
         width = input_image[1]
-        a_channel = cv2.resize(a, (height, width))
-        b_channel = cv2.resize(b, (height, width))
+        ab_channel_resize = cv2.resize(self.ab_channel,(height,width))
 
         # result Lab image
 
-        result_image = cv2.merge(L, a_channel, b_channel)
+        result_image = cv2.merge(L, ab_channel_resize)
         cv2.imshow('result_image', result_image)
 
         # convert back to rgb
