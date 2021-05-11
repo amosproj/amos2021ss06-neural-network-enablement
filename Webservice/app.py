@@ -3,7 +3,7 @@ from werkzeug.utils import secure_filename
 import os
 import datetime
 import shutil
-from colorization.src.pipeline import *
+from pipeline import colorize_image
 
 # set path to store uploaded pics and videos
 UPLOAD_FOLDER = os.path.abspath(os.path.dirname(__file__)) + "/uploaded/"
