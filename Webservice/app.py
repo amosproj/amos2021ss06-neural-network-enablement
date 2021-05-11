@@ -1,13 +1,12 @@
-import sys
-sys.path.append("../colorization/src/")
+# import sys
+# sys.path.append("../colorization/src/")
+#from pipeline import *
 
 from flask import Flask, jsonify, render_template, request, url_for, send_from_directory
 from werkzeug.utils import secure_filename
 import os
 import datetime
 import shutil
-
-from pipeline import *
 #from colorization.src.pipeline import *
 
 # set path to store uploaded pics and videos
@@ -81,26 +80,23 @@ def delete():
 
 
 #colorize files
-@app.route('/colorize/',methods=['POST'])
-def colorize():
-
-    filename = request.get_json()['name'] if 'name' in request.get_json() else None
-    if filename:
-        fpath = os.path.join(UPLOAD_FOLDER, filename.rsplit('.', 1)[0])
-        # colorize_image
-        if filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS['pic']:
-            # colorize_image() return value need further discussion
-            if colorize_image(fpath, fpath) == 0:
-                # return page need further discussion
-                return render_template("result.html")
-            else:
-                return jsonify("Path not found"),400
-        else:
-            return jsonify("The format is not supported"),400
-    else:
-        return jsonify("No input file"), 400
-
-
+# @app.route('/colorize/',methods=['POST'])
+# def colorize():
+#     filename = request.get_json()['name'] if 'name' in request.get_json() else None
+#     if filename:
+#         fpath = os.path.join(UPLOAD_FOLDER, filename.rsplit('.', 1)[0])
+#         # colorize_image
+#         if filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS['pic']:
+#             # colorize_image() return value need further discussion
+#             if colorize_image(fpath, fpath) == 0:
+#                 # return page need further discussion
+#                 return render_template("result.html")
+#             else:
+#                 return jsonify("Path not found"),400
+#         else:
+#             return jsonify("The format is not supported"),400
+#     else:
+#         return jsonify("No input file"), 400
 
 
 def allowed_file(filename):
