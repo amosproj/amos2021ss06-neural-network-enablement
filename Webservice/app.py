@@ -1,9 +1,14 @@
+import sys
+sys.path.append("../colorization/src/")
+
 from flask import Flask, jsonify, render_template, request, url_for, send_from_directory
 from werkzeug.utils import secure_filename
 import os
 import datetime
 import shutil
-from colorization.src.pipeline import *
+
+from pipeline import *
+#from colorization.src.pipeline import *
 
 # set path to store uploaded pics and videos
 UPLOAD_FOLDER = os.path.abspath(os.path.dirname(__file__)) + "/uploaded/"
