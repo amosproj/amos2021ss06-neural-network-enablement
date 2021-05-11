@@ -3,7 +3,7 @@ import colorize_process
 from utils import CopyDataDeviceToHost
 import numpy
 import cv2
-from data import loadimage
+from Data.data import *
 # import splitVideo
 
 FAILED = 1
