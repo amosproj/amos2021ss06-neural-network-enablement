@@ -24,13 +24,14 @@ def video2frames(path,videoName):
     video = cv2.VideoCapture(videoName)
     if (video.isOpened() == False):
         print("Error opening video")
-    FPS = 60
+    FPS = 60  # frames per second
     video.set(cv2.CAP_PROP_FPS, FPS)
     currentFrame = 0
+    newpath = os.path.join(path, "Saved_frames")
     while (video.isOpened()):
         ret,frame = video.read()
         if ret == True:
-            folder_name = os.path.join(path,'saved_frames', str(currentFrame) + '.png')
+            folder_name = os.path.join(newpath , str(currentFrame) + '.png')
             print('Creating...' + folder_name)
             cv2.imshow('Frame', frame)
             cv2.imwrite(folder_name, frame)
@@ -41,4 +42,8 @@ def video2frames(path,videoName):
             break
     video.release()
     cv2.destroyAllWindows()
-    return folder_name
+    return newpath
+
+
+path = r'C:\Users\Susmitha Rachamreddy\Desktop\AMOS_project'
+video2frames(path,"greyscaleVideo.mp4")
