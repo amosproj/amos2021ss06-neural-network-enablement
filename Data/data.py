@@ -43,7 +43,3 @@ def video2frames(path,videoName):
     video.release()
     cv2.destroyAllWindows()
     return newpath
-
-
-path = r'C:\Users\Susmitha Rachamreddy\Desktop\AMOS_project'
-video2frames(path,"greyscaleVideo.mp4")
