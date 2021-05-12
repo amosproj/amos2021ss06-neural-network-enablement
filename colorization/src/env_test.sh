@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-export PYTHONPATH=$PYTHON_PATH:$HOME/Ascend/ascend-toolkit/latest/pyACL/python/site-packages/acl
+export PYTHONPATH=$PYTHONPATH:$HOME/Ascend/ascend-toolkit/latest/pyACL/python/site-packages/acl
 
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$HOME/Ascend/ascend-toolkit/latest/acllib_centos7.6.x86_64/acllib/lib64
 
