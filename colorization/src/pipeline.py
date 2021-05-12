@@ -18,7 +18,7 @@ SUCCESS = 0
 
 def colorize_image(image_path_input, image_path_output):
     """
-    This function does the com                                                                         plete processing of a given image.
+    This function does the complete processing of a given image.
     It combines all of the subtasks together:
        - preprocess the image
        - colorize the image
