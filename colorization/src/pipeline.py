@@ -18,7 +18,7 @@ SUCCESS = 0
 
 def colorize_image(image_path_input, image_path_output):
     """
-    This function does the com                                                                         plete processing of a given image.
+    This function does the complete processing of a given image.
     It combines all of the subtasks together:
        - preprocess the image
        - colorize the image
@@ -39,22 +39,24 @@ def colorize_image(image_path_input, image_path_output):
     kModelWidth = numpy.uint32(224)
     kModelHeight = numpy.uint32(224)
     KMODELPATH = "../model/colorization.om"
-    colorize = colorize_process.ColorizeProcess(KMODELPATH, kModelWidth, kModelHeight)
-    # TODO: load image located at <image_path_input>
-    image_path_input = loadimage(image_path_input)
-    if image_path_input == "path not found":
-        return FAILED
-    # TODO: preprocess (do preprocessing on the device itself?)
-    if colorize.preprocess(image_path_input) == FAILED:
+    colorize = ColorizeProcess(KMODELPATH, kModelWidth, kModelHeight)
+    colorize.Init()
+    # TODO: load image located at <image_path_input> -- delete, already in preprocess
+    # image_path_input = loadimage(image_path_input)
+    # if image_path_input == "path not found":
+    #     return FAILED
+    # TODO: preprocess (do preprocessing on the device itself?) -- load image, preprocess, upload to device
+    if colorize.Preprocess(image_path_input) == FAILED:
         print("Read file ", image_path_input, " failed, continue to read next")
-        return SUCCESS
-    # TODO: upload to device
+        return FAILED
+    # TODO: inference ?? wait to check, should use model_process(self,modelPath) or inference(inferenceOutput)?
     (inferenceOutput, ret) = colorize.inference()
     if ret == FAILED:
         print("Inference model inference output data failed")
         return FAILED
     # TODO: colorize
     # TODO: postprocess
+    # check the return value of postprocess with Raj
     image = colorize.postprocess(image_path_input, inferenceOutput)
     cv2.imwrite(image_path_output, image)
     # sprich mit R und S
