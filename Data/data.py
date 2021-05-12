@@ -8,6 +8,12 @@ def loadimage(inputImageDir):
         return "path not found"
 
 def saveimage(directory,colorized_data):
+    ''' This function is used to save the images.
+    Args:
+        directory: path to save images
+        colorized_data: image to be saved
+    Returns:
+        path of the saved image.'''
     newpath = os.path.join(directory, "Saved_images")
     os.makedirs(newpath)
     image = cv2.imread(colorized_data)
@@ -15,27 +21,3 @@ def saveimage(directory,colorized_data):
     cv2.waitKey(0)
     cv2.destroyAllWindows()
     return newpath
-
-def processVideo(path,videoName):
-    videoName = os.path.join(path,videoName)
-    video = cv2.VideoCapture(videoName)
-    if (video.isOpened() == False):
-        print("Error opening video")
-    FPS = 60
-    video.set(cv2.CAP_PROP_FPS, FPS)
-    currentFrame = 0
-    while (video.isOpened()):
-        ret,frame = video.read()
-        if ret == True:
-            folder_name = os.path.join(path,'saved_frames', str(currentFrame) + '.png')
-            print('Creating...' + folder_name)
-            cv2.imshow('Frame', frame)
-            cv2.imwrite(folder_name, frame)
-            currentFrame += 1
-            if cv2.waitKey(25) & 0xFF == ord('q'):
-                break
-        else:
-            break
-    video.release()
-    cv2.destroyAllWindows()
-    return folder_name
