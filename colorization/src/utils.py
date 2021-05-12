@@ -1,5 +1,5 @@
 import os
-import acl
+#import acl
 
 def IsDirectory(inputpath):
     return os.path.isfile(inputpath)
@@ -14,7 +14,7 @@ def IsPathExist(inputpath):
 def GetAllFiles(inputpath):
     return os.listdir(inputpath)
 
-
+'''
 def CopyDataDeviceToHost(deviceData,dataSize):
     # malloc for memory on host
     host_ptr, malret = acl.rt.malloc_host(dataSize)
@@ -31,3 +31,5 @@ def CopyDataDeviceToHost(deviceData,dataSize):
     else:
         #malloc fails
         return 1
+    
+'''
