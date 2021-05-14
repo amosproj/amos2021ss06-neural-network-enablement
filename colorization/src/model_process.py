@@ -39,23 +39,88 @@ class Modelprocess:
         return 0
 
     def CreateDesc(self):
-        pass
+        self.modelDesc = acl.mdl.create_desc()
+        if self.modelDesc is None:
+            logging.error("create model description failed")
+            return 1
+        ret = acl.mdl.get_desc(self.modelDesc,self.modelId)
+        if ret != None:
+            logging.error("get model description failed")
+            return 1
+        logging.info("create model description success")
+        return 0
 
     def DestroyDesc(self):
-        pass
+        if self.modelDesc != None:
+            acl.mdl.destroy_desc(self.modelDesc)
+            self.modelDesc = None
 
     def CreateInput(self,inputDataBuffer,bufferSize):
-        pass
+        self.input = acl.mdl.create_dataset()
+        if self.input is None:
+            logging.error("can't create data buffer, create input failed")
+            return 1
+        inputData = acl.create_data_buffer(inputDataBuffer,bufferSize)
+        if inputData is None:
+            logging.error("can't create data buffer, create input failed")
+            return 1
+        dataset,ret = acl.mdl.add_dataset_buffer(self.input,inputData)
+        if inputData is None:
+            logging.error("can't add data buffer, create input failed")
+            acl.destroy_data_buffer(inputData)
+            inputData = None
+            return 1
+        return 0
 
     def DestroyInput(self):
-        pass
+        if self.input is None:
+            return
+        for i in range(0,acl.mdl.get_dataset_num_buffers(self.input)):
+            dataBuffer = acl.mdl.get_dataset_buffer(self.input,i)
+            acl.destroy_data_buffer(dataBuffer)
+        acl.mdl.destroy_dataset(self.input)
+        self.input = None
 
     def CreateOutput(self):
-        pass
-
+        if self.modelDesc is None:
+            logging.error("no model description, create output failed")
+            return 1
+        self.output = acl.mdl.create_dataset()
+        if self.output is None:
+            logging.error("cannot create dataset,create output failed")
+            return 1
+        outputSize = acl.mdl.get_num_outputs(self.modelDesc)
+        for i in range(0,outputSize):
+            buffer_size = acl.mdl.get_output_size_by_index(self.modelDesc,i)
+            outputBuffer = None
+            ret = acl.rt.malloc(outputBuffer,buffer_size,ACL_MEM_MALLOC_NORMAL_ONLY)
+            if ret != ACL_ERROR_NONE:
+                logging.error("can't malloc buffer, size is %zu, create output failed",buffer_size)
+                return 1
+            outputData = acl.create_data_buffer(outputBuffer,buffer_size)
+            if ret != ACL_ERROR_NONE:
+                logging.error("can't create data buffer, create output failed")
+                acl.rt.free(outputBuffer)
+                return 1
+            ret = acl.mdl.add_dataset_buffer(self.output,outputData)
+            if ret != ACL_ERROR_NONE:
+                logging.error("can't add data buffer, create output failed")
+                acl.rt.free(outputBuffer)
+                acl.destroy_data_buffer(outputData)
+                return 1
+        logging.info("create model output success")
+        return 0
 
     def DestroyOutput(self):
-        pass
+        if self.output is None:
+            return
+        for i in range(0,acl.mdl.get_dataset_num_buffers(self.output)):
+            dataBuffer = acl.mdl.get_dataset_buffer(self.output,i)
+            data = acl.get_data_buffer_addr(dataBuffer)
+            acl.rt.free(data)
+            acl.destroy_data_buffer(dataBuffer)
+        acl.mdl.destroy_dataset(self.output)
+        self.output = None
 
     def Execute(self):
         """Function usage: Executes model inference until the result is returned.
