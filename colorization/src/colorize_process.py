@@ -22,6 +22,7 @@ import numpy
 import acl
 import cv2
 import os
+import utils
 from model_process import Modelprocess
 
 # constant variables
@@ -140,7 +141,7 @@ class ColorizeProcess:
                 print("Copy resized image data to device failed.")
                 return FAILED
             else:
-                #reiszeMat is local variable , cant pass out of funktion, need to copy it
+                # reiszeMat is local variable , cant pass out of funktion, need to copy it
                 acl.rt.memcpy(self.inputBuf, self.inputDataSize, reiszeMatL,
                               self.inputDataSize, acl.ACL_MEMCPY_DEVICE_TO_HOST)
 
@@ -148,23 +149,12 @@ class ColorizeProcess:
 
 
     def inference(self,inferenceOutput):
-        ret = Modelprocess.Execute() # No idea what this model_.Execute() is, copied from c++ version
+        ret = Modelprocess.Execute()
         if ret != SUCCESS: # check about the return value
-            print("Execute model inerence failed")
+            print("Execute model inference failed")
             sys.exit(1)
         self.inferenceOutput = Modelprocess.GetModelOutputData() # deto check
         return SUCCESS #The return value and quit critetia should be unified in general!!!
-
-
-    # def model_process(self,modelPath):
-    #     model_file = modelPath + 'colorization.prototxt'
-    #     pretrained_network = modelPath + 'colorization.caffemodel'
-    #     caffe_net = cv2.dnn.readNetFromCaffe(model_file, pretrained_network)
-    #     caffe_net.set_mode_cpu()
-    #     l_channel = self.Preprocess(self.imageFile)
-    #     caffe_net.setInput(cv2.dnn.blobFromImage(l_channel))
-    #     self.ab_channel = caffe_net.forward()[0, :, :, :].transpose((1, 2, 0))
-    #     return self.ab_channel
 
     def postprocess(self,imageFile, inferenceOutput):
         # reading the inference_image
