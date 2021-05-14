@@ -22,8 +22,7 @@ import numpy
 import acl
 import cv2
 import os
-#import colorization as model_
-#import utils
+from model_process import Modelprocess
 
 # constant variables
 kTopNConfidenceLevels = numpy.uint32(5)
@@ -56,11 +55,11 @@ class ColorizeProcess:
         print("Acl init success")
 
         # open device
-        ret = acl.rt.set_device(self.deviceId_)
+        ret = acl.rt.set_device(self.deviceId)
         if ret != acl.ACL_ERROR_NONE:
             print("Acl open device ", self.deviceId, " failed.")
             return FAILED
-        print("Open device ", self.deviceId_, " success.")
+        print("Open device ", self.deviceId, " success.")
 
         run_mode, ret = acl.re.get_run_mode()
         if ret != acl.ACL_ERROR_NONE:
@@ -68,20 +67,17 @@ class ColorizeProcess:
             return FAILED
         return SUCCESS
 
-
-
     def InitModel(self, OMMODELPATH): # check parameter
-        ret = model_.LoadModelFromFileWithMem(OMMODELPATH)
+        ret = Modelprocess.LoadModelFromFileWithMem(OMMODELPATH)
         if ret != SUCCESS:
             print("execute LoadModelFromFileWithMem failed")
             return FAILED
 
-        ret = model_.CreateDesc()
+        ret = Modelprocess.CreateDesc()
         if ret != SUCCESS:
             print("execute CreateDesc failed")
             return FAILED
-
-        ret =model_.CreateOutput()
+        ret = Modelprocess.CreateOutput()
         if ret != SUCCESS:
             print("execute CreateOutput failed")
             return FAILED
@@ -90,14 +86,10 @@ class ColorizeProcess:
         if self.inputBuf == "": # check return value
             print("Acl malloc image buffer failed.")
             return FAILED
-
-
-        ret = model_.CreateInput(self.inputBuf, self.inputDataSize)
-        if ret != SUCCESS: # check return value
+        ret = Modelprocess.CreateInput(self.inputBuf, self.inputDataSize)
+        if ret != SUCCESS:      # check return value
             print("Create mode input dataset failed")
             return FAILED
-
-
         return SUCCESS
 
 
@@ -115,8 +107,6 @@ class ColorizeProcess:
         if ret != SUCCESS:
             print("Init model failed")
             return FAILED
-
-
         self.isInited = 1
         return SUCCESS
 
@@ -157,29 +147,29 @@ class ColorizeProcess:
         return SUCCESS
 
 
-    # def inference(inferenceOutput):
-    #     ret = model_.Execute() # No idea what this model_.Execute() is, copied from c++ version
-    #     if ret != SUCCESS: # check about the return value
-    #         print("Execute model inerence failed")
-    #         sys.exit(1)
-    #     inferenceOutput = model_.GetModelOutputData() # deto check
-    #     return SUCCESS #The return value and quit critetia should be unified in general!!!
+    def inference(self,inferenceOutput):
+        ret = Modelprocess.Execute() # No idea what this model_.Execute() is, copied from c++ version
+        if ret != SUCCESS: # check about the return value
+            print("Execute model inerence failed")
+            sys.exit(1)
+        self.inferenceOutput = Modelprocess.GetModelOutputData() # deto check
+        return SUCCESS #The return value and quit critetia should be unified in general!!!
 
 
-    def model_process(self,modelPath):
-        model_file = modelPath + 'colorization.prototxt'
-        pretrained_network = modelPath + 'colorization.caffemodel'
-        caffe_net = cv2.dnn.readNetFromCaffe(model_file, pretrained_network)
-        caffe_net.set_mode_cpu()
-        l_channel = self.Preprocess(self.imageFile)
-        caffe_net.setInput(cv2.dnn.blobFromImage(l_channel))
-        self.ab_channel = caffe_net.forward()[0, :, :, :].transpose((1, 2, 0))
-        return self.ab_channel
+    # def model_process(self,modelPath):
+    #     model_file = modelPath + 'colorization.prototxt'
+    #     pretrained_network = modelPath + 'colorization.caffemodel'
+    #     caffe_net = cv2.dnn.readNetFromCaffe(model_file, pretrained_network)
+    #     caffe_net.set_mode_cpu()
+    #     l_channel = self.Preprocess(self.imageFile)
+    #     caffe_net.setInput(cv2.dnn.blobFromImage(l_channel))
+    #     self.ab_channel = caffe_net.forward()[0, :, :, :].transpose((1, 2, 0))
+    #     return self.ab_channel
 
-    def postprocess(self,imageFile, modelOutput):
+    def postprocess(self,imageFile, inferenceOutput):
         # reading the inference_image
 
-        inference_result = cv2.imread(modelOutput)
+        inference_result = cv2.imread(self.inferenceOutput)
         inference_result = cv2.resize(inference_result, (modelWidth , modelHeight))
 
         # pull out L channel in original/source image
@@ -256,10 +246,10 @@ class ColorizeProcess:
 
 
     def DestroyResource(self):
-        model_.Unload();
-        model_.DestroyDesc();
-        model_.DestroyInput();
-        model_.DestroyOutput();
+        Modelprocess.Unload()
+        Modelprocess.DestroyDesc()
+        Modelprocess.DestroyInput()
+        Modelprocess.DestroyOutput()
 
         ret = acl.rt.reset_device(self.deviceId)
         if ret != acl.ACL_ERROR_NONE:
