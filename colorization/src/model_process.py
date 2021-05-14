@@ -30,6 +30,14 @@ class Modelprocess:
         if ret != ACL_ERROR_None:
             logging.error("query model failed, model file is %s", modelPath)
             return 1
+        ret = acl.rt.malloc(self.modelMemPtr,self.modelMemSize,ACL_MEM_MALLOC_HUGE_FIRST)
+        if ret != ACL_ERROR_NONE:
+            logging.error("malloc buffer for mem failed, require size is %zu",self.modelMemSize)
+            return 1
+        ret = acl.rt.malloc(self.modelWeightPtr,self.modelWeightSize,ACL_MEM_MALLOC_HUGE_FIRST)
+        if ret != ACL_ERROR_NONE:
+            logging.error("malloc buffer for weight failed, require size is %zu", self.modelWeightSize)
+            return 1
         model_id, ret = acl.mdl.load_from_file_with_mem(modelPath, self.modelId, self.modelMemPtr, self.modelMemSize,self.modelWeightPtr,self.modelWeightSize)
         if ret != ACL_ERROR_NONE:
             logging.error("load model from file failed, model file is %s", modelPath)
