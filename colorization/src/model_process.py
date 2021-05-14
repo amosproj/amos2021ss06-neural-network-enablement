@@ -1,5 +1,5 @@
 import logging
-
+import acl
 
 class Modelprocess:
     def __init__(self,loadflag=False,modelId=0,modelMemPtr=None,modelMemSize=0,modelWeightPtr=None,modelWeightSize=0,modelDesc=None,input=None,output=None):
@@ -25,8 +25,11 @@ class Modelprocess:
 
         if self.loadflag:
             logging.error("has already loaded a model")
-            return
-
+            return 1
+        work_size, weight_size, ret = acl.mdl.query_size(modelPath)
+        if ret != ACL_ERROR_None:
+            logging.error("query model failed, model file is %s", modelPath)
+            return 1
 
     def CreateDesc(self):
         pass
