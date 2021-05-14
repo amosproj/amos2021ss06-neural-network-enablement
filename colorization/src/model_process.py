@@ -26,10 +26,17 @@ class Modelprocess:
         if self.loadflag:
             logging.error("has already loaded a model")
             return 1
-        work_size, weight_size, ret = acl.mdl.query_size(modelPath)
+        work_size, weight_size, ret = acl.mdl.query_size(modelPath,self.modelMemSize,self.modelWeightSize)
         if ret != ACL_ERROR_None:
             logging.error("query model failed, model file is %s", modelPath)
             return 1
+        model_id, ret = acl.mdl.load_from_file_with_mem(modelPath, self.modelId, self.modelMemPtr, self.modelMemSize,self.modelWeightPtr,self.modelWeightSize)
+        if ret != ACL_ERROR_NONE:
+            logging.error("load model from file failed, model file is %s", modelPath)
+            return 1
+        self.loadflag = True
+        logging.info("load model %s success", modelPath)
+        return 0
 
     def CreateDesc(self):
         pass
@@ -51,10 +58,39 @@ class Modelprocess:
         pass
 
     def Execute(self):
-        pass
+        """Function usage: Executes model inference until the result is returned.
+           Returns: ret: int, error code.
+            0 indicates success.
+            Other values indicate failure."""
+        ret = acl.mdl.execute(self.modelId, self.input, self.output)
+        if ret != ACL_ERROR_NONE:
+            logging.error("execute model failed, modelId is %u", self.modelId)
+            return 1
+        logging.info("model execute success")
+        return 0
 
     def Unload(self):
-        pass
+        if not self.loadflag:
+            return
+        ret = acl.mdl.unload(self.modelId)
+        if ret != ACL_ERROR_NONE:
+            logging.error("unload model failed, modelId is %u", self.modelId)
+        if self.modelDesc != None:
+            acl.mdl.destroy_desc(self.modelDesc)
+            self.modelDesc = None
+        if self.modelMemPtr != None:
+            acl.rt.free(self.modelMemPtr)
+            self.modelMemPtr = None
+            self.modelMemSize = 0
+        if self.modelWeightPtr != None:
+            acl.rt.free(self.modelWeightPtr)
+            self.modelWeightPtr = None
+            self.modelWeightSize = 0
+        self.loadflag = False
+        logging.info("unload model success, modelId is %u", self.modelId)
+
+
+
 
 
 
