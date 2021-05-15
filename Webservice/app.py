@@ -1,18 +1,15 @@
-# import sys
-# sys.path.append("../colorization/src/")
-#from pipeline import *
 
 from flask import Flask, jsonify, render_template, request, url_for, send_from_directory
 from werkzeug.utils import secure_filename
 import os
 import datetime
 import shutil
-#from colorization.src.pipeline import *
+# from colorization.src.pipeline import *
 
 # set path to store uploaded pics and videos
 UPLOAD_FOLDER = os.path.abspath(os.path.dirname(__file__)) + "/uploaded/"
 # limit type of extensions
-ALLOWED_EXTENSIONS = {'pic' : ['png', 'jpg', 'jpeg', 'gif'],'video' : ['mp4', 'mkv', 'webm']}
+ALLOWED_EXTENSIONS = {'pic' : ['png', 'jpg', 'jpeg', 'gif'] ,'video' : ['mp4', 'mkv', 'webm']}
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -33,9 +30,9 @@ def upload():
         nowTime = datetime.datetime.now().strftime('%Y%m%d%H%M%S')
         filename = str(nowTime) + "_" + sfilename
         # create folder and save file
-        folderpath = os.path.join(UPLOAD_FOLDER,filename.rsplit('.', 1)[0])
+        folderpath = os.path.join(UPLOAD_FOLDER ,filename.rsplit('.', 1)[0])
         os.mkdir(folderpath)
-        filepath = os.path.join(folderpath,filename)
+        filepath = os.path.join(folderpath ,filename)
         file.save(filepath)
         return jsonify(msg="Upload successfully"), 200
     elif file and not allowed_file(file.filename):
@@ -45,21 +42,39 @@ def upload():
 
 
 # create url to sent files
-@app.route('/uploaded/<filename>')
-def uploaded_file(filename):
-    folderpath = os.path.join(UPLOAD_FOLDER,filename.rsplit('.', 1)[0])
-    return send_from_directory(folderpath,
-                               filename)
+@app.route('/<fpath>/<filename>')
+def uploaded_file(fpath ,filename):
+    folderpath = os.path.join(UPLOAD_FOLDER ,fpath)
+    return send_from_directory(folderpath ,filename)
 
 
-#return list of all urls of uploaded files
+# return list of all urls of uploaded files --backup
 @app.route('/all/')
 def all():
     urls =[]
-    for root,dirs,files in os.walk(app.config['UPLOAD_FOLDER']):
+    for root, dirs, files in os.walk(app.config['UPLOAD_FOLDER']):
         for file in files:
             if file.rsplit('.', 1)[1].lower() in (ALLOWED_EXTENSIONS['pic'] or ALLOWED_EXTENSIONS['video']):
-                urls.append(url_for("uploaded_file", filename=file))
+                # exclude the colored file
+                if file.rsplit('.', 1)[0].rsplit("_",1)[1] != "color":
+                    urls.append(url_for("uploaded_file", fpath=file.rsplit('.', 1)[0], filename=file))
+    return jsonify(urls)
+
+
+# result
+@app.route('/result/')
+def result():
+    urls = []
+    for root, dirs, files in os.walk(UPLOAD_FOLDER):
+        if len(dirs) == 0:
+            files.sort()
+            pic = {}
+            if files:
+                foldername = files[0].rsplit('.', 1)[0]
+                pic["origin"] = url_for("uploaded_file", fpath=foldername, filename=files[0])
+                if len(files) == 2:
+                    pic["colored"] = url_for("uploaded_file", fpath=foldername, filename=files[1])
+            urls.append(pic)
     return jsonify(urls)
 
 
@@ -69,38 +84,45 @@ def delete():
     filename = request.get_json()['name'] if 'name' in request.get_json() else None
 
     if filename:
-        deletepath = os.path.join(app.config['UPLOAD_FOLDER'],filename.rsplit('.', 1)[0])
+        deletepath = os.path.join(app.config['UPLOAD_FOLDER'], filename.rsplit('.', 1)[0])
         if os.path.exists(deletepath):
             shutil.rmtree(deletepath)
-            return jsonify(msg = "Deleted!"), 200
+            return jsonify(msg="Deleted!"), 200
         else:
-            return jsonify(msg = "Pictures not found!"), 404
+            return jsonify(msg="Pictures not found!"), 404
     else:
-        return jsonify(msg = "request is empty"), 400
+        return jsonify(msg="request is empty"), 400
 
 
-#colorize files
-# @app.route('/colorize/',methods=['POST'])
-# def colorize():
-#     filename = request.get_json()['name'] if 'name' in request.get_json() else None
-#     if filename:
-#         fpath = os.path.join(UPLOAD_FOLDER, filename.rsplit('.', 1)[0])
-#         # colorize_image
-#         if filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS['pic']:
-#             # colorize_image() return value need further discussion
-#             if colorize_image(fpath, fpath) == 0:
-#                 # return page need further discussion
-#                 return render_template("result.html")
-#             else:
-#                 return jsonify("Path not found"),400
-#         else:
-#             return jsonify("The format is not supported"),400
-#     else:
-#         return jsonify("No input file"), 400
+# colorize files
+@app.route('/colorize/', methods=['POST'])
+def colorize():
+    filename = request.get_json()['name'] if 'name' in request.get_json() else None
+    if filename:
+        finpath = os.path.join(UPLOAD_FOLDER, filename.rsplit('.', 1)[0], filename)
+        optname = filename.rsplit('.', 1)[0] + "_color." + filename.rsplit('.', 1)[1]
+        foutpath = os.path.join(UPLOAD_FOLDER, filename.rsplit('.', 1)[0], optname)
+        # create a empty file
+        if not os.path.exists(foutpath):
+            os.mknod(foutpath)
+        else:
+            # colorize_image
+            if filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS['pic']:
+                # temporarily use if True
+                if True: #if colorize_image(finpath, foutpath) == 0:
+                    # return page need further discussion
+                    return render_template("result.html")
+                else:
+                    return jsonify("The Colorization fails"), 400
+            else:
+                return jsonify("The format is not supported"), 400
+    else:
+        return jsonify("No input file"), 400
 
 
 def allowed_file(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in (ALLOWED_EXTENSIONS['pic'] or ALLOWED_EXTENSIONS['video'])
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in (
+                ALLOWED_EXTENSIONS['pic'] or ALLOWED_EXTENSIONS['video'])
 
 
 if __name__ == '__main__':
