@@ -1,9 +1,9 @@
 
 from colorize_process import *
-from utils import CopyDataDeviceToHost
+# from utils import CopyDataDeviceToHost
 import numpy
-import cv2
-from Data.data import *
+# import cv2
+# from Data.data import *
 # import splitVideo
 
 FAILED = 1
@@ -41,27 +41,23 @@ def colorize_image(image_path_input, image_path_output):
     KMODELPATH = "../model/colorization.om"
     colorize = ColorizeProcess(KMODELPATH, kModelWidth, kModelHeight)
     colorize.Init()
-    # TODO: load image located at <image_path_input> -- delete, already in preprocess
-    # image_path_input = loadimage(image_path_input)
-    # if image_path_input == "path not found":
-    #     return FAILED
-    # TODO: preprocess (do preprocessing on the device itself?) -- load image, preprocess, upload to device
+    # TODO: load image located at <image_path_input> & preprocess, end image to device
     if colorize.Preprocess(image_path_input) == FAILED:
         print("Read file ", image_path_input, " failed, continue to read next")
         return FAILED
-    # TODO: inference ?? wait to check, should use model_process(self,modelPath) or inference(inferenceOutput)?
+    # TODO: inference & colorize
     (inferenceOutput, ret) = colorize.inference()
     if ret == FAILED:
         print("Inference model inference output data failed")
         return FAILED
-    # TODO: colorize
-    # TODO: postprocess
-    # check the return value of postprocess with Raj
-    image = colorize.postprocess(image_path_input, inferenceOutput)
-    cv2.imwrite(image_path_output, image)
-    # sprich mit R und S
+    # TODO: postprocess & save image
+    ret = colorize.postprocess(image_path_input, image_path_output, inferenceOutput)
+    if ret == FAILED:
+        print("Process model inference output data failed")
+        return FAILED
 
     # TODO: return success code -> talk with webservice people
+    # return SUCCESS # <- Wolfgang, meinst du das?
     pass
 
 
