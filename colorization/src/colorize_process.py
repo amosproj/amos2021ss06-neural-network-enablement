@@ -30,21 +30,21 @@ kTopNConfidenceLevels = numpy.uint32(5)
 modelWidth = numpy.uint32(224)
 modelHeight = numpy.uint32(224)
 KMODELPATH = "../model/colorization.om"
-run_mode = 0
 FAILED = 1
 SUCCESS = 0
 
 
 class ColorizeProcess:
-    #modelPath_ = ""
-    def __init__(self, modelPath, modelWidth, modelHeight):
+
+    def __init__(self, modelPath, modelWidth, modelHeight, deviceId = 0, inputBuf = "", isInit = False, run_mode = 0):
         self.modelPath = modelPath
         self.modelWidth = modelWidth
         self.modelHeight = modelHeight
         self.inputDataSize = 4 * modelWidth * modelHeight
-        self.deviceId = 0
-        self.inputBuf = ""
-        self.isInited = False
+        self.deviceId = deviceId
+        self.inputBuf = inputBuf
+        self.isInited = isInit
+        self.run_mode = run_mode
 
     def InitResource(self):
         ACLCONFIGPATH = ".../src/acl.json"
@@ -62,9 +62,9 @@ class ColorizeProcess:
             return FAILED
         print("Open device ", self.deviceId, " success.")
 
-        run_mode, ret = acl.re.get_run_mode()
+        (self.run_mode, ret) = acl.re.get_run_mode()
         if ret != acl.ACL_ERROR_NONE:
-            print("acl get run mode failed.")
+            print("acl get_run_mode failed.")
             return FAILED
         return SUCCESS
 
@@ -96,7 +96,7 @@ class ColorizeProcess:
 
     def Init(self):
         if self.isInited:
-            print("Classify instance is initied already!")
+            print("Classify instance is inited already!")
             return SUCCESS
 
         ret = self.InitResource()
@@ -132,7 +132,7 @@ class ColorizeProcess:
 
 
         # TODO
-        if run_mode == 1:
+        if self.run_mode == 1:
             #if run in AI1, need to copy the picture data to the device
             ret = acl.rt.memcpy(self.inputBuf, self.inputDataSize, reiszeMatL,
                                 self.inputDataSize, acl.ACL_MEMCPY_HOST_TO_DEVICE)# ACL_MEMCPY_HOST_TO_DEVICE = 1
@@ -148,13 +148,13 @@ class ColorizeProcess:
         return SUCCESS
 
 
-    def inference(self,inferenceOutput):
+    def inference(self):
         ret = Modelprocess.Execute()
         if ret != SUCCESS: # check about the return value
             print("Execute model inference failed")
             sys.exit(1)
-        self.inferenceOutput = Modelprocess.GetModelOutputData() # deto check
-        return SUCCESS #The return value and quit critetia should be unified in general!!!
+        inferenceOutput = Modelprocess.GetModelOutputData() # deto check
+        return inferenceOutput, SUCCESS #The return value and quit critetia should be unified in general!!!
 
     def postprocess(self,imageFile, inferenceOutput):
         # reading the inference_image
