@@ -1,4 +1,3 @@
-
 from flask import Flask, jsonify, render_template, request, url_for, send_from_directory
 from werkzeug.utils import secure_filename
 import os
@@ -9,11 +8,16 @@ import shutil
 # set path to store uploaded pics and videos
 UPLOAD_FOLDER = os.path.abspath(os.path.dirname(__file__)) + "/uploaded/"
 # limit type of extensions
-ALLOWED_EXTENSIONS = {'pic' : ['png', 'jpg', 'jpeg', 'gif'] ,'video' : ['mp4', 'mkv', 'webm']}
+ALLOWED_EXTENSIONS = {
+    'pic': ['png', 'jpg', 'jpeg', 'gif'],
+    'video': ['mp4', 'mkv', 'webm']
+}
+
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.secret_key = b'wu8QvPtCDIM1/9ceoUS'
+
 
 @app.route('/')
 def index():
@@ -26,26 +30,31 @@ def upload():
     file = request.files.get("file")
     if file and allowed_file(file.filename):
         sfilename = secure_filename(file.filename)
+
         # add timestamp at the beginning of filename
         nowTime = datetime.datetime.now().strftime('%Y%m%d%H%M%S')
         filename = str(nowTime) + "_" + sfilename
+
         # create folder and save file
-        folderpath = os.path.join(UPLOAD_FOLDER ,filename.rsplit('.', 1)[0])
+        folderpath = os.path.join(UPLOAD_FOLDER, filename.rsplit('.', 1)[0])
         os.mkdir(folderpath)
-        filepath = os.path.join(folderpath ,filename)
+        filepath = os.path.join(folderpath, filename)
         file.save(filepath)
+
         return jsonify(msg="Upload successfully"), 200
+
     elif file and not allowed_file(file.filename):
-        return jsonify(msg ="The file format is not supported"), 400
+        return jsonify(msg="The file format is not supported"), 400
+
     else:
-        return jsonify(msg ="No upload file"), 400
+        return jsonify(msg="No upload file"), 400
 
 
 # create url to sent files
 @app.route('/<fpath>/<filename>')
-def uploaded_file(fpath ,filename):
-    folderpath = os.path.join(UPLOAD_FOLDER ,fpath)
-    return send_from_directory(folderpath ,filename)
+def uploaded_file(fpath, filename):
+    folderpath = os.path.join(UPLOAD_FOLDER, fpath)
+    return send_from_directory(folderpath, filename)
 
 
 # return list of all urls of uploaded files --backup
@@ -108,8 +117,10 @@ def colorize():
         else:
             # colorize_image
             if filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS['pic']:
+
                 # temporarily use if True
-                if True: #if colorize_image(finpath, foutpath) == 0:
+                #if colorize_image(finpath, foutpath) == 0:
+                if True:
                     # return page need further discussion
                     return render_template("result.html")
                 else:

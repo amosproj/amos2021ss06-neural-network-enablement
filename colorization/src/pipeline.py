@@ -6,6 +6,8 @@ import numpy
 # from Data.data import *
 # import splitVideo
 
+
+# error codes
 FAILED = 1
 SUCCESS = 0
 
@@ -35,7 +37,13 @@ def colorize_image(image_path_input, image_path_output):
 
     image_path_output : str
         the path of the (colorized) image after processing
+
+
+    return value : int
+        on success this function returns 0
+        on failure this function returns 1
     """
+
     kModelWidth = numpy.uint32(224)
     kModelHeight = numpy.uint32(224)
     KMODELPATH = "../model/colorization.om"

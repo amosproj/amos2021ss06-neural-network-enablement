@@ -24,7 +24,7 @@ import cv2
 import os
 import utils
 from model_process import Modelprocess
-
+import logging
 # constant variables
 kTopNConfidenceLevels = numpy.uint32(5)
 modelWidth = numpy.uint32(224)
@@ -96,7 +96,7 @@ class ColorizeProcess:
 
     def Init(self):
         if self.isInited:
-            print("Classify instance is inited already!")
+            print("Classify instance is initied already!")
             return SUCCESS
 
         ret = self.InitResource()
@@ -148,17 +148,24 @@ class ColorizeProcess:
         return SUCCESS
 
 
-    def inference(self):
+    def inference(self,inferenceOutput):
+        self.inferenceOutput = inferenceOutput
         ret = Modelprocess.Execute()
         if ret != SUCCESS: # check about the return value
             print("Execute model inference failed")
             sys.exit(1)
-        inferenceOutput = Modelprocess.GetModelOutputData() # deto check
-        return inferenceOutput, SUCCESS #The return value and quit critetia should be unified in general!!!
+        self.inferenceOutput = Modelprocess.GetModelOutputData() # deto check
+        return SUCCESS             #The return value and quit critetia should be unified in general!!!
 
-    def postprocess(self,imageFile, inferenceOutput):
-        # reading the inference_image
+    def postprocess(self,imageFile, modelOutput):
 
+        dataSize = 0
+        data = self.GetInferenceOutputItem(dataSize,modelOutput)
+        if data is None:
+            return FAILED
+        size = int(dataSize)
+
+        #get a and b channel result data
         inference_result = cv2.imread(self.inferenceOutput)
         inference_result = cv2.resize(inference_result, (modelWidth , modelHeight))
 
@@ -193,10 +200,10 @@ class ColorizeProcess:
         output_image = cv2.cvtColor(result_image, cv2.COLOR_Lab2BGR)
         output_image = output_image * 255
         cv2.imshow('output_image', output_image)
-
+        self.SaveImage(imageFile,output_image)
         return SUCCESS
 
-    def SaveImage(origImageFile,image):
+    def SaveImage(self,origImageFile,image):
         newpath = os.path.join(origImageFile, "Saved_images")
         os.makedirs(newpath)
         image = cv2.imread(image)
@@ -205,7 +212,7 @@ class ColorizeProcess:
         cv2.destroyAllWindows()
 
 
-    def GetInferenceOutputItem(self, itemDataSize, inferenceOutput):  # input: uint32_t& itemDataSize, aclmdlDataset* inferenceOutput
+    def GetInferenceOutputItem(self,inferenceOutput):          # input: aclmdlDataset* inferenceOutput
         dataBuffer = acl.mdl.get_dataset_buffer(inferenceOutput, 0)
         if dataBuffer == None:
             print("Get the dataset buffer from model inference output failed")
