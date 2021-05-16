@@ -36,7 +36,7 @@ SUCCESS = 0
 
 class ColorizeProcess:
 
-    def __init__(self, modelPath, modelWidth, modelHeight, deviceId = 0, inputBuf = "", isInit = False, run_mode = 0):
+    def __init__(self, modelPath, modelWidth, modelHeight, deviceId=0, inputBuf="", isInit=False, run_mode=0):
         self.modelPath = modelPath
         self.modelWidth = modelWidth
         self.modelHeight = modelHeight
@@ -93,10 +93,9 @@ class ColorizeProcess:
             return FAILED
         return SUCCESS
 
-
     def Init(self):
         if self.isInited:
-            print("Classify instance is initied already!")
+            print("Classify instance is inited already!")
             return SUCCESS
 
         ret = self.InitResource()
@@ -147,15 +146,17 @@ class ColorizeProcess:
 
         return SUCCESS
 
-
-    def inference(self,inferenceOutput):
-        self.inferenceOutput = inferenceOutput
+    # Calling the model_process program to do the real colorize process.
+    # input: object itself
+    # output: pointer value for the result, and the flag SUCCESS or FAILED
+    # ATTENTION: THE INPUT AND OUTPUT ARE CHANGED, COMPARE TO THE ORIGINAL C++ CODE!!
+    def inference(self):
         ret = Modelprocess.Execute()
-        if ret != SUCCESS: # check about the return value
+        if ret != SUCCESS:
             print("Execute model inference failed")
-            sys.exit(1)
-        self.inferenceOutput = Modelprocess.GetModelOutputData() # deto check
-        return SUCCESS             #The return value and quit critetia should be unified in general!!!
+            return None, FAILED
+        inferenceOutput = Modelprocess.GetModelOutputData()
+        return inferenceOutput, SUCCESS  # The return value and quit critetia should be unified in general!!!
 
     def postprocess(self,imageFile, modelOutput):
 
