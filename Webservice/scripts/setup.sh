@@ -9,10 +9,23 @@
 SUPPORTED_OS="Ubuntu 18.04"
 SUPPORTED_PYTHON="3.7.5"
 
+# command line arguments
+
+# first argument
+# --yes: answer yes_or_no function with Y (used by ci)
+YES=$1
+
+
 # ===============================================================
 
 # helper
 function yes_or_no {
+    # don't run interactively
+    if [[ "$YES" == "--yes" ]]; then
+        echo "$* [y/n]: Y"
+        return 0
+    fi
+
     while true; do
         read -p "$* [y/n]: " yn
         case $yn in
