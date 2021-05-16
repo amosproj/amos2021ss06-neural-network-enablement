@@ -65,7 +65,7 @@ def colorize_image(image_path_input, image_path_output):
         return FAILED
 
     # TODO: return success code -> talk with webservice people
-    # return SUCCESS # <- Wolfgang, meinst du das?
+    return SUCCESS
     pass
 
 
