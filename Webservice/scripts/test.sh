@@ -4,16 +4,16 @@
 # For now it only checks that the python code formatting is nice
 # It will be run by some CI job later.
 
-cd `dirname "$0"`
+cd `dirname "$0"`/../../
 
-flake8 ../.. --exclude ../venv/
+Webservice/venv/bin/flake8 . --exclude Webservice/venv/
 
 if [ $? -ne 0 ]; then
     echo
-    echo "Syntax check failed"
+    echo "Code formatting check failed."
     exit 1
 else
     echo
-    echo "Syntax check succeeded"
+    echo "Code formatting check succeeded."
     exit 0
 fi
