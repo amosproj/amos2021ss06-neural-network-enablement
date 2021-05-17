@@ -11,7 +11,7 @@ class Modelprocess:
         self.modelMemSize = modelMemSize  # int, model data length, in bytes
         self.modelWeightPtr = modelWeightPtr  # int, pointer of the model weight memory (for storing weight data) on
         # the device. The pointer is managed by users.
-        self.modelWeightSize = modelWeightSize  # int, size of the weight memory required by the model, in bytes
+        self.modelWeightSize = modelWeightSize
         self.modelDesc = modelDesc  # Description of the model.
         self.input = input  # int, pointer object of the input data of model inference
         self.output = output  # int, pointer object of the output data of model inference.
