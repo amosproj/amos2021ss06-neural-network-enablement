@@ -159,7 +159,20 @@ class ColorizeProcess:
         return inferenceOutput, SUCCESS  # The return value and quit critetia should be unified in general!!!
 
     def postprocess(self,imageFile, modelOutput):
-
+        """This function converts LAB image to BGR image (colorization) and save it.
+         It combines L channel obtained from source image and ab channels from Inference result.
+         Parameters:
+        -----------
+        input_image_path : str
+            the path of the (gray) image to obtain L channel
+        output_image_path : str
+            the path of the (colorized) image to save after processing
+        modelOutput : image
+            Model output consisting of ab channels.
+        return value : path of the colorized image
+            on success this function returns 0
+            on failure this function returns 1
+        """
         dataSize = 0
         data = self.GetInferenceOutputItem(dataSize,modelOutput)
         if data is None:
