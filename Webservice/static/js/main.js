@@ -148,23 +148,11 @@ function showResult(imgName) {
 
         console.log(colorized);
 
-        let div = document.createElement('div');
-        div.innerHTML = document.querySelector('#template-result').innerHTML;
 
+        document.querySelector('#result-image-original').setAttribute('src', original);
+        document.querySelector('#result-image-colorized').setAttribute('src', colorized);
 
-        div.querySelector('#result-image-original').setAttribute('src', original);
-        div.querySelector('#result-image-colorized').setAttribute('src', colorized);
-
-        Toastify({
-          node: div,
-          duration: 50000,
-          close: true,
-          gravity: "top", // `top` or `bottom`
-          position: "center", // `left`, `center` or `right`
-          stopOnFocus: true, // Prevents dismissing of toast on hover
-          backgroundColor: '#000000', // bg-yellow-200 TODO: use style attribute
-        }).showToast();
-
+        document.querySelector('#result-colorize').classList.remove('invisible');
 
         break;
       }

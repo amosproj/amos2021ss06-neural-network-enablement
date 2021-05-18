@@ -14,7 +14,7 @@
 
   </head>
 
-  <body class="bg-indigo-400 flex h-screen">
+  <body class="bg-indigo-400 flex h-screen justify-center">
     <div class="justify-items-center m-auto align-middle max-w-4xl">
 
       <div id="drpzn" class="rounded p-6 bg-indigo-100 shadow-xl mx-auto overflow-y-auto max-h-96
@@ -29,6 +29,31 @@
       </div>
     </div>
 
+    <!-- the div to display the colorization result (made visible when the user clicks on the colorize button) -->
+    <div id="result-colorize" class="invisible absolute justify-center bg-gray-600 flex w-full h-full">
+
+      <div class="absolute top-0 right-0 h-20 w-20 flex justify-center text-gray-100 cursor-pointer"
+        onclick="document.querySelector('#result-colorize').classList.add('invisible')">
+
+        <svg class="my-auto w-10 h-10" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+
+      </div>
+
+
+      <div class="m-4 ml-8 text-center my-auto">
+        <img id="result-image-original">
+        <p class="uppercase bold tracking-widest text-gray-100 mt-4 text-xl"> original </p>
+      </div>
+
+      <div class="m-4 mr-8 text-center my-auto">
+        <img id="result-image-colorized">
+        <p class="uppercase bold tracking-widest text-gray-100 mt-4 text-xl"> colorized </p>
+      </div>
+
+    </div>
+
     <script src="static/js/main.js"></script>
 
 
@@ -38,7 +63,7 @@
   <!-- html components, that are not shown immediately, but are added with javascript -->
 
 
-  <!-- This template is for a single image with a button to delete it -->
+  <!-- This template is for a single image with buttons to colorize/delete it -->
   <template id="template-gallery-image">
     <div class="hover:shadow-xl relative select-none">
       <div class="absolute flex top-0 right-0">
@@ -62,26 +87,6 @@
       <img id="gallery-image" class="w-40 h-40 object-cover">
     </div>
   </template>
-
-
-  <!-- This template is for the result view of the colorized image next to the original one -->
-  <template id="template-result">
-    <div class="bg-gray-500 flex w-full h-full">
-
-      <div class="m-4 text-center">
-        <img id="result-image-original">
-        <p class="uppercase bold tracking-wider text-gray-100 mt-4 text-xl"> original </p>
-      </div>
-
-      <div class="m-4 text-center">
-        <img id="result-image-colorized">
-        <p class="uppercase bold tracking-wider text-gray-100 mt-4 text-xl"> colorized </p>
-      </div>
-
-    </div>
-
-  </template>
-
 
   <!-- This template is shown as a toast, when an error occurs. -->
   <template id="template-toast-warn">
