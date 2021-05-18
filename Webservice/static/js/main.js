@@ -18,8 +18,8 @@ function showWarningToast(headline, message) {
   }).showToast();
 }
 
-// -------------------------------------------------------------------------
 
+// -------------------------------------------------------------------------
 
 // dropzone initialization stuff
 
@@ -41,7 +41,7 @@ myDropzone1.on("error", errorHandler);
 myDropzone2.on("error", errorHandler);
 myDropzone3.on("error", errorHandler);
 
-
+// success handler: called, after dropzone library successfully uploaded a file
 function successHandler(file, resp) {
   console.log('success!')
   //console.log(file)
@@ -51,6 +51,7 @@ function successHandler(file, resp) {
 }
 
 
+// error handler: called, after dropzone library fails to upload a file
 function errorHandler(file, error, xhr) {
   console.log('error!')
 
@@ -60,7 +61,7 @@ function errorHandler(file, error, xhr) {
 
     if (error === 'Server responded with 0 code.') {
       // Improve default error message by dropzone
-      message = "Couldn't connect to localhost, is the backend still running?"
+      message = "Couldn't connect to localhost, is the webservice still running?"
     } else {
       message = error;
     }
@@ -77,8 +78,8 @@ function errorHandler(file, error, xhr) {
 // ---------------------------------------------------------------------------------------
 
 
-// callback function that sends the service a request to delete the image
-// when the user clicked on the 'delete icon'
+// sends the service a request to delete the image
+// after the user clicked on the 'delete icon'
 function deleteImage(imgName) {
   console.log('deleteImage ' + imgName);
 
@@ -101,13 +102,11 @@ function deleteImage(imgName) {
     dataType: 'json',
     contentType: 'application/json',
   });
-
-  //  console.log(event.srcElement.id)
 }
 
 
-// callback function that sends the service a request to colorize the image
-// when the user clicked on the 'colorize icon'
+// sends the service a request to colorize the image
+// after the user clicked on the 'colorize icon'
 function colorizeImage(imgName) {
   console.log(imgName, 'colorize')
 
@@ -132,6 +131,7 @@ function colorizeImage(imgName) {
 }
 
 
+// displays the original and the colorized image next to each other
 function showResult(imgName) {
   console.log('showResult', imgName);
 
@@ -162,8 +162,9 @@ function showResult(imgName) {
 
 
 // ---------------------------------------------------------------------------------------
-
-// load images in gallery
+// This is called on every page load.
+//
+// load images and display them in gallery
 $.get('/all/', null, function(data) {
   data.sort().forEach( function(url) {
     console.log(url);
