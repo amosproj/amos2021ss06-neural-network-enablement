@@ -1,7 +1,7 @@
 // helpers
 
 function showWarningToast(headline, message) {
-  var node = document.createElement('div');
+  let node = document.createElement('div');
   node.innerHTML = document.querySelector('#template-toast-warn').innerHTML;
 
   node.querySelector('#toast-headline').textContent = headline;
@@ -18,8 +18,8 @@ function showWarningToast(headline, message) {
   }).showToast();
 }
 
-// -------------------------------------------------------------------------
 
+// -------------------------------------------------------------------------
 
 // dropzone initialization stuff
 
@@ -41,7 +41,7 @@ myDropzone1.on("error", errorHandler);
 myDropzone2.on("error", errorHandler);
 myDropzone3.on("error", errorHandler);
 
-
+// success handler: called, after dropzone library successfully uploaded a file
 function successHandler(file, resp) {
   console.log('success!')
   //console.log(file)
@@ -51,6 +51,7 @@ function successHandler(file, resp) {
 }
 
 
+// error handler: called, after dropzone library fails to upload a file
 function errorHandler(file, error, xhr) {
   console.log('error!')
 
@@ -60,7 +61,7 @@ function errorHandler(file, error, xhr) {
 
     if (error === 'Server responded with 0 code.') {
       // Improve default error message by dropzone
-      message = "Couldn't connect to localhost, is the backend still running?"
+      message = "Couldn't connect to localhost, is the webservice still running?"
     } else {
       message = error;
     }
@@ -77,8 +78,8 @@ function errorHandler(file, error, xhr) {
 // ---------------------------------------------------------------------------------------
 
 
-// callback function that sends the service a request to delete the image
-// when the user clicked on the 'delete icon'
+// sends the service a request to delete the image
+// after the user clicked on the 'delete icon'
 function deleteImage(imgName) {
   console.log('deleteImage ' + imgName);
 
@@ -96,22 +97,81 @@ function deleteImage(imgName) {
       setTimeout(reload, 500);
     },
     error: function () {
-      showWarningToast("Deleting image failed.", "Couldn't connect to server.  Is the backend running?");
+      showWarningToast("Deleting image failed.", "Couldn't connect to server. Is the service running?");
     },
     dataType: 'json',
     contentType: 'application/json',
   });
-
-  //  console.log(event.srcElement.id)
 }
 
 
-// load images in gallery
+// sends the service a request to colorize the image
+// after the user clicked on the 'colorize icon'
+function colorizeImage(imgName) {
+  console.log(imgName, 'colorize')
+
+  // call colorize function
+  $.ajax({
+     type: "POST",
+     url: "/colorize/",
+     data: JSON.stringify({'name' : imgName}),
+     success: function () {
+       console.log('colorization success');
+     },
+     error: function (error) {
+       console.log(error);
+       showWarningToast("Colorizing image failed.", "Couldn't connect to server. Is the service running?");
+       return 1;
+     },
+     dataType: 'json',
+     contentType: 'application/json',
+   });
+
+  return 0;
+}
+
+
+// displays the original and the colorized image next to each other
+function showResult(imgName) {
+  console.log('showResult', imgName);
+
+  // load result (colorized image)
+  $.get('/result/', null, function(data) {
+
+    for (pair of data) {
+      let original = pair['origin'];
+      let colorized = pair['colored'];
+
+      if (original.includes(imgName)) {
+
+        // show result page popup
+
+        console.log(colorized);
+
+
+        document.querySelector('#result-image-original').setAttribute('src', original);
+        document.querySelector('#result-image-colorized').setAttribute('src', colorized);
+
+        setTimeout(function() {
+            document.querySelector('#result-colorize').classList.remove('invisible');
+        }, 100);
+
+        break;
+      }
+    }
+  });
+}
+
+
+// ---------------------------------------------------------------------------------------
+// This is called on every page load.
+//
+// load images and display them in gallery
 $.get('/all/', null, function(data) {
   data.sort().forEach( function(url) {
     console.log(url);
 
-    var div = document.createElement('div');
+    let div = document.createElement('div');
     div.innerHTML = document.querySelector('#template-gallery-image').innerHTML
     console.log(div)
 
@@ -127,6 +187,17 @@ $.get('/all/', null, function(data) {
       imgButton.onclick = function() {}
 
       deleteImage(imgName);
+    }
+
+    let colorizeButton = div.querySelector('#colorize-image-button');
+    colorizeButton.onclick = function() {
+
+      let res = colorizeImage(imgName);
+
+      // success
+      if (res == 0) {
+        showResult(imgName);
+      }
     }
 
     document.getElementById("drpzn").appendChild(div)

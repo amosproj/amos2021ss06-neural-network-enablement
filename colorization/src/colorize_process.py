@@ -27,8 +27,8 @@ from model_process import Modelprocess
 import logging
 # constant variables
 kTopNConfidenceLevels = numpy.uint32(5)
-modelWidth = numpy.uint32(224)
-modelHeight = numpy.uint32(224)
+# modelWidth = numpy.uint32(224)
+# modelHeight = numpy.uint32(224)
 KMODELPATH = "../model/colorization.om"
 FAILED = 1
 SUCCESS = 0
@@ -36,7 +36,7 @@ SUCCESS = 0
 
 class ColorizeProcess:
 
-    def __init__(self, modelPath, modelWidth, modelHeight, deviceId=0, inputBuf="", isInit=False, run_mode=0):
+    def __init__(self, modelPath, modelWidth=numpy.uint32(224), modelHeight=numpy.uint32(224), deviceId=0, inputBuf="", isInit=False, run_mode=0):
         self.modelPath = modelPath
         self.modelWidth = modelWidth
         self.modelHeight = modelHeight
@@ -48,7 +48,7 @@ class ColorizeProcess:
 
     def InitResource(self):
         ACLCONFIGPATH = ".../src/acl.json"
-        ret = acl.init()
+        # ret = acl.init()
         ret = acl.init(ACLCONFIGPATH)
         if ret != acl.ACL_ERROR_NONE:
             print("Acl init failed")
@@ -83,7 +83,8 @@ class ColorizeProcess:
             print("execute CreateOutput failed")
             return FAILED
 
-        dev_ptr, ret = acl.rt.malloc( self.inputDataSize, acl.ACL_MEM_MALLOC_HUGE_FIRST)# ACL_MEM_MALLOC_HUGE_FIRST = 0
+        (self.inputBuf, ret) = acl.rt.malloc(self.inputDataSize, acl.ACL_MEM_MALLOC_HUGE_FIRST)  #
+        # ACL_MEM_MALLOC_HUGE_FIRST = 0
         if self.inputBuf == "": # check return value
             print("Acl malloc image buffer failed.")
             return FAILED
@@ -103,7 +104,7 @@ class ColorizeProcess:
             print("Init acl resource failed")
             return FAILED
 
-        ret = self.InitModel(self.modelPath) # check parameter
+        ret = self.InitModel(self.modelPath)  # check parameter
         if ret != SUCCESS:
             print("Init model failed")
             return FAILED
@@ -115,8 +116,8 @@ class ColorizeProcess:
         mat = cv2.imread(imageFile, cv2.IMREAD_COLOR).astype(numpy.float32)
 
         #resize
-        reiszeMat = numpy.zeros(modelWidth, numpy.float32)
-        reiszeMat = cv2.resize(mat,(modelWidth, modelHeight), cv2.INTER_CUBIC)
+        reiszeMat = numpy.zeros(self.modelWidth, numpy.float32)
+        reiszeMat = cv2.resize(mat,(self.modelWidth, self. modelHeight), cv2.INTER_CUBIC)
 
         # deal image
         reiszeMat = cv2.convertScaleAbs(reiszeMat, cv2.CV_32FC3)
@@ -151,10 +152,11 @@ class ColorizeProcess:
     # output: pointer value for the result, and the flag SUCCESS or FAILED
     # ATTENTION: THE INPUT AND OUTPUT ARE CHANGED, COMPARE TO THE ORIGINAL C++ CODE!!
     def inference(self):
+        inferenceOutput = 0
         ret = Modelprocess.Execute()
         if ret != SUCCESS:
             print("Execute model inference failed")
-            return None, FAILED
+            return inferenceOutput, FAILED
         inferenceOutput = Modelprocess.GetModelOutputData()
         return inferenceOutput, SUCCESS  # The return value and quit critetia should be unified in general!!!
 
@@ -181,12 +183,12 @@ class ColorizeProcess:
 
         #get a and b channel result data
         inference_result = cv2.imread(self.inferenceOutput)
-        inference_result = cv2.resize(inference_result, (modelWidth , modelHeight))
+        inference_result = cv2.resize(inference_result, (self.modelWidth , self.modelHeight))
 
         # pull out L channel in original/source image
 
         input_image = cv2.imread(imageFile, cv2.IMREAD_COLOR)  # reading input image
-        input_image = cv2.resize(input_image, (modelWidth, modelHeight))
+        input_image = cv2.resize(input_image, (self.modelWidth, self.modelHeight))
         input_image = numpy.float32(input_image)
         input_image = 1.0 * input_image / 255  # Normalizing the input image values
         bgrtolab = cv2.cvtColor(input_image, cv2.COLOR_BGR2LAB)

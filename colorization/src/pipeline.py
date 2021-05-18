@@ -55,7 +55,7 @@ def colorize_image(image_path_input, image_path_output):
         return FAILED
     # TODO: inference & colorize
     (inferenceOutput, ret) = colorize.inference()
-    if ret == FAILED:
+    if ret == FAILED or inferenceOutput == 0:
         print("Inference model inference output data failed")
         return FAILED
     # TODO: postprocess & save image
@@ -66,7 +66,6 @@ def colorize_image(image_path_input, image_path_output):
 
     # TODO: return success code -> talk with webservice people
     return SUCCESS
-    pass
 
 
 def colorize_video(video_path_input, video_path_output):
