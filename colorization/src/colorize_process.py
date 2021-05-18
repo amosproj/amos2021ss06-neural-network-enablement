@@ -48,7 +48,7 @@ class ColorizeProcess:
 
     def InitResource(self):
         ACLCONFIGPATH = ".../src/acl.json"
-        ret = acl.init()
+        # ret = acl.init()
         ret = acl.init(ACLCONFIGPATH)
         if ret != acl.ACL_ERROR_NONE:
             print("Acl init failed")
@@ -83,7 +83,8 @@ class ColorizeProcess:
             print("execute CreateOutput failed")
             return FAILED
 
-        dev_ptr, ret = acl.rt.malloc( self.inputDataSize, acl.ACL_MEM_MALLOC_HUGE_FIRST)# ACL_MEM_MALLOC_HUGE_FIRST = 0
+        (self.inputBuf, ret) = acl.rt.malloc(self.inputDataSize, acl.ACL_MEM_MALLOC_HUGE_FIRST)  #
+        # ACL_MEM_MALLOC_HUGE_FIRST = 0
         if self.inputBuf == "": # check return value
             print("Acl malloc image buffer failed.")
             return FAILED
@@ -103,7 +104,7 @@ class ColorizeProcess:
             print("Init acl resource failed")
             return FAILED
 
-        ret = self.InitModel(self.modelPath) # check parameter
+        ret = self.InitModel(self.modelPath)  # check parameter
         if ret != SUCCESS:
             print("Init model failed")
             return FAILED
