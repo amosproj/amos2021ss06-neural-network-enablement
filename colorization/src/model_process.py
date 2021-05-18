@@ -1,3 +1,23 @@
+"""
+* Copyright 2020 Huawei Technologies Co., Ltd
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+
+* http://www.apache.org/licenses/LICENSE-2.0
+
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+
+* File model_process.py
+* Description: handle model process
+"""
+
+
 import logging
 import acl
 
@@ -57,6 +77,13 @@ class Modelprocess:
         return 0
 
     def CreateDesc(self):
+
+        """ Function Usage: Creates data of the aclmdlDesc type.
+            Input Args: NONE
+            returns:  int, error code.
+                     0 indicates success.
+                     1 indicates failure. """
+
         self.modelDesc = acl.mdl.create_desc()
         if self.modelDesc is None:
             logging.error("create model description failed")
@@ -69,11 +96,26 @@ class Modelprocess:
         return 0
 
     def DestroyDesc(self):
+
+        """ Function Usage: Destroys data of the aclmdlDesc type.
+            Input Args: None
+            returns: int, error code.
+                     0 indicates success.
+                     1 indicates failure. """
+
         if self.modelDesc is not None:
             acl.mdl.destroy_desc(self.modelDesc)
             self.modelDesc = None
 
     def CreateInput(self, inputDataBuffer, bufferSize):
+
+        """ Function Usage: Creates data of the aclmdlDataset type.
+            Input Args: inputDataBuffer:
+                        bufferSize
+            returns: int, error code.
+                     0 indicates success.
+                     1 indicates failure. """
+
         self.input = acl.mdl.create_dataset()
         if self.input is None:
             logging.error("can't create data buffer, create input failed")
@@ -91,6 +133,9 @@ class Modelprocess:
         return 0
 
     def DestroyInput(self):
+        """Function Usage:
+           Input Args: None
+           returns: None"""
         if self.input is None:
             return
         for i in range(0, acl.mdl.get_dataset_num_buffers(self.input)):
@@ -100,6 +145,10 @@ class Modelprocess:
         self.input = None
 
     def CreateOutput(self):
+        """Function Usage:
+           returns: int, error code.
+                    0 indicates success.
+                    1 indicates failure."""
         if self.modelDesc is None:
             logging.error("no model description, create output failed")
             return 1
@@ -130,6 +179,9 @@ class Modelprocess:
         return 0
 
     def DestroyOutput(self):
+        """Function Usage:
+           Input Args: None
+           returns: None """
         if self.output is None:
             return
         for i in range(0, acl.mdl.get_dataset_num_buffers(self.output)):
@@ -142,9 +194,10 @@ class Modelprocess:
 
     def Execute(self):
         """Function usage: Executes model inference until the result is returned.
+           Input Args: None
            Returns: ret: int, error code.
-            0 indicates success.
-            Other values indicate failure."""
+                    0 indicates success.
+                    Other values indicate failure."""
         ret = acl.mdl.execute(self.modelId, self.input, self.output)
         if ret != acl.ACL_ERROR_NONE:
             logging.error("execute model failed, modelId is %u", self.modelId)
@@ -153,6 +206,9 @@ class Modelprocess:
         return 0
 
     def Unload(self):
+        """ Function Usage: Uninstalls the model and releases resources after the model inference is complete
+            Input Args: None
+            returns: None """
         if not self.loadflag:
             return
         ret = acl.mdl.unload(self.modelId)
@@ -173,4 +229,7 @@ class Modelprocess:
         logging.info("unload model success, modelId is %u", self.modelId)
 
     def GetModelOutputData(self):
+        """Function Usage: Returns the output value
+           Input Args: None
+           returns: output"""
         return self.output
