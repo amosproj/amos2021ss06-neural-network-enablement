@@ -152,7 +152,9 @@ function showResult(imgName) {
         document.querySelector('#result-image-original').setAttribute('src', original);
         document.querySelector('#result-image-colorized').setAttribute('src', colorized);
 
-        document.querySelector('#result-colorize').classList.remove('invisible');
+        setTimeout(function() {
+            document.querySelector('#result-colorize').classList.remove('invisible');
+        }, 100);
 
         break;
       }
