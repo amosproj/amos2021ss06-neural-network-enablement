@@ -111,9 +111,12 @@ def colorize():
         finpath = os.path.join(UPLOAD_FOLDER, filename.rsplit('.', 1)[0], filename)
         optname = filename.rsplit('.', 1)[0] + "_color." + filename.rsplit('.', 1)[1]
         foutpath = os.path.join(UPLOAD_FOLDER, filename.rsplit('.', 1)[0], optname)
-        # create a empty file
+
+        # copy the file for now
         if not os.path.exists(foutpath):
-            os.mknod(foutpath)
+            shutil.copy(finpath, foutpath)
+            return jsonify(msg="Colorization successful."), 200
+
         else:
             # colorize_image
             if filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS['pic']:
@@ -122,13 +125,13 @@ def colorize():
                 #if colorize_image(finpath, foutpath) == 0:
                 if True:
                     # return page need further discussion
-                    return render_template("result.html")
+                    return jsonify(msg="Colorization successful."), 200
                 else:
-                    return jsonify("The Colorization fails"), 400
+                    return jsonify(msg="Colorization failed."), 400
             else:
-                return jsonify("The format is not supported"), 400
+                return jsonify(msg="Videos are not supported yet."), 400
     else:
-        return jsonify("No input file"), 400
+        return jsonify(msg="No input file"), 400
 
 
 def allowed_file(filename):

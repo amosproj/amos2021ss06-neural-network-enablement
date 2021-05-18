@@ -1,7 +1,7 @@
 // helpers
 
 function showWarningToast(headline, message) {
-  var node = document.createElement('div');
+  let node = document.createElement('div');
   node.innerHTML = document.querySelector('#template-toast-warn').innerHTML;
 
   node.querySelector('#toast-headline').textContent = headline;
@@ -96,7 +96,7 @@ function deleteImage(imgName) {
       setTimeout(reload, 500);
     },
     error: function () {
-      showWarningToast("Deleting image failed.", "Couldn't connect to server.  Is the backend running?");
+      showWarningToast("Deleting image failed.", "Couldn't connect to server. Is the service running?");
     },
     dataType: 'json',
     contentType: 'application/json',
@@ -106,12 +106,81 @@ function deleteImage(imgName) {
 }
 
 
+// callback function that sends the service a request to colorize the image
+// when the user clicked on the 'colorize icon'
+function colorizeImage(imgName) {
+  console.log(imgName, 'colorize')
+
+  // call colorize function
+  $.ajax({
+     type: "POST",
+     url: "/colorize/",
+     data: JSON.stringify({'name' : imgName}),
+     success: function () {
+       console.log('colorization success');
+     },
+     error: function (error) {
+       console.log(error);
+       showWarningToast("Colorizing image failed.", "Couldn't connect to server. Is the service running?");
+       return 1;
+     },
+     dataType: 'json',
+     contentType: 'application/json',
+   });
+
+  return 0;
+}
+
+
+function showResult(imgName) {
+  console.log('showResult', imgName);
+
+  // load result (colorized image)
+  $.get('/result/', null, function(data) {
+
+    for (pair of data) {
+      let original = pair['origin'];
+      let colorized = pair['colored'];
+
+      if (original.includes(imgName)) {
+
+        // show result page popup
+
+        console.log(colorized);
+
+        let div = document.createElement('div');
+        div.innerHTML = document.querySelector('#template-result').innerHTML;
+
+
+        div.querySelector('#result-image-original').setAttribute('src', original);
+        div.querySelector('#result-image-colorized').setAttribute('src', colorized);
+
+        Toastify({
+          node: div,
+          duration: 50000,
+          close: true,
+          gravity: "top", // `top` or `bottom`
+          position: "center", // `left`, `center` or `right`
+          stopOnFocus: true, // Prevents dismissing of toast on hover
+          backgroundColor: '#000000', // bg-yellow-200 TODO: use style attribute
+        }).showToast();
+
+
+        break;
+      }
+    }
+  });
+}
+
+
+// ---------------------------------------------------------------------------------------
+
 // load images in gallery
 $.get('/all/', null, function(data) {
   data.sort().forEach( function(url) {
     console.log(url);
 
-    var div = document.createElement('div');
+    let div = document.createElement('div');
     div.innerHTML = document.querySelector('#template-gallery-image').innerHTML
     console.log(div)
 
@@ -127,6 +196,17 @@ $.get('/all/', null, function(data) {
       imgButton.onclick = function() {}
 
       deleteImage(imgName);
+    }
+
+    let colorizeButton = div.querySelector('#colorize-image-button');
+    colorizeButton.onclick = function() {
+
+      let res = colorizeImage(imgName);
+
+      // success
+      if (res == 0) {
+        showResult(imgName);
+      }
     }
 
     document.getElementById("drpzn").appendChild(div)
