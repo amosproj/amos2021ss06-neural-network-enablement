@@ -48,7 +48,10 @@ def colorize_image(image_path_input, image_path_output):
     kModelHeight = numpy.uint32(224)
     KMODELPATH = "../model/colorization.om"
     colorize = ColorizeProcess(KMODELPATH, kModelWidth, kModelHeight)
-    colorize.Init()
+    ret = colorize.Init()
+    if ret == FAILED:
+        print("init colorize process failed")
+        return FAILED
     # TODO: load image located at <image_path_input> & preprocess, end image to device
     if colorize.Preprocess(image_path_input) == FAILED:
         print("Read file ", image_path_input, " failed, continue to read next")
