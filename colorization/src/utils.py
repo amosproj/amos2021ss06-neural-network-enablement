@@ -2,9 +2,25 @@ import os
 #import acl
 
 def IsDirectory(inputpath):
+    """This function checks whether a given path is a file.
+             Parameters:
+            -----------
+            inputpath : str
+            return value :
+                Return True if path is an existing regular file
+                Otherwise Return False
+            """
     return os.path.isfile(inputpath)
 
 def IsPathExist(inputpath):
+    """This function checks whether a given path exists.
+             Parameters:
+            -----------
+            inputpath : str
+            return value :
+                Return True if path refers to an existing path or an open file descriptor
+                Returns False for broken symbolic links.
+            """
     return os.path.exists(inputpath)
 
 # has never been referenced
@@ -12,6 +28,13 @@ def IsPathExist(inputpath):
 # def GetPathFiles(inputpath):
 
 def GetAllFiles(inputpath):
+    """This function is used to get all file names under a certain path.
+             Parameters:
+            -----------
+            inputpath : str
+            return value :
+                Return a list containing the names of the entries in the directory given by path
+            """
     return os.listdir(inputpath)
 
 '''
