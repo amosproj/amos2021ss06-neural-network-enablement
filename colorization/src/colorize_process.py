@@ -228,7 +228,7 @@ class ColorizeProcess:
         cv2.destroyAllWindows()
 
 
-    def GetInferenceOutputItem(self,inferenceOutput):          # input: aclmdlDataset* inferenceOutput
+    def GetInferenceOutputItem(self, itemDataSize, inferenceOutput):          # input: uint32_t& itemDataSize, aclmdlDataset* inferenceOutput
         dataBuffer = acl.mdl.get_dataset_buffer(inferenceOutput, 0)
         if dataBuffer == None:
             print("Get the dataset buffer from model inference output failed")
@@ -247,14 +247,14 @@ class ColorizeProcess:
             return None
 
         data = None
-        if self.runMode_ == self.ACL_HOST :
+        if self.runMode_ == self.ACL_HOST:
             data = utils.CopyDataDeviceToHost(dataBufferDev, bufferSize)
-            if data == None :
+            if data == None:
                 print("Copy inference output to host failed")
                 return None
-        else :
+        else:
             data = dataBufferDev
-        self.itemDataSize = bufferSize
+        itemDataSize = bufferSize
         return data
 
 
