@@ -58,7 +58,7 @@ def colorize_image(image_path_input, image_path_output):
         return FAILED
     # TODO: inference & colorize
     (inferenceOutput, ret) = colorize.inference()
-    if ret == FAILED or inferenceOutput == 0:
+    if ret == FAILED or inferenceOutput is None:
         print("Inference model inference output data failed")
         return FAILED
     # TODO: postprocess & save image
