@@ -160,7 +160,7 @@ class ColorizeProcess:
         inferenceOutput = Modelprocess.GetModelOutputData()
         return inferenceOutput, SUCCESS  # The return value and quit critetia should be unified in general!!!
 
-    def postprocess(self,imageFile, modelOutput):
+    def postprocess(self,input_image_path, output_image_path, modelOutput):
         """This function converts LAB image to BGR image (colorization) and save it.
          It combines L channel obtained from source image and ab channels from Inference result.
          Parameters:
@@ -182,12 +182,12 @@ class ColorizeProcess:
         size = int(dataSize)
 
         #get a and b channel result data
-        inference_result = cv2.imread(self.inferenceOutput)
+        inference_result = cv2.imread(modelOutput)
         inference_result = cv2.resize(inference_result, (self.modelWidth , self.modelHeight))
-
+        ab_channel=inference_result
         # pull out L channel in original/source image
 
-        input_image = cv2.imread(imageFile, cv2.IMREAD_COLOR)  # reading input image
+        input_image = cv2.imread(input_image_path, cv2.IMREAD_COLOR)  # reading input image
         input_image = cv2.resize(input_image, (self.modelWidth, self.modelHeight))
         input_image = numpy.float32(input_image)
         input_image = 1.0 * input_image / 255  # Normalizing the input image values
@@ -204,7 +204,7 @@ class ColorizeProcess:
 
         height = input_image[0]
         width = input_image[1]
-        ab_channel_resize = cv2.resize(self.ab_channel,(height,width))
+        ab_channel_resize = cv2.resize(ab_channel,(height,width))
 
         # result Lab image
 
@@ -216,7 +216,8 @@ class ColorizeProcess:
         output_image = cv2.cvtColor(result_image, cv2.COLOR_Lab2BGR)
         output_image = output_image * 255
         cv2.imshow('output_image', output_image)
-        self.SaveImage(imageFile,output_image)
+        cv2.imwrite(output_image_path,output_image)
+        #self.SaveImage(imageFile,output_image)
         return SUCCESS
 
     def SaveImage(self,origImageFile,image):
