@@ -36,7 +36,7 @@ SUCCESS = 0
 
 class ColorizeProcess:
 
-    def __init__(self, modelPath, modelWidth=numpy.uint32(224), modelHeight=numpy.uint32(224), deviceId=0, inputBuf="", isInit=False, run_mode=0):
+    def __init__(self, modelPath, modelWidth=numpy.uint32(224), modelHeight=numpy.uint32(224), deviceId=0, inputBuf=None, isInit=False, run_mode=0):
         self.modelPath = modelPath
         self.modelWidth = modelWidth
         self.modelHeight = modelHeight
@@ -152,7 +152,7 @@ class ColorizeProcess:
     # output: pointer value for the result, and the flag SUCCESS or FAILED
     # ATTENTION: THE INPUT AND OUTPUT ARE CHANGED, COMPARE TO THE ORIGINAL C++ CODE!!
     def inference(self):
-        inferenceOutput = 0
+        inferenceOutput = None
         ret = Modelprocess.Execute()
         if ret != SUCCESS:
             print("Execute model inference failed")
