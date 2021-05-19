@@ -11,7 +11,7 @@ on:
 
 jobs:
   # This workflow contains a single job called "build"
-  codestyle:
+  test:
     # The type of runner that the job will run on
     runs-on: ubuntu-18.04
 
@@ -22,6 +22,8 @@ jobs:
       - name: Set up environment
         run: bash Webservice/scripts/setup.sh --yes
 
-      - name: Check code formatting
-        run: |
-          bash Webservice/scripts/test.sh
+      - name: Check if code is formatted properly
+        run: bash Webservice/scripts/test.sh
+          
+      - name: Check if acl library is available
+        run: bash Webservice/scripts/check_acl_library.sh
