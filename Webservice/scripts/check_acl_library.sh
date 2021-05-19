@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+# This script checks, if the acl library can be imported in python.
+# It will only work on the ATLAS device
+
 export PYTHONPATH=$PYTHONPATH:$HOME/Ascend/ascend-toolkit/latest/pyACL/python/site-packages/acl
 
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$HOME/Ascend/ascend-toolkit/latest/acllib_centos7.6.x86_64/acllib/lib64
