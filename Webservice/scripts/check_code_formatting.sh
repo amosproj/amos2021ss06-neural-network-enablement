@@ -11,7 +11,7 @@ echo "========================= Checking the code formatting ===================
 echo
 
 # Check the code formatting
-Webservice/venv/bin/flake8 . --exclude Webservice/venv/
+Webservice/venv/bin/flake8 --max-line-length 90 . --exclude Webservice/venv/
 
 if [ $? -ne 0 ]; then
     echo
