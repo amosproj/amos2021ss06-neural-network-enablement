@@ -20,7 +20,7 @@ jobs:
       - name: Set up environment
         run: bash Webservice/scripts/setup.sh --yes
 
-      - name: Run unittests
+      - name: Check code style
         run: bash Webservice/scripts/check_code_formatting.sh
 
   # This runs on the Atlas board
