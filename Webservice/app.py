@@ -60,12 +60,12 @@ def uploaded_file(fpath, filename):
 # return list of all urls of uploaded files --backup
 @app.route('/all/')
 def all():
-    urls =[]
+    urls = []
     for root, dirs, files in os.walk(app.config['UPLOAD_FOLDER']):
         for file in files:
             if file.rsplit('.', 1)[1].lower() in (ALLOWED_EXTENSIONS['pic'] or ALLOWED_EXTENSIONS['video']):
                 # exclude the colored file
-                if file.rsplit('.', 1)[0].rsplit("_",1)[1] != "color":
+                if file.rsplit('.', 1)[0].rsplit("_", 1)[1] != "color":
                     urls.append(url_for("uploaded_file", fpath=file.rsplit('.', 1)[0], filename=file))
     return jsonify(urls)
 
@@ -122,7 +122,7 @@ def colorize():
             if filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS['pic']:
 
                 # temporarily use if True
-                #if colorize_image(finpath, foutpath) == 0:
+                # if colorize_image(finpath, foutpath) == 0:
                 if True:
                     # return page need further discussion
                     return jsonify(msg="Colorization successful."), 200
