@@ -104,7 +104,7 @@ else
         python3 -m pip install virtualenv --user
     fi
 
-    virtualenv --python=python3 venv
+    python3 -m virtualenv --python=python3 venv
 
     if [ $? -ne 0 ]; then
         echo "Something went wrong when creating the virtual environment."
