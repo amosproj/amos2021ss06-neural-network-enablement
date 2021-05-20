@@ -23,14 +23,14 @@ import acl
 
 
 class Modelprocess:
-    def __init__(self, loadflag=False, modelId=0, modelMemPtr=None, modelMemSize=0, modelWeightPtr=None,
-                 modelWeightSize=0, modelDesc=None, input=None, output=None):
+    def __init__(self, loadflag=False, modelId=0, modelMemPtr=None, modelMemSize=0,
+         modelWeightPtr=None, modelWeightSize=0, modelDesc=None, input=None, output=None):
         self.loadflag = loadflag
         self.modelId = modelId  # int, ID of the model to be inferred.
         self.modelMemPtr = modelMemPtr
         self.modelMemSize = modelMemSize  # int, model data length, in bytes
-        self.modelWeightPtr = modelWeightPtr  # int, pointer of the model weight memory (for storing weight data) on
-        # the device. The pointer is managed by users.
+        self.modelWeightPtr = modelWeightPtr  # int, pointer of the model weight memory
+        # (for storing weight data) on the device
         self.modelWeightSize = modelWeightSize
         self.modelDesc = modelDesc  # Description of the model.
         self.input = input  # int, pointer object of the input data of model inference
@@ -44,9 +44,11 @@ class Modelprocess:
 
     def LoadModelFromFileWithMem(self, modelPath):
 
-        """ Function usage: Loads offline model data (adapted to the Ascend AI processor) from a file.
+        """ Function usage: Loads offline model data (adapted to the Ascend AI processor)
+        from a file.
         The offline model file is the *.om file that adapts to the Ascend AI processor
-        Input Args: model_path: str, path for storing the offline model file. The file name is contained in the path.
+        Input Args: model_path: str, path for storing the offline model file. The file
+        name is contained in the path.
         Returns: model_id: model ID generated after the model is loaded.
                  ret: int, error code.
                  0 indicates success.
@@ -55,20 +57,26 @@ class Modelprocess:
         if self.loadflag:
             logging.error("has already loaded a model")
             return 1
-        work_size, weight_size, ret = acl.mdl.query_size(modelPath, self.modelMemSize, self.modelWeightSize)
+        work_size, weight_size, ret = acl.mdl.query_size(modelPath, self.modelMemSize,
+                                                         self.modelWeightSize)
         if ret != acl.ACL_ERROR_None:
             logging.error("query model failed, model file is %s", modelPath)
             return 1
-        ret = acl.rt.malloc(self.modelMemPtr, self.modelMemSize, acl.ACL_MEM_MALLOC_HUGE_FIRST)
+        ret = acl.rt.malloc(self.modelMemPtr, self.modelMemSize,
+                            acl.ACL_MEM_MALLOC_HUGE_FIRST)
         if ret != acl.ACL_ERROR_NONE:
-            logging.error("malloc buffer for mem failed, require size is %zu", self.modelMemSize)
+            logging.error("malloc buffer for mem failed, require size is %zu",
+                          self.modelMemSize)
             return 1
-        ret = acl.rt.malloc(self.modelWeightPtr, self.modelWeightSize, acl.ACL_MEM_MALLOC_HUGE_FIRST)
+        ret = acl.rt.malloc(self.modelWeightPtr, self.modelWeightSize,
+                            acl.ACL_MEM_MALLOC_HUGE_FIRST)
         if ret != acl.ACL_ERROR_NONE:
-            logging.error("malloc buffer for weight failed, require size is %zu", self.modelWeightSize)
+            logging.error("malloc buffer for weight failed, require size is %zu",
+                          self.modelWeightSize)
             return 1
-        model_id, ret = acl.mdl.load_from_file_with_mem(modelPath, self.modelId, self.modelMemPtr, self.modelMemSize,
-                                                        self.modelWeightPtr, self.modelWeightSize)
+        model_id, ret = acl.mdl.load_from_file_with_mem(modelPath, self.modelId,
+                        self.modelMemPtr, self.modelMemSize,self.modelWeightPtr,
+                                                        self.modelWeightSize)
         if ret != acl.ACL_ERROR_NONE:
             logging.error("load model from file failed, model file is %s", modelPath)
             return 1
@@ -162,7 +170,8 @@ class Modelprocess:
             outputBuffer = None
             ret = acl.rt.malloc(outputBuffer, buffer_size, acl.ACL_MEM_MALLOC_NORMAL_ONLY)
             if ret != acl.ACL_ERROR_NONE:
-                logging.error("can't malloc buffer, size is %zu, create output failed", buffer_size)
+                logging.error("can't malloc buffer, size is %zu, create output failed",
+                              buffer_size)
                 return 1
             outputData = acl.create_data_buffer(outputBuffer, buffer_size)
             if ret != acl.ACL_ERROR_NONE:
@@ -206,7 +215,8 @@ class Modelprocess:
         return 0
 
     def Unload(self):
-        """ Function Usage: Uninstalls the model and releases resources after the model inference is complete
+        """ Function Usage: Uninstalls the model and releases resources after the model
+            inference is complete.
             Input Args: None
             returns: None """
         if not self.loadflag:
