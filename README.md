@@ -1,4 +1,4 @@
-[![CI](https://github.com/amosproj/amos-ss2021-neural-network-enablement/actions/workflows/main.yml/badge.svg?event=pull_request_target)](https://github.com/amosproj/amos-ss2021-neural-network-enablement/actions/workflows/main.yml)
+[![CI](https://github.com/amosproj/amos-ss2021-neural-network-enablement/actions/workflows/main.yml/badge.svg?branch=main)](https://github.com/amosproj/amos-ss2021-neural-network-enablement/actions/workflows/main.yml)
 
 # Neural Network Enablement (AMOS SS 2021)
 
