@@ -24,7 +24,8 @@ import acl
 
 class Modelprocess:
     def __init__(self, loadflag=False, modelId=0, modelMemPtr=None, modelMemSize=0,
-                 modelWeightPtr=None, modelWeightSize=0, modelDesc=None, input=None, output=None):
+                 modelWeightPtr=None, modelWeightSize=0, modelDesc=None, input=None,
+                 output=None):
         self.loadflag = loadflag
         self.modelId = modelId  # int, ID of the model to be inferred.
         self.modelMemPtr = modelMemPtr
@@ -75,7 +76,9 @@ class Modelprocess:
                           self.modelWeightSize)
             return 1
         model_id, ret = acl.mdl.load_from_file_with_mem(modelPath, self.modelId,
-                                                        self.modelMemPtr, self.modelMemSize, self.modelWeightPtr,
+                                                        self.modelMemPtr,
+                                                        self.modelMemSize,
+                                                        self.modelWeightPtr,
                                                         self.modelWeightSize)
         if ret != acl.ACL_ERROR_NONE:
             logging.error("load model from file failed, model file is %s", modelPath)
