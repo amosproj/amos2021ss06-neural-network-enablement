@@ -90,10 +90,16 @@ def result():
     colorized_url = url_for("uploaded_file", fpath=name, filename=colorname)
     thumbnail_url = url_for("uploaded_file", fpath=name, filename=thumbnailname)
 
-    return jsonify(origin=origin_url, colorized=colorized_url, thumbnail=thumbnail_url), 200
+    result = {
+        'origin': origin_url,
+        'colorized': colorized_url,
+        'thumbnail': thumbnail_url
+    }
+
+    return jsonify(result), 200
 
 
-# #delete files
+# delete files
 @app.route('/delete/', methods=['POST'])
 def delete():
     filename = request.get_json()['name'] if 'name' in request.get_json() else None
