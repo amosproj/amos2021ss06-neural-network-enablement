@@ -33,5 +33,3 @@ def video2frames(videopath, videoName):
     video.release()
     cv2.destroyAllWindows()
     return newpath
-
-# This is a new line that ends the file.
