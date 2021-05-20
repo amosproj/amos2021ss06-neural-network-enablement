@@ -1,4 +1,4 @@
-'''
+"""
 * Copyright 2020 Huawei Technologies Co., Ltd
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,28 +15,52 @@
 
 * File sample_process.cpp
 * Description: handle acl resource
-'''
+"""
 
-import sys
+
 import numpy
 import acl
 import cv2
 import os
 import utils
 from model_process import Modelprocess
-import logging
+
 # constant variables
-kTopNConfidenceLevels = numpy.uint32(5)
-# modelWidth = numpy.uint32(224)
-# modelHeight = numpy.uint32(224)
-KMODELPATH = "../model/colorization.om"
 FAILED = 1
 SUCCESS = 0
 
 
 class ColorizeProcess:
 
-    def __init__(self, modelPath, modelWidth=numpy.uint32(224), modelHeight=numpy.uint32(224), deviceId=0, inputBuf=None, isInit=False, run_mode=0):
+    def __init__(self, modelPath, modelWidth=numpy.uint32(224), modelHeight=numpy.uint32(224), deviceId=0,
+                 inputBuf=None, isInit=False, run_mode=0):
+        """
+        This function does the initiation of variables of colorize process
+
+
+        Parameters:
+        -----------
+        modelPath : str
+            the model path for colorization (incl. filename)
+        modelWidth : numpy.uint32(224)
+            the width a image should have, in order to be colorized
+        modelHeight : numpy.uint32(224)
+            the height a image should have, in order to be colorized
+        deviceID : int
+            the ID of the device
+        inputBuf : int
+            pointer to allocated memory
+        isInited : boolean
+            Ture: the object is inited
+            False: the object is not inited yet
+        run_mode : int
+            the mode of run.
+            0: ACL_DEVICE
+            1: ACL_HOST
+
+        return value : None
+        """
+
         self.modelPath = modelPath
         self.modelWidth = modelWidth
         self.modelHeight = modelHeight
@@ -47,6 +71,20 @@ class ColorizeProcess:
         self.run_mode = run_mode
 
     def InitResource(self):
+        """
+        This function does the initiation of resource.
+        Set and get features through acl.
+
+
+        Parameters:
+        -----------
+        input : none
+
+        return value : int
+            on success this function returns 0
+            on failure this function returns 1
+        """
+
         ACLCONFIGPATH = ".../src/acl.json"
         # ret = acl.init()
         ret = acl.init(ACLCONFIGPATH)
@@ -68,7 +106,21 @@ class ColorizeProcess:
             return FAILED
         return SUCCESS
 
-    def InitModel(self, OMMODELPATH): # check parameter
+    def InitModel(self, OMMODELPATH):
+        """
+        This function does the initiation of model.
+
+
+        Parameters:
+        -----------
+        OMMODELPATH : constant str
+            the model path for colorization
+
+        return value : int
+            on success this function returns 0
+            on failure this function returns 1
+        """
+
         ret = Modelprocess.LoadModelFromFileWithMem(OMMODELPATH)
         if ret != SUCCESS:
             print("execute LoadModelFromFileWithMem failed")
@@ -85,7 +137,7 @@ class ColorizeProcess:
 
         (self.inputBuf, ret) = acl.rt.malloc(self.inputDataSize, acl.ACL_MEM_MALLOC_HUGE_FIRST)  #
         # ACL_MEM_MALLOC_HUGE_FIRST = 0
-        if self.inputBuf == "": # check return value
+        if self.inputBuf is None:
             print("Acl malloc image buffer failed.")
             return FAILED
         ret = Modelprocess.CreateInput(self.inputBuf, self.inputDataSize)
@@ -95,6 +147,19 @@ class ColorizeProcess:
         return SUCCESS
 
     def Init(self):
+        """
+        This function does the initiation of model.
+
+
+        Parameters:
+        -----------
+        input: none
+
+        return value : int
+            on success this function returns 0
+            on failure this function returns 1
+        """
+
         if self.isInited:
             print("Classify instance is inited already!")
             return SUCCESS
@@ -104,11 +169,11 @@ class ColorizeProcess:
             print("Init acl resource failed")
             return FAILED
 
-        ret = self.InitModel(self.modelPath)  # check parameter
+        ret = self.InitModel(self.modelPath)
         if ret != SUCCESS:
             print("Init model failed")
             return FAILED
-        self.isInited = 1
+        self.isInited = True
         return SUCCESS
 
     def Preprocess(self, imageFile):
@@ -152,6 +217,22 @@ class ColorizeProcess:
     # output: pointer value for the result, and the flag SUCCESS or FAILED
     # ATTENTION: THE INPUT AND OUTPUT ARE CHANGED, COMPARE TO THE ORIGINAL C++ CODE!!
     def inference(self):
+        """
+        This function activate the model process after preprocess, and get result back.
+
+
+        Parameters:
+        -----------
+        input:none
+
+        return inferenceOutput, result
+        inferenceOutput : int
+            pointer of the result saved after colorization
+        result : int
+            on success this function returns 0
+            on failure this function returns 1
+        """
+
         inferenceOutput = None
         ret = Modelprocess.Execute()
         if ret != SUCCESS:
@@ -171,7 +252,7 @@ class ColorizeProcess:
             the path of the (colorized) image to save after processing
         modelOutput : image
             Model output consisting of ab channels.
-        return value : path of the colorized image
+        return value :
             on success this function returns 0
             on failure this function returns 1
         """
