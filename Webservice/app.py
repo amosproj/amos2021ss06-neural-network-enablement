@@ -3,6 +3,7 @@ from werkzeug.utils import secure_filename
 import os
 import datetime
 import shutil
+
 # from colorization.src.pipeline import *
 
 # set path to store uploaded pics and videos
@@ -12,7 +13,6 @@ ALLOWED_EXTENSIONS = {
     'pic': ['png', 'jpg', 'jpeg', 'gif'],
     'video': ['mp4', 'mkv', 'webm']
 }
-
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -32,11 +32,11 @@ def upload():
         sfilename = secure_filename(file.filename)
 
         # add timestamp at the beginning of filename
-        nowTime = datetime.datetime.now().strftime('%Y%m%d%H%M%S')
-        filename = str(nowTime) + "_" + sfilename
+        nowtime = datetime.datetime.now().strftime('%Y%m%d%H%M%S')
+        filename = str(nowtime) + "_" + sfilename
 
         # create folder and save file
-        folderpath = os.path.join(UPLOAD_FOLDER, filename.rsplit('.', 1)[0])
+        folderpath = os.path.join(UPLOAD_FOLDER, get_name(filename))
         os.mkdir(folderpath)
         filepath = os.path.join(folderpath, filename)
         file.save(filepath)
@@ -62,29 +62,35 @@ def uploaded_file(fpath, filename):
 def all():
     urls = []
     for root, dirs, files in os.walk(app.config['UPLOAD_FOLDER']):
-        for file in files:
-            if file.rsplit('.', 1)[1].lower() in (ALLOWED_EXTENSIONS['pic'] or ALLOWED_EXTENSIONS['video']):
+        for filename in files:
+            if allowed_file(filename):
+                name = get_name(filename)
                 # exclude the colored file
-                if file.rsplit('.', 1)[0].rsplit("_", 1)[1] != "color":
-                    urls.append(url_for("uploaded_file", fpath=file.rsplit('.', 1)[0], filename=file))
+                if name.rsplit("_", 1)[1] != "color":
+                    urls.append(url_for("uploaded_file", fpath=name, filename=filename))
     return jsonify(urls)
 
 
 # result
-@app.route('/result/')
+@app.route('/result/', methods=['POST'])
 def result():
-    urls = []
-    for root, dirs, files in os.walk(UPLOAD_FOLDER):
-        if len(dirs) == 0:
-            files.sort()
-            pic = {}
-            if files:
-                foldername = files[0].rsplit('.', 1)[0]
-                pic["origin"] = url_for("uploaded_file", fpath=foldername, filename=files[0])
-                if len(files) == 2:
-                    pic["colored"] = url_for("uploaded_file", fpath=foldername, filename=files[1])
-            urls.append(pic)
-    return jsonify(urls)
+    filename = request.get_json()['name'] if 'name' in request.get_json() else None
+
+    # get name and extension of origin img
+    name = get_name(filename)
+    extension = get_extension(filename)
+    # get name of colored img
+    colorname = name + "_color." + extension
+
+    # if is a video, get thumbnail img name
+    thumbnailname = name + "_thumbnail." + extension
+
+    # generate all urls
+    origin_url = url_for("uploaded_file", fpath=name, filename=filename)
+    colorized_url = url_for("uploaded_file", fpath=name, filename=colorname)
+    thumbnail_url = url_for("uploaded_file", fpath=name, filename=thumbnailname)
+
+    return jsonify(origin=origin_url, colorized=colorized_url, thumbnail=thumbnail_url), 200
 
 
 # #delete files
@@ -93,7 +99,7 @@ def delete():
     filename = request.get_json()['name'] if 'name' in request.get_json() else None
 
     if filename:
-        deletepath = os.path.join(app.config['UPLOAD_FOLDER'], filename.rsplit('.', 1)[0])
+        deletepath = os.path.join(app.config['UPLOAD_FOLDER'], get_name(filename))
         if os.path.exists(deletepath):
             shutil.rmtree(deletepath)
             return jsonify(msg="Deleted!"), 200
@@ -107,10 +113,15 @@ def delete():
 @app.route('/colorize/', methods=['POST'])
 def colorize():
     filename = request.get_json()['name'] if 'name' in request.get_json() else None
+
     if filename:
-        finpath = os.path.join(UPLOAD_FOLDER, filename.rsplit('.', 1)[0], filename)
-        optname = filename.rsplit('.', 1)[0] + "_color." + filename.rsplit('.', 1)[1]
-        foutpath = os.path.join(UPLOAD_FOLDER, filename.rsplit('.', 1)[0], optname)
+        # 05/20 use newly added functions : get_name , get_extension
+        name = get_name(filename)
+        extension = get_extension(filename)
+
+        finpath = os.path.join(UPLOAD_FOLDER, name, filename)
+        optfilename = name + "_color." + extension
+        foutpath = os.path.join(UPLOAD_FOLDER, name, optfilename)
 
         # copy the file for now
         if not os.path.exists(foutpath):
@@ -119,8 +130,7 @@ def colorize():
 
         else:
             # colorize_image
-            if filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS['pic']:
-
+            if extension in ALLOWED_EXTENSIONS['pic']:
                 # temporarily use if True
                 # if colorize_image(finpath, foutpath) == 0:
                 if True:
@@ -135,8 +145,16 @@ def colorize():
 
 
 def allowed_file(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in (
-                ALLOWED_EXTENSIONS['pic'] or ALLOWED_EXTENSIONS['video'])
+    return '.' in filename and get_extension(filename).lower() in (
+            ALLOWED_EXTENSIONS['pic'] or ALLOWED_EXTENSIONS['video'])
+
+
+def get_extension(filename):
+    return filename.rsplit('.', 1)[1]
+
+
+def get_name(filename):
+    return filename.rsplit('.', 1)[0]
 
 
 if __name__ == '__main__':
