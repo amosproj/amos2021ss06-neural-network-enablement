@@ -7,8 +7,13 @@ cd `dirname "$0"`/../../
 
 
 # Run the tests
+
 Webservice/venv/bin/pytest colorization/src/tests.py
 TEST_RESULT=$?
+
+echo
+echo "========================= Checking the code formatting ========================="
+echo
 
 # Check the code formatting
 Webservice/venv/bin/flake8 . --exclude Webservice/venv/
