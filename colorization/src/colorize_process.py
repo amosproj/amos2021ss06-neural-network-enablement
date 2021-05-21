@@ -1,4 +1,4 @@
-"""
+'''
 * Copyright 2020 Huawei Technologies Co., Ltd
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,9 +15,9 @@
 
 * File sample_process.cpp
 * Description: handle acl resource
-"""
+'''
 
-
+import sys
 import numpy
 import acl
 import cv2
@@ -32,7 +32,8 @@ SUCCESS = 0
 
 class ColorizeProcess:
 
-    def __init__(self, modelPath, modelWidth=numpy.uint32(224), modelHeight=numpy.uint32(224), deviceId=0,
+    def __init__(self, modelPath, modelWidth=numpy.uint32(224),
+                 modelHeight=numpy.uint32(224), deviceId=0,
                  inputBuf=None, isInit=False, run_mode=0):
         """
         This function does the initiation of variables of colorize process
@@ -135,7 +136,8 @@ class ColorizeProcess:
             print("execute CreateOutput failed")
             return FAILED
 
-        (self.inputBuf, ret) = acl.rt.malloc(self.inputDataSize, acl.ACL_MEM_MALLOC_HUGE_FIRST)  #
+        (self.inputBuf, ret) = acl.rt.malloc(self.inputDataSize,
+                                             acl.ACL_MEM_MALLOC_HUGE_FIRST)
         # ACL_MEM_MALLOC_HUGE_FIRST = 0
         if self.inputBuf is None:
             print("Acl malloc image buffer failed.")
@@ -180,7 +182,7 @@ class ColorizeProcess:
         # read image using OPENCV
         mat = cv2.imread(imageFile, cv2.IMREAD_COLOR).astype(numpy.float32)
 
-        #resize
+        # resize
         reiszeMat = numpy.zeros(self.modelWidth, numpy.float32)
         reiszeMat = cv2.resize(mat,(self.modelWidth, self. modelHeight), cv2.INTER_CUBIC)
 
@@ -192,7 +194,7 @@ class ColorizeProcess:
         channels = cv2.split(reiszeMat)
         reiszeMatL = channels[0] - 50
 
-        if numpy.any(mat) == None:  # if (mat is empty)all ture return true, one false return false
+        if numpy.any(mat) is None:  # if (mat is empty) return true,one false return false
             return FAILED
 
 
@@ -200,7 +202,8 @@ class ColorizeProcess:
         if self.run_mode == 1:
             #if run in AI1, need to copy the picture data to the device
             ret = acl.rt.memcpy(self.inputBuf, self.inputDataSize, reiszeMatL,
-                                self.inputDataSize, acl.ACL_MEMCPY_HOST_TO_DEVICE)# ACL_MEMCPY_HOST_TO_DEVICE = 1
+                                self.inputDataSize, acl.ACL_MEMCPY_HOST_TO_DEVICE)
+            # ACL_MEMCPY_HOST_TO_DEVICE = 1
 
             if ret != acl.ACL_ERROR_NONE:
                 print("Copy resized image data to device failed.")
@@ -239,11 +242,13 @@ class ColorizeProcess:
             print("Execute model inference failed")
             return inferenceOutput, FAILED
         inferenceOutput = Modelprocess.GetModelOutputData()
-        return inferenceOutput, SUCCESS  # The return value and quit critetia should be unified in general!!!
+        return inferenceOutput, SUCCESS  # The return value and quit critetia should be
+        # unified in general!!!
 
-    def postprocess(self,input_image_path, output_image_path, modelOutput):
+    def postprocess(self,input_image_path, output_image_path,modelOutput):
         """This function converts LAB image to BGR image (colorization) and save it.
-         It combines L channel obtained from source image and ab channels from Inference result.
+         It combines L channel obtained from source image and ab channels from Inference
+         result.
          Parameters:
         -----------
         input_image_path : str
@@ -257,18 +262,20 @@ class ColorizeProcess:
             on failure this function returns 1
         """
         dataSize = 0
-        data = self.GetInferenceOutputItem(dataSize,modelOutput)
+        data = self.GetInferenceOutputItem(dataSize)
         if data is None:
             return FAILED
         size = int(dataSize)
 
         #get a and b channel result data
+
         inference_result = cv2.imread(modelOutput)
-        inference_result = cv2.resize(inference_result, (self.modelWidth , self.modelHeight))
+        inference_result = cv2.resize(inference_result, (self.modelWidth,
+                                                         self.modelHeight))
         ab_channel=inference_result
         # pull out L channel in original/source image
 
-        input_image = cv2.imread(input_image_path, cv2.IMREAD_COLOR)  # reading input image
+        input_image = cv2.imread(input_image_path, cv2.IMREAD_COLOR)
         input_image = cv2.resize(input_image, (self.modelWidth, self.modelHeight))
         input_image = numpy.float32(input_image)
         input_image = 1.0 * input_image / 255  # Normalizing the input image values
@@ -302,6 +309,14 @@ class ColorizeProcess:
         return SUCCESS
 
     def SaveImage(self,origImageFile,image):
+        """This function saves the colorized image in a specified path
+           Parameters:
+           -----------
+           origImageFile: str
+              the path of original image file
+           image: image
+              colorized image obtained from postprocess
+           returns: None"""
         newpath = os.path.join(origImageFile, "Saved_images")
         os.makedirs(newpath)
         image = cv2.imread(image)
@@ -310,19 +325,16 @@ class ColorizeProcess:
         cv2.destroyAllWindows()
 
 
-    def GetInferenceOutputItem(self, itemDataSize, inferenceOutput):          # input: uint32_t& itemDataSize, aclmdlDataset* inferenceOutput
+    def GetInferenceOutputItem(self,inferenceOutput): #input: aclmdlDataset* ,
+        # inferenceOutput
         dataBuffer = acl.mdl.get_dataset_buffer(inferenceOutput, 0)
-        if dataBuffer == None:
+        if dataBuffer is None:
             print("Get the dataset buffer from model inference output failed")
             return None
-
-
         dataBufferDev = acl.mdl.get_data_buffer_addr(dataBuffer)
-        if dataBufferDev == None:
+        if dataBufferDev is None:
             print("Get the dataset buffer address from model inference output failed")
             return None
-
-
         bufferSize = acl.mdl.get_data_buffer_size(dataBuffer)
         if bufferSize == 0:
             print("The dataset buffer size of model inference output is 0 ")
@@ -338,7 +350,6 @@ class ColorizeProcess:
             data = dataBufferDev
         itemDataSize = bufferSize
         return data
-
 
     def DestroyResource(self):
         Modelprocess.Unload()
