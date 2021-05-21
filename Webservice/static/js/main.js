@@ -135,30 +135,40 @@ function colorizeImage(imgName) {
 function showResult(imgName) {
   console.log('showResult', imgName);
 
-  // load result (colorized image)
-  $.get('/result/', null, function(data) {
+  // TODO: This should really be a GET request
+  $.ajax({
+    type: "POST",
+    url: "/result/",
+    data: JSON.stringify({'name' : imgName}),
+    success: function (response) {
+      console.log('colorization success');
+      // console.log(response);
 
-    for (pair of data) {
-      let original = pair['origin'];
-      let colorized = pair['colored'];
+      let original = response['origin'];
+      let colorized = response['colorized'];
 
       if (original.includes(imgName)) {
+         console.log(colorized);
 
-        // show result page popup
-
-        console.log(colorized);
+         // show result page popup
 
 
-        document.querySelector('#result-image-original').setAttribute('src', original);
-        document.querySelector('#result-image-colorized').setAttribute('src', colorized);
+         document.querySelector('#result-image-original').setAttribute('src', original);
+         document.querySelector('#result-image-colorized').setAttribute('src', colorized);
 
-        setTimeout(function() {
-            document.querySelector('#result-colorize').classList.remove('invisible');
-        }, 100);
+         setTimeout(function() {
+           document.querySelector('#result-colorize').classList.remove('invisible');
+         }, 100);
 
-        break;
-      }
-    }
+        }
+     },
+     error: function (error) {
+       console.log(error);
+       showWarningToast("Loading the result failed.", "Couldn't connect to server. Is the service running?");
+       return 1;
+     },
+     dataType: 'json',
+     contentType: 'application/json',
   });
 }
 
