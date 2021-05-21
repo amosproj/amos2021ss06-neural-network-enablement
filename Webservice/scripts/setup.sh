@@ -5,6 +5,10 @@
 # the dependencies on an Ubuntu based system
 # ===============================================================
 
+
+# TODO: try to detect that the Atlas Board is running on Ubuntu
+# TODO: python3.7.5 is also hardcoded below -> make general
+
 # config
 SUPPORTED_OS="Ubuntu 18.04"
 SUPPORTED_PYTHON="3.7.5"
@@ -79,7 +83,7 @@ PYTHON=python3
 if [ -f /usr/local/python3.7.5/bin/python3.7 ]; then
     PYTHON=/usr/local/python3.7.5/bin/python3.7
 else
-    echo "Python binary is not available in /usr/local/python3.7.5/bin/"
+    echo "Warning: Didn't find python binary in /usr/local/python3.7.5/bin/."
 fi
 
 
