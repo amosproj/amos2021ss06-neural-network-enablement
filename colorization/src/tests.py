@@ -52,8 +52,8 @@ class IntegrationTest(unittest.TestCase):
         """
         # TODO
         from pipeline import colorize_image
-        path_input = "/path to image"
-        path_output = "/path to colorized image"
+        path_input = "test_image.jpeg"
+        path_output = "colorized_image.jpeg"
         ret = colorize_image(path_input, path_output)
         self.assertEqual(ret, SUCCESS)
         # TODO
