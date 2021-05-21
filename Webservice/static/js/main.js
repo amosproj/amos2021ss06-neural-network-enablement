@@ -112,20 +112,20 @@ function colorizeImage(imgName) {
 
   // call colorize function
   $.ajax({
-     type: "POST",
-     url: "/colorize/",
-     data: JSON.stringify({'name' : imgName}),
-     success: function () {
-       console.log('colorization success');
-     },
-     error: function (error) {
-       console.log(error);
-       showWarningToast("Colorizing image failed.", "Couldn't connect to server. Is the service running?");
-       return 1;
-     },
-     dataType: 'json',
-     contentType: 'application/json',
-   });
+    type: "POST",
+    url: "/colorize/",
+    data: JSON.stringify({'name' : imgName}),
+    success: function () {
+      console.log('colorization success');
+    },
+    error: function (error) {
+      console.log(error);
+      showWarningToast("Colorizing image failed.", "Couldn't connect to server. Is the service running?");
+      return 1;
+    },
+    dataType: 'json',
+    contentType: 'application/json',
+  });
 
   return 0;
 }
@@ -148,27 +148,26 @@ function showResult(imgName) {
       let colorized = response['colorized'];
 
       if (original.includes(imgName)) {
-         console.log(colorized);
+        console.log(colorized);
 
-         // show result page popup
+        // show result page popup
 
 
-         document.querySelector('#result-image-original').setAttribute('src', original);
-         document.querySelector('#result-image-colorized').setAttribute('src', colorized);
+        document.querySelector('#result-image-original').setAttribute('src', original);
+        document.querySelector('#result-image-colorized').setAttribute('src', colorized);
 
-         setTimeout(function() {
-           document.querySelector('#result-colorize').classList.remove('invisible');
-         }, 100);
-
-        }
-     },
-     error: function (error) {
-       console.log(error);
-       showWarningToast("Loading the result failed.", "Couldn't connect to server. Is the service running?");
-       return 1;
-     },
-     dataType: 'json',
-     contentType: 'application/json',
+        setTimeout(function() {
+          document.querySelector('#result-colorize').classList.remove('invisible');
+        }, 100);
+      }
+    },
+    error: function (error) {
+      console.log(error);
+      showWarningToast("Loading the result failed.", "Couldn't connect to server. Is the service running?");
+      return 1;
+    },
+    dataType: 'json',
+    contentType: 'application/json',
   });
 }
 
