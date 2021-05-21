@@ -1,5 +1,7 @@
 import unittest
 
+FAILED = 1
+SUCCESS = 0
 
 # import colorize_process
 # import acl
@@ -48,5 +50,12 @@ class IntegrationTest(unittest.TestCase):
         """
         Integration test to test the complete colorizing process
         """
-        # TODO test the complete pipeline. e.g. colorize an example image
-        self.assertTrue(True)
+        # TODO
+        from pipeline import colorize_image
+        path_input = "/path to image"
+        path_output = "/path to colorized image"
+        ret = colorize_image(path_input, path_output)
+        self.assertEqual(ret, SUCCESS)
+        # TODO
+        # check if the image and the path exist
+        # check if the image in output path is colorized
