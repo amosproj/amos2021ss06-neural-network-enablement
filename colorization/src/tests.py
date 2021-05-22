@@ -73,4 +73,3 @@ class IntegrationTest(unittest.TestCase):
         (b, g, r) = img[:, :, 0], img[:, :, 1], img[:, :, 2]
         ret = (b == g).all() and (b == r).all()
         self.assertFalse(ret)
-
