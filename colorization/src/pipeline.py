@@ -1,5 +1,5 @@
 
-from colorize_process import *
+from colorization.src.colorize_process import ColorizeProcess
 # from utils import CopyDataDeviceToHost
 import numpy
 # import cv2
@@ -15,7 +15,6 @@ SUCCESS = 0
 # It does NOT contain the code of each task!
 # The code for each task should be written seperate file and the function imported:
 # see e.g. the postprocess function in postprocess.py
-
 
 
 def colorize_image(image_path_input, image_path_output):
