@@ -32,7 +32,7 @@ SUCCESS = 0
 class ColorizeProcess:
 
     def __init__(self, modelPath, modelWidth=numpy.uint32(224),
-                 modelHeight = numpy.uint32(224), deviceId=0,
+                 modelHeight=numpy.uint32(224), deviceId=0,
                  inputBuf=None, isInit=False, run_mode=0):
         """
         This function does the initiation of variables of colorize process
@@ -183,7 +183,7 @@ class ColorizeProcess:
 
         # resize
         reiszeMat = numpy.zeros(self.modelWidth, numpy.float32)
-        reiszeMat = cv2.resize(mat,(self.modelWidth, self. modelHeight), cv2.INTER_CUBIC)
+        reiszeMat = cv2.resize(mat, (self.modelWidth, self. modelHeight), cv2.INTER_CUBIC)
 
         # deal image
         reiszeMat = cv2.convertScaleAbs(reiszeMat, cv2.CV_32FC3)
@@ -195,8 +195,6 @@ class ColorizeProcess:
 
         if numpy.any(mat) is None:  # if (mat is empty) return true,one false return false
             return FAILED
-
-
         # TODO
         if self.run_mode == 1:
             #if run in AI1, need to copy the picture data to the device
@@ -264,9 +262,9 @@ class ColorizeProcess:
         data = self.GetInferenceOutputItem(dataSize)
         if data is None:
             return FAILED
-        size = int(dataSize)
+        # size = int(dataSize)
 
-        #get a and b channel result data
+        # get a and b channel result data
 
         inference_result = cv2.imread(modelOutput)
         inference_result = cv2.resize(inference_result, (self.modelWidth,
@@ -303,11 +301,11 @@ class ColorizeProcess:
         output_image = cv2.cvtColor(result_image, cv2.COLOR_Lab2BGR)
         output_image = output_image * 255
         cv2.imshow('output_image', output_image)
-        cv2.imwrite(output_image_path,output_image)
+        cv2.imwrite(output_image_path, output_image)
         # self.SaveImage(imageFile, output_image)
         return SUCCESS
 
-    def SaveImage(self, origImageFile,image):
+    def SaveImage(self, origImageFile, image):
         """This function saves the colorized image in a specified path
            Parameters:
            -----------
@@ -323,7 +321,7 @@ class ColorizeProcess:
         cv2.waitKey(0)
         cv2.destroyAllWindows()
 
-    def GetInferenceOutputItem(self,inferenceOutput):   # input: aclmdlDataset*,
+    def GetInferenceOutputItem(self, inferenceOutput):   # input: aclmdlDataset*,
         # inferenceOutput
         dataBuffer = acl.mdl.get_dataset_buffer(inferenceOutput, 0)
         if dataBuffer is None:
