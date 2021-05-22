@@ -10,11 +10,18 @@ jobs:
 
   # This doesn't run on the Atlas board
   codestyle:
-    runs-on: ubuntu-18.04
+    runs-on: self-hosted
 
     steps:
       # Checks-out your repository
       - uses: actions/checkout@v2
+
+      - name: Set environment variables
+        run: |
+          echo "PYTHONPATH=$PYTHONPATH:$HOME/Ascend/ascend-toolkit/latest/pyACL/python/site-packages/acl" >> $GITHUB_ENV
+          echo "LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$HOME/Ascend/ascend-toolkit/latest/acllib_centos7.6.x86_64/acllib/lib64" >> $GITHUB_ENV
+          echo "LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$HOME/Ascend/ascend-toolkit/latest/x86_64-linux_gcc7.3.0/atc/lib64" >> $GITHUB_ENV
+          echo "LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$HOME/Ascend/ascend-toolkit/latest/toolkit/lib64" >> $GITHUB_ENV
 
       - name: Set up environment
         run: bash Webservice/scripts/setup.sh --yes
