@@ -3,6 +3,7 @@ import unittest
 #from flask import json
 from app import app
 
+# change into a test folder
 UPLOAD_FOLDER = os.path.abspath(os.path.dirname(__file__)) + "/uploaded/"
 
 
@@ -15,6 +16,7 @@ class BasicTests(unittest.TestCase):
     # executed prior to each test
     def setUp(self):
         app.config['TESTING'] = True
+        # change into a test folder
         app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
         app.secret_key = b'wu8QvPtCDIM1/9ceoUS'
         self.app = app.test_client()
