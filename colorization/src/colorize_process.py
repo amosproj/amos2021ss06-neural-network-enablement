@@ -197,7 +197,7 @@ class ColorizeProcess:
             return FAILED
         # TODO
         if self.run_mode == 1:
-            #if run in AI1, need to copy the picture data to the device
+            # if run in AI1, need to copy the picture data to the device
             ret = acl.rt.memcpy(self.inputBuf, self.inputDataSize, reiszeMatL,
                                 self.inputDataSize, acl.ACL_MEMCPY_HOST_TO_DEVICE)
             # ACL_MEMCPY_HOST_TO_DEVICE = 1
@@ -242,7 +242,7 @@ class ColorizeProcess:
         return inferenceOutput, SUCCESS  # The return value and quit critetia should be
         # unified in general!!!
 
-    def postprocess(self,input_image_path, output_image_path,modelOutput):
+    def postprocess(self, input_image_path, output_image_path, modelOutput):
         """This function converts LAB image to BGR image (colorization) and save it.
          It combines L channel obtained from source image and ab channels from Inference
          result.
@@ -269,7 +269,7 @@ class ColorizeProcess:
         inference_result = cv2.imread(modelOutput)
         inference_result = cv2.resize(inference_result, (self.modelWidth,
                                                          self.modelHeight))
-        ab_channel=inference_result
+        ab_channel = inference_result
         # pull out L channel in original/source image
 
         input_image = cv2.imread(input_image_path, cv2.IMREAD_COLOR)
