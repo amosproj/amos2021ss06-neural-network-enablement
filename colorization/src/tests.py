@@ -1,4 +1,7 @@
 import unittest
+from pipeline import colorize_image
+import os
+import cv2
 
 FAILED = 1
 SUCCESS = 0
@@ -50,21 +53,16 @@ class IntegrationTest(unittest.TestCase):
         """
         Integration test to test the complete colorizing process
         """
-        # TODO
-        from pipeline import colorize_image
         path_input = "test_image.png"
         path_output = "colorized_image.png"
         ret = colorize_image(path_input, path_output)
         self.assertEqual(ret, SUCCESS)
-        # TODO
         # check if the image and the path exist
-        import os
         ret = os.path.exists(path_output)
         self.assertTrue(ret)
         ret = os.path.isfile(path_output)
         self.assertTrue(ret)
         # check if the image in output path is colorized
-        import cv2
         img = cv2.imread(path_output)
         ret = len(img.shape)
         self.assertGreaterEqual(3, ret)
