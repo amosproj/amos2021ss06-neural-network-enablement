@@ -32,8 +32,9 @@ SUCCESS = 0
 
 class ColorizeProcess:
 
-    def __init__(self, modelPath, modelWidth=numpy.uint32(224), modelHeight=numpy.uint32(224), deviceId=0,
-                 inputBuf=None, isInit=False, run_mode=0):
+    def __init__(self, modelPath, modelWidth=numpy.uint32(224),
+                 modelHeight=numpy.uint32(224),
+                 deviceId=0, inputBuf=None, isInit=False, run_mode=0):
         """
         This function does the initiation of variables of colorize process
 
@@ -135,7 +136,8 @@ class ColorizeProcess:
             print("execute CreateOutput failed")
             return FAILED
 
-        (self.inputBuf, ret) = acl.rt.malloc(self.inputDataSize, acl.ACL_MEM_MALLOC_HUGE_FIRST)  #
+        (self.inputBuf, ret) = acl.rt.malloc(self.inputDataSize,
+                                             acl.ACL_MEM_MALLOC_HUGE_FIRST)
         # ACL_MEM_MALLOC_HUGE_FIRST = 0
         if self.inputBuf is None:
             print("Acl malloc image buffer failed.")
@@ -225,7 +227,7 @@ class ColorizeProcess:
         -----------
         input:none
 
-        return inferenceOutput, result
+        return : inferenceOutput, result
         inferenceOutput : int
             pointer of the result saved after colorization
         result : int
@@ -239,7 +241,7 @@ class ColorizeProcess:
             print("Execute model inference failed")
             return inferenceOutput, FAILED
         inferenceOutput = Modelprocess.GetModelOutputData()
-        return inferenceOutput, SUCCESS  # The return value and quit critetia should be unified in general!!!
+        return inferenceOutput, SUCCESS
 
     def postprocess(self,input_image_path, output_image_path, modelOutput):
         """This function converts LAB image to BGR image (colorization) and save it.

@@ -1,13 +1,15 @@
 import cv2
 import os
 
+
 def loadimage(inputImageDir):
     if os.path.isdir(inputImageDir):
         return inputImageDir
     else:
         return "path not found"
 
-def saveimage(directory,colorized_data):
+
+def saveimage(directory, colorized_data):
     ''' This function is used to save the images.
     Args:
         directory: path to save images
