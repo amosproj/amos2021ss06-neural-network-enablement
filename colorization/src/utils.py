@@ -1,5 +1,6 @@
 import os
-#import acl
+# import acl
+
 
 def IsDirectory(inputpath):
     """This function checks whether a given path is a file.
@@ -12,6 +13,7 @@ def IsDirectory(inputpath):
             """
     return os.path.isfile(inputpath)
 
+
 def IsPathExist(inputpath):
     """This function checks whether a given path exists.
              Parameters:
@@ -23,9 +25,11 @@ def IsPathExist(inputpath):
             """
     return os.path.exists(inputpath)
 
+
 # has never been referenced
 # def SplitPath(inputpath):
 # def GetPathFiles(inputpath):
+
 
 def GetAllFiles(inputpath):
     """This function is used to get all file names under a certain path.
@@ -36,6 +40,7 @@ def GetAllFiles(inputpath):
                 Return a list containing the names of the entries in the directory given by path
             """
     return os.listdir(inputpath)
+
 
 '''
 def CopyDataDeviceToHost(deviceData,dataSize):
