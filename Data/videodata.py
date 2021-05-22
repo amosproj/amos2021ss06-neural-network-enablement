@@ -2,7 +2,7 @@ import cv2
 import os
 
 
-def video2frames(videopath,videoName):
+def video2frames(videopath, videoName):
     '''This function is used to convert video into images.
      Args:
         videopath: path to the video.
@@ -10,9 +10,9 @@ def video2frames(videopath,videoName):
      Returns:
         path to the splitted images.
      '''
-    videoName = os.path.join(videopath,videoName)
+    videoName = os.path.join(videopath, videoName)
     video = cv2.VideoCapture(videoName)
-    if (video.isOpened() == False):
+    if (video.isOpened() is False):
         print("Error opening video")
     FPS = 60  # frames per second
     video.set(cv2.CAP_PROP_FPS, FPS)
@@ -20,7 +20,7 @@ def video2frames(videopath,videoName):
     newpath = os.path.join(videopath, "Saved_frames")
     while (video.isOpened()):
         ret, frame = video.read()
-        if ret == True:
+        if ret is True:
             folder_name = os.path.join(newpath, str(currentFrame) + '.png')
             print('Creating...' + folder_name)
             cv2.imshow('Frame', frame)
