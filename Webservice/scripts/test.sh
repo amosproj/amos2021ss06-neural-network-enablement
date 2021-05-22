@@ -6,4 +6,4 @@
 cd `dirname "$0"`/../../
 
 # Run the tests
-Webservice/venv/bin/pytest colorization/src/tests.py
+Webservice/venv/bin/pytest colorization/src/tests.py --cov=. --cov-config=.coveragerc
