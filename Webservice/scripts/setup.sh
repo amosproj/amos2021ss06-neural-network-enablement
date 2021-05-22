@@ -5,6 +5,10 @@
 # the dependencies on an Ubuntu based system
 # ===============================================================
 
+
+# TODO: try to detect that the Atlas Board is running on Ubuntu
+# TODO: python3.7.5 is also hardcoded below -> make general
+
 # config
 SUPPORTED_OS="Ubuntu 18.04"
 SUPPORTED_PYTHON="3.7.5"
@@ -73,9 +77,18 @@ fi
 
 echo
 
+PYTHON=python3
+
+# prefer 3.7.5 if available
+if [ -f /usr/local/python3.7.5/bin/python3.7 ]; then
+    PYTHON=/usr/local/python3.7.5/bin/python3.7
+else
+    echo "Warning: Didn't find python binary in /usr/local/python3.7.5/bin/."
+fi
+
 
 # check python version
-py_version=`python3 --version`
+py_version=`$PYTHON --version`
 
 if [[ "$py_version" != *"$SUPPORTED_PYTHON" ]]; then
     echo
@@ -101,10 +114,10 @@ else
     # install virtualenv if not available
     which "virtualenv" > /dev/null
     if [ $? -ne 0 ]; then
-        python3 -m pip install virtualenv --user
+        $PYTHON -m pip install virtualenv --user
     fi
 
-    python3 -m virtualenv --python=python3 venv
+    $PYTHON -m virtualenv --python=$PYTHON venv
 
     if [ $? -ne 0 ]; then
         echo "Something went wrong when creating the virtual environment."

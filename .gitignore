@@ -3,6 +3,8 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+.coverage
+
 # Flask stuff:
 instance/
 .webassets-cache

@@ -1,4 +1,4 @@
-'''
+"""
 * Copyright 2020 Huawei Technologies Co., Ltd
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,7 +15,8 @@
 
 * File sample_process.cpp
 * Description: handle acl resource
-'''
+"""
+
 
 import numpy
 import acl
@@ -32,8 +33,8 @@ SUCCESS = 0
 class ColorizeProcess:
 
     def __init__(self, modelPath, modelWidth=numpy.uint32(224),
-                 modelHeight=numpy.uint32(224), deviceId=0,
-                 inputBuf=None, isInit=False, run_mode=0):
+                 modelHeight=numpy.uint32(224),
+                 deviceId=0, inputBuf=None, isInit=False, run_mode=0):
         """
         This function does the initiation of variables of colorize process
 
@@ -225,7 +226,7 @@ class ColorizeProcess:
         -----------
         input:none
 
-        return inferenceOutput, result
+        return : inferenceOutput, result
         inferenceOutput : int
             pointer of the result saved after colorization
         result : int

@@ -1,5 +1,4 @@
-
-from colorization.src.colorize_process import ColorizeProcess
+from colorize_process import ColorizeProcess
 # from utils import CopyDataDeviceToHost
 import numpy
 # import cv2
@@ -25,9 +24,7 @@ def colorize_image(image_path_input, image_path_output):
        - colorize the image
        - postprocess the image
 
-
     This function is called by the webservice.
-
 
     Parameters:
     -----------
@@ -41,6 +38,15 @@ def colorize_image(image_path_input, image_path_output):
     return value : int
         on success this function returns 0
         on failure this function returns 1
+
+
+    Example call:
+    -------------
+    colorize_image('/home/user/xyz/Pictures/pic1.jpg',
+                   '/home/user/xyz/Pictures/pic1_colorized.jpg')
+
+    The directories already exists, and the image can be directly
+    written to the given output path.
     """
 
     kModelWidth = numpy.uint32(224)

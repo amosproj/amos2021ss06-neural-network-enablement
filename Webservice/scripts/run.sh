@@ -12,11 +12,13 @@ if [[ ! -d "venv" ]]; then
 fi
 
 
-echo "=================================="
+echo "======================================================================"
 echo "Starting webservice"
 echo "You can shut it down using Ctrl+C"
-echo "=================================="
+echo "======================================================================"
 
+if [ $HOSTNAME != "davinci-mini" ]; then
+    (sleep 1; xdg-open "http://localhost:5000") &
+fi
 
-(sleep 1; xdg-open "http://localhost:5000") &
 venv/bin/python3 app.py
