@@ -72,6 +72,7 @@ def all():
 
 
 # result
+# TODO: This should be a GET request
 @app.route('/result/', methods=['POST'])
 def result():
     filename = request.get_json()['name'] if 'name' in request.get_json() else None
