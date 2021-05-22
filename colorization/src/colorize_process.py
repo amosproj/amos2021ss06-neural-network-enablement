@@ -32,7 +32,8 @@ SUCCESS = 0
 
 class ColorizeProcess:
 
-    def __init__(self, modelPath, modelWidth=numpy.uint32(224), modelHeight=numpy.uint32(224),
+    def __init__(self, modelPath, modelWidth=numpy.uint32(224),
+                 modelHeight=numpy.uint32(224),
                  deviceId=0, inputBuf=None, isInit=False, run_mode=0):
         """
         This function does the initiation of variables of colorize process
