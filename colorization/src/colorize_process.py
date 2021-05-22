@@ -365,4 +365,3 @@ class ColorizeProcess:
         print("end to finalize acl")
         acl.rt.free(self.inputBuf)
         self.inputBuf_ = None
-
