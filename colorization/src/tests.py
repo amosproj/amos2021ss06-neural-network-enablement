@@ -60,9 +60,9 @@ class IntegrationTest(unittest.TestCase):
         # check if the image and the path exist
         import os
         ret = os.path.exists(path_output)
-        self.assertEqual(ret, SUCCESS)
+        self.assertTrue(ret)
         ret = os.path.isfile(path_output)
-        self.assertEqual(ret, SUCCESS)
+        self.assertTrue(ret)
         # check if the image in output path is colorized
         import cv2
         img = cv2.imread(path_output)
