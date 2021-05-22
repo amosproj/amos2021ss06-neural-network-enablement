@@ -1,6 +1,6 @@
 import os
 import unittest
-from flask import json
+#from flask import json
 from app import app
 
 UPLOAD_FOLDER = os.path.abspath(os.path.dirname(__file__)) + "/uploaded/"
@@ -21,6 +21,7 @@ class BasicTests(unittest.TestCase):
 
     # executed after each test
     def tearDown(self):
+        # check the test data would not influence the Webservice
         pass
 
     ###############
@@ -31,35 +32,22 @@ class BasicTests(unittest.TestCase):
         response = self.app.get('/', follow_redirects=True)
         self.assertEqual(response.status_code, 200)
 
-    # TODO: upload(), upload image
+    # TODO: upload() + all(), upload image
     def test_upload_image(self):
-        # check return code and msg
-        # check the uploaded file exists
-
-
-    # TODO: all(), get list of urls of gray pictures
-    def test_all_urls(self):
-        # check return
-        # anything else? colored pictures excluded? amount of urls == amount of folders?
+        # check return code and msg, all conditions
+        # check return all urls of pictures
         pass
 
-    # TODO: result()
-    def test_result(self):
+    # TODO: result() + colorize()
+    def test_colorized_result(self):
         # check return data and code
-        # and ?
+        # check colorize process return and code
+        # and result['origin'],result['colorized']
         pass
 
-    # TODO: delete()
+    # TODO: delete() + all(), similar to test_upload_image()
     def test_delete(self):
         # check return code and msg
         # check files&folders is not there anymore
         pass
 
-    # TODO: colorize()
-    def test_colorize(self):
-        # check return code and msg
-        # check input and output path are both file
-        pass
-
-if __name__ == "__main__":
-    unittest.main()
