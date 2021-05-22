@@ -17,7 +17,6 @@
 * Description: handle acl resource
 '''
 
-import sys
 import numpy
 import acl
 import cv2
@@ -33,7 +32,7 @@ SUCCESS = 0
 class ColorizeProcess:
 
     def __init__(self, modelPath, modelWidth=numpy.uint32(224),
-                 modelHeight=numpy.uint32(224), deviceId=0,
+                 modelHeight = numpy.uint32(224), deviceId=0,
                  inputBuf=None, isInit=False, run_mode=0):
         """
         This function does the initiation of variables of colorize process
@@ -292,7 +291,7 @@ class ColorizeProcess:
 
         height = input_image[0]
         width = input_image[1]
-        ab_channel_resize = cv2.resize(ab_channel,(height,width))
+        ab_channel_resize = cv2.resize(ab_channel, (height, width))
 
         # result Lab image
 
@@ -305,10 +304,10 @@ class ColorizeProcess:
         output_image = output_image * 255
         cv2.imshow('output_image', output_image)
         cv2.imwrite(output_image_path,output_image)
-        #self.SaveImage(imageFile,output_image)
+        # self.SaveImage(imageFile, output_image)
         return SUCCESS
 
-    def SaveImage(self,origImageFile,image):
+    def SaveImage(self, origImageFile,image):
         """This function saves the colorized image in a specified path
            Parameters:
            -----------
@@ -324,8 +323,7 @@ class ColorizeProcess:
         cv2.waitKey(0)
         cv2.destroyAllWindows()
 
-
-    def GetInferenceOutputItem(self,inferenceOutput): #input: aclmdlDataset* ,
+    def GetInferenceOutputItem(self,inferenceOutput):   # input: aclmdlDataset*,
         # inferenceOutput
         dataBuffer = acl.mdl.get_dataset_buffer(inferenceOutput, 0)
         if dataBuffer is None:
@@ -339,16 +337,15 @@ class ColorizeProcess:
         if bufferSize == 0:
             print("The dataset buffer size of model inference output is 0 ")
             return None
-
         data = None
         if self.runMode_ == self.ACL_HOST:
             data = utils.CopyDataDeviceToHost(dataBufferDev, bufferSize)
-            if data == None:
+            if data is None:
                 print("Copy inference output to host failed")
                 return None
         else:
             data = dataBufferDev
-        itemDataSize = bufferSize
+        # itemDataSize = bufferSize
         return data
 
     def DestroyResource(self):
