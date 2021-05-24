@@ -59,24 +59,21 @@ class Modelprocess:
         if self.loadflag:
             logging.error("has already loaded a model")
             return 1
-        work_size, weight_size, ret = acl.mdl.query_size(modelPath, self.modelMemSize,
-                                                         self.modelWeightSize)
+        work_size, weight_size, ret = acl.mdl.query_size(modelPath)
         if ret != acl_constants.ACL_ERROR_None:
             logging.error("query model failed, model file is %s", modelPath)
             return 1
-        ret = acl.rt.malloc(self.modelMemPtr, self.modelMemSize,
-                            acl.ACL_MEM_MALLOC_HUGE_FIRST)
+        ret = acl.rt.malloc(self.modelMemSize, acl.ACL_MEM_MALLOC_HUGE_FIRST)
         if ret != acl_constants.ACL_ERROR_NONE:
             logging.error("malloc buffer for mem failed, require size is %zu",
                           self.modelMemSize)
             return 1
-        ret = acl.rt.malloc(self.modelWeightPtr, self.modelWeightSize,
-                            acl.ACL_MEM_MALLOC_HUGE_FIRST)
+        ret = acl.rt.malloc(self.modelWeightSize, acl.ACL_MEM_MALLOC_HUGE_FIRST)
         if ret != acl_constants.ACL_ERROR_NONE:
             logging.error("malloc buffer for weight failed, require size is %zu",
                           self.modelWeightSize)
             return 1
-        model_id, ret = acl.mdl.load_from_file_with_mem(modelPath, self.modelId,
+        model_id, ret = acl.mdl.load_from_file_with_mem(modelPath,
                                                         self.modelMemPtr,
                                                         self.modelMemSize,
                                                         self.modelWeightPtr,
@@ -172,7 +169,7 @@ class Modelprocess:
         for i in range(0, outputSize):
             buffer_size = acl.mdl.get_output_size_by_index(self.modelDesc, i)
             outputBuffer = None
-            ret = acl.rt.malloc(outputBuffer, buffer_size, acl.ACL_MEM_MALLOC_NORMAL_ONLY)
+            ret = acl.rt.malloc(buffer_size, acl.ACL_MEM_MALLOC_NORMAL_ONLY)
             if ret != acl_constants.ACL_ERROR_NONE:
                 logging.error("can't malloc buffer, size is %zu, create output failed",
                               buffer_size)
