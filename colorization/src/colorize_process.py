@@ -183,7 +183,6 @@ class ColorizeProcess:
         if the process run in Atlas, copys the picture data to the device;
         copys the L channel into the malloc memory location.
 
-
         Parameters:
         -----------
         input:
@@ -201,8 +200,10 @@ class ColorizeProcess:
 
         # resize
         reiszeMat = numpy.zeros(self.modelWidth, numpy.float32)
+
         reiszeMat = cv2.resize(mat, (self.modelWidth, self.modelHeight),
                                cv2.INTER_CUBIC)
+
 
         # deal image
         reiszeMat = cv2.convertScaleAbs(reiszeMat, cv2.CV_32FC3)
@@ -217,7 +218,6 @@ class ColorizeProcess:
             ret = acl.rt.memcpy(self.inputBuf, self.inputDataSize, reiszeMatL,
                                 self.inputDataSize,
                                 acl_constants.ACL_MEMCPY_HOST_TO_DEVICE)
-
             if ret != acl_constants.ACL_ERROR_NONE:  # ACL_ERROR_NONE will be
                 # deprecated in future releases.
                 # could Use ACL_SUCCESS instead.
@@ -267,6 +267,7 @@ class ColorizeProcess:
         and save it.
          It combines L channel obtained from source image and ab channels
          from Inference result.
+
          Parameters:
         -----------
         input_image_path : str
@@ -284,17 +285,19 @@ class ColorizeProcess:
         if data is None:
             return FAILED
 
+        # size = int(dataSize)
+
         # get a and b channel result data
+
         inference_result = cv2.imread(modelOutput)
         inference_result = cv2.resize(inference_result, (self.modelWidth,
                                                          self.modelHeight))
         ab_channel = inference_result
         # pull out L channel in original/source image
 
-        input_image = cv2.imread(input_image_path, cv2.IMREAD_COLOR)  # reading
-        # input image
-        input_image = cv2.resize(input_image, (self.modelWidth,
-                                               self.modelHeight))
+        input_image = cv2.imread(input_image_path, cv2.IMREAD_COLOR)
+        input_image = cv2.resize(input_image, (self.modelWidth, self.modelHeight))
+
         input_image = numpy.float32(input_image)
         input_image = 1.0 * input_image / 255  # Normalizing the
         # input image values
@@ -324,10 +327,19 @@ class ColorizeProcess:
         output_image = output_image * 255
         cv2.imshow('output_image', output_image)
         cv2.imwrite(output_image_path, output_image)
-        # self.SaveImage(imageFile,output_image)
+
+        # self.SaveImage(imageFile, output_image)
         return SUCCESS
 
     def SaveImage(self, origImageFile, image):
+        """This function saves the colorized image in a specified path
+           Parameters:
+           -----------
+           origImageFile: str
+              the path of original image file
+           image: image
+              colorized image obtained from postprocess
+           returns: None"""
         newpath = os.path.join(origImageFile, "Saved_images")
         os.makedirs(newpath)
         image = cv2.imread(image)
@@ -370,7 +382,6 @@ class ColorizeProcess:
         if bufferSize == 0:
             print("The dataset buffer size of model inference output is 0 ")
             return None
-
         data = None
         if self.run_mode == acl_constants.ACL_HOST:
             data = utils.CopyDataDeviceToHost(dataBufferDev, bufferSize)
@@ -379,6 +390,8 @@ class ColorizeProcess:
                 return None
         else:
             data = dataBufferDev
+
+        # itemDataSize = bufferSize
         return data
 
     def DestroyResource(self):
