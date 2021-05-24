@@ -87,7 +87,7 @@ class ColorizeProcess:
             on failure this function returns 1
         """
 
-        ACLCONFIGPATH = ".../src/acl.json"
+        ACLCONFIGPATH = "acl.json"
         # ret = acl.init()
         ret = acl.init(ACLCONFIGPATH)
         if ret != acl_constants.ACL_ERROR_NONE:
