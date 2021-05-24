@@ -71,6 +71,7 @@ class ColorizeProcess:
         self.inputBuf = inputBuf
         self.isInited = isInit
         self.run_mode = run_mode
+        self.model = Modelprocess()
 
     def InitResource(self):
         """
@@ -87,9 +88,9 @@ class ColorizeProcess:
             on failure this function returns 1
         """
 
-        ACLCONFIGPATH = "./acl.json"
-        #  ret = acl.init()
-        ret = acl.init(ACLCONFIGPATH)
+        #  ACLCONFIGPATH = "./acl.json"
+        ret = acl.init()
+        #  ret = acl.init(ACLCONFIGPATH)
         if ret != acl_constants.ACL_ERROR_NONE:
             print("Acl init failed")
             return FAILED
@@ -123,16 +124,16 @@ class ColorizeProcess:
             on failure this function returns 1
         """
 
-        ret = Modelprocess.LoadModelFromFileWithMem(OMMODELPATH)
+        ret = self.model.LoadModelFromFileWithMem(OMMODELPATH)
         if ret != SUCCESS:
             print("execute LoadModelFromFileWithMem failed")
             return FAILED
 
-        ret = Modelprocess.CreateDesc()
+        ret = self.model.CreateDesc()
         if ret != SUCCESS:
             print("execute CreateDesc failed")
             return FAILED
-        ret = Modelprocess.CreateOutput()
+        ret = self.model.CreateOutput()
         if ret != SUCCESS:
             print("execute CreateOutput failed")
             return FAILED
@@ -142,7 +143,7 @@ class ColorizeProcess:
         if self.inputBuf is None:
             print("Acl malloc image buffer failed.")
             return FAILED
-        ret = Modelprocess.CreateInput(self.inputBuf, self.inputDataSize)
+        ret = self.model.CreateInput(self.inputBuf, self.inputDataSize)
         if ret != SUCCESS:      # check return value
             print("Create mode input dataset failed")
             return FAILED
@@ -236,11 +237,11 @@ class ColorizeProcess:
         """
 
         inferenceOutput = None
-        ret = Modelprocess.Execute()
+        ret = self.model.Execute()
         if ret != SUCCESS:
             print("Execute model inference failed")
             return inferenceOutput, FAILED
-        inferenceOutput = Modelprocess.GetModelOutputData()
+        inferenceOutput = self.model.GetModelOutputData()
         return inferenceOutput, SUCCESS
 
     def postprocess(self,input_image_path, output_image_path, modelOutput):
@@ -343,10 +344,10 @@ class ColorizeProcess:
 
 
     def DestroyResource(self):
-        Modelprocess.Unload()
-        Modelprocess.DestroyDesc()
-        Modelprocess.DestroyInput()
-        Modelprocess.DestroyOutput()
+        self.model.Unload()
+        self.model.DestroyDesc()
+        self.model.DestroyInput()
+        self.model.DestroyOutput()
 
         ret = acl.rt.reset_device(self.deviceId)
         if ret != acl_constants.ACL_ERROR_NONE:
