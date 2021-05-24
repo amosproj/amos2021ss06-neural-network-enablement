@@ -24,6 +24,7 @@ import cv2
 import os
 import utils
 from model_process import Modelprocess
+import acl_constants
 
 # constant variables
 FAILED = 1
@@ -86,23 +87,23 @@ class ColorizeProcess:
             on failure this function returns 1
         """
 
-        ACLCONFIGPATH = ".../src/acl.json"
-        # ret = acl.init()
-        ret = acl.init(ACLCONFIGPATH)
-        if ret != acl.ACL_ERROR_NONE:
+        #  ACLCONFIGPATH = "../acl.json"
+        ret = acl.init()
+        #  ret = acl.init(ACLCONFIGPATH)
+        if ret != acl_constants.ACL_ERROR_NONE:
             print("Acl init failed")
             return FAILED
         print("Acl init success")
 
         # open device
         ret = acl.rt.set_device(self.deviceId)
-        if ret != acl.ACL_ERROR_NONE:
+        if ret != acl_constants.ACL_ERROR_NONE:
             print("Acl open device ", self.deviceId, " failed.")
             return FAILED
         print("Open device ", self.deviceId, " success.")
 
-        (self.run_mode, ret) = acl.re.get_run_mode()
-        if ret != acl.ACL_ERROR_NONE:
+        (self.run_mode, ret) = acl.rt.get_run_mode()
+        if ret != acl_constants.ACL_ERROR_NONE:
             print("acl get_run_mode failed.")
             return FAILED
         return SUCCESS
@@ -137,8 +138,7 @@ class ColorizeProcess:
             return FAILED
 
         (self.inputBuf, ret) = acl.rt.malloc(self.inputDataSize,
-                                             acl.ACL_MEM_MALLOC_HUGE_FIRST)
-        # ACL_MEM_MALLOC_HUGE_FIRST = 0
+                                             acl_constants.ACL_MEM_MALLOC_HUGE_FIRST)
         if self.inputBuf is None:
             print("Acl malloc image buffer failed.")
             return FAILED
@@ -203,13 +203,13 @@ class ColorizeProcess:
                                 self.inputDataSize, acl.ACL_MEMCPY_HOST_TO_DEVICE)
             # ACL_MEMCPY_HOST_TO_DEVICE = 1
 
-            if ret != acl.ACL_ERROR_NONE:
+            if ret != acl_constants.ACL_ERROR_NONE:
                 print("Copy resized image data to device failed.")
                 return FAILED
             else:
                 # reiszeMat is local variable , cant pass out of funktion, need to copy it
                 acl.rt.memcpy(self.inputBuf, self.inputDataSize, reiszeMatL,
-                              self.inputDataSize, acl.ACL_MEMCPY_DEVICE_TO_HOST)
+                              self.inputDataSize, acl_constants.ACL_MEMCPY_DEVICE_TO_HOST)
 
         return SUCCESS
 
@@ -240,8 +240,7 @@ class ColorizeProcess:
             print("Execute model inference failed")
             return inferenceOutput, FAILED
         inferenceOutput = Modelprocess.GetModelOutputData()
-        return inferenceOutput, SUCCESS  # The return value and quit critetia should be
-        # unified in general!!!
+        return inferenceOutput, SUCCESS
 
     def postprocess(self, input_image_path, output_image_path, modelOutput):
         """This function converts LAB image to BGR image (colorization) and save it.
@@ -260,7 +259,7 @@ class ColorizeProcess:
             on failure this function returns 1
         """
         dataSize = 0
-        data = self.GetInferenceOutputItem(dataSize)
+        data = self.GetInferenceOutputItem(dataSize, modelOutput)
         if data is None:
             return FAILED
         # size = int(dataSize)
@@ -337,7 +336,7 @@ class ColorizeProcess:
             print("The dataset buffer size of model inference output is 0 ")
             return None
         data = None
-        if self.runMode_ == self.ACL_HOST:
+        if self.runMode_ == acl_constants.ACL_HOST:
             data = utils.CopyDataDeviceToHost(dataBufferDev, bufferSize)
             if data is None:
                 print("Copy inference output to host failed")
@@ -354,15 +353,16 @@ class ColorizeProcess:
         Modelprocess.DestroyOutput()
 
         ret = acl.rt.reset_device(self.deviceId)
-        if ret != acl.ACL_ERROR_NONE:
+        if ret != acl_constants.ACL_ERROR_NONE:
             print("reset device failed")
 
         print("end to reset device is %d", self.deviceId)
 
         ret = acl.finalize()
-        if ret != acl.ACL_ERROR_NONE:
+        if ret != acl_constants.ACL_ERROR_NONE:
             print("finalize acl failed")
 
         print("end to finalize acl")
         acl.rt.free(self.inputBuf)
-        self.inputBuf_ = None
+        self.inputBuf = None
+

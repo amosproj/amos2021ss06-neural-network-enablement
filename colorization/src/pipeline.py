@@ -57,22 +57,21 @@ def colorize_image(image_path_input, image_path_output):
     if ret == FAILED:
         print("init colorize process failed")
         return FAILED
-    # TODO: load image located at <image_path_input> & preprocess, end image to device
+    #  load image located at <image_path_input> & preprocess, end image to device
     if colorize.Preprocess(image_path_input) == FAILED:
         print("Read file ", image_path_input, " failed, continue to read next")
         return FAILED
-    # TODO: inference & colorize
+    #  inference & colorize
     (inferenceOutput, ret) = colorize.inference()
     if ret == FAILED or inferenceOutput is None:
         print("Inference model inference output data failed")
         return FAILED
-    # TODO: postprocess & save image
+    #  postprocess & save image
     ret = colorize.postprocess(image_path_input, image_path_output, inferenceOutput)
     if ret == FAILED:
         print("Process model inference output data failed")
         return FAILED
-
-    # TODO: return success code -> talk with webservice people
+    #  return success code
     return SUCCESS
 
 
