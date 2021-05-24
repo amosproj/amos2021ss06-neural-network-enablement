@@ -21,6 +21,7 @@ exclude_lines =
 
 omit =
     */venv/*
-	tests.py
+	colorization/src/tests.py
+    Webservice/test_web.py
 
 show_missing = True
