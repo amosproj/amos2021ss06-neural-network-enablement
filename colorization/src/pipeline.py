@@ -1,7 +1,7 @@
 from colorize_process import ColorizeProcess
 # from utils import CopyDataDeviceToHost
 import numpy
-# import cv2
+import cv2
 # from Data.data import *
 # import splitVideo
 
