@@ -344,10 +344,10 @@ class ColorizeProcess:
 
 
     def DestroyResource(self):
-        self.model.Unload()
-        self.model.DestroyDesc()
-        self.model.DestroyInput()
-        self.model.DestroyOutput()
+        Modelprocess.Unload()
+        Modelprocess.DestroyDesc()
+        Modelprocess.DestroyInput()
+        Modelprocess.DestroyOutput()
 
         ret = acl.rt.reset_device(self.deviceId)
         if ret != acl_constants.ACL_ERROR_NONE:
