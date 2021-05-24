@@ -54,7 +54,8 @@ class PipelineTests(unittest.TestCase):
         Unit-Test to test the postprocessing of an image
         """
         # TODO test the postprocessing
-        ret = ColorizeProcess.postprocess(self.input_image_path, self.output_image_path, self.model_output)
+        ret = ColorizeProcess.postprocess(self.input_image_path,
+                                          self.output_image_path, self.model_output)
         if self.model_output is None:
             self.assertEqual(ret, FAILED)
         if self.model_output is not None:
