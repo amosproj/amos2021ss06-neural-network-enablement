@@ -218,8 +218,7 @@ class Modelprocess:
         return 0
 
     def Unload(self):
-        """ Function Usage: Uninstalls the model and releases resources after the model
-            inference is complete.
+        """ Function Usage: DestroyDesc
             Input Args: None
             returns: None """
         if not self.loadflag:

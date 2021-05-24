@@ -25,8 +25,15 @@ class PipelineTests(unittest.TestCase):
         """
         Unit-Test to test the preprocessing of an image
         """
-        # TODO: test the preprocess function e.g. the output size etc.
-        self.assertTrue(True)
+        # test1: input a not existing file, should return FAILED
+        imageFile = "/home/ke/Pictures/notexisting.jpg"
+        result = Preprocess(self, imageFile)
+        self.assertEqual(result, FAILED)
+        # test2: input a existing and right file, should return SUCCESS
+        imageFile2 = "/home/ke/amos-ss2021-neural-network-enablement/Data/dog" \
+                     ".png "
+        result2 = Preprocess(self, imageFile2)
+        self.assertEqual(result2, SUCCESS)
 
     def test_step_colorize_image(self):
         """
