@@ -22,6 +22,7 @@ import logging
 import acl
 import acl_constants
 
+
 class Modelprocess:
     def __init__(self, loadflag=False, modelId=0, modelMemPtr=None, modelMemSize=0,
                  modelWeightPtr=None, modelWeightSize=0, modelDesc=None, input=None,
