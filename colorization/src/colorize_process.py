@@ -1,3 +1,11 @@
+import numpy
+import acl
+import cv2
+ess — This check has started... import os
+import utils
+from model_process import Modelprocess
+import acl_constants
+
 """
 * Copyright 2020 Huawei Technologies Co., Ltd
 *
@@ -16,14 +24,6 @@
 * File sample_process.cpp
 * Description: handle acl resource
 """
-
-import numpy
-import acl
-import cv2
-ess — This check has started... import os
-import utils
-from model_process import Modelprocess
-import acl_constants
 
 # constant variables
 FAILED = 1
@@ -88,9 +88,8 @@ class ColorizeProcess:
         """
 
 
-        #  ACLCONFIGPATH = "./acl.json"
-        ret = acl.init()
-        #  ret = acl.init(ACLCONFIGPATH)
+
+        ret = acl.init() # no configuration.info as argument 
         if ret != acl_constants.ACL_ERROR_NONE:
             print("Acl init failed")
             return FAILED
@@ -201,7 +200,7 @@ class ColorizeProcess:
         """
         # read image using OPENCV
         mat = cv2.imread(imageFile, cv2.IMREAD_COLOR).astype(numpy.float32)
-        if numpy.any(mat) == None:  # if matrix is empty, every term is none
+        if numpy.any(mat) is None:  # if matrix is empty, every term is none
             return FAILED
 
         # resize
