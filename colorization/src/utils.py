@@ -1,5 +1,6 @@
 import os
-#import acl
+# import acl
+
 
 def IsDirectory(inputpath):
     """This function checks whether a given path is a file.
@@ -12,6 +13,7 @@ def IsDirectory(inputpath):
             """
     return os.path.isfile(inputpath)
 
+
 def IsPathExist(inputpath):
     """This function checks whether a given path exists.
              Parameters:
@@ -23,9 +25,11 @@ def IsPathExist(inputpath):
             """
     return os.path.exists(inputpath)
 
+
 # has never been referenced
 # def SplitPath(inputpath):
 # def GetPathFiles(inputpath):
+
 
 def GetAllFiles(inputpath):
     """This function is used to get all file names under a certain path.
@@ -33,9 +37,11 @@ def GetAllFiles(inputpath):
             -----------
             inputpath : str
             return value :
-                Return a list containing the names of the entries in the directory given by path
+                Return a list containing the names of the entries in the directory
+                given by path
             """
     return os.listdir(inputpath)
+
 
 
 def CopyDataDeviceToHost(deviceData,dataSize):
@@ -44,7 +50,8 @@ def CopyDataDeviceToHost(deviceData,dataSize):
     # check malloc success
     if malret == 0:
         # copy from device to host
-        cpyret = acl.rt.memcpy(host_ptr, dataSize, deviceData, dataSize, ACL_MEMCPY_DEVICE_TO_HOST)
+        cpyret = acl.rt.memcpy(host_ptr, dataSize, deviceData, dataSize,
+        ACL_MEMCPY_DEVICE_TO_HOST)
         if cpyret == 0:
             freehostret = acl.rt.free_host(host_ptr)
             return host_ptr
@@ -54,5 +61,4 @@ def CopyDataDeviceToHost(deviceData,dataSize):
     else:
         #malloc fails
         return 1
-    
 

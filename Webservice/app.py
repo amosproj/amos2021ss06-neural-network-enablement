@@ -57,7 +57,7 @@ def uploaded_file(fpath, filename):
     return send_from_directory(folderpath, filename)
 
 
-# return list of all urls of uploaded files --backup
+# return list of all urls of uploaded files
 @app.route('/all/')
 def all():
     urls = []
