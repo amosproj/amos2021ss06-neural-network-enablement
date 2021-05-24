@@ -3,8 +3,8 @@ import acl
 import cv2
 import utils
 import acl_constants
+import os
 from model_process import Modelprocess
-ess — This check has started... import os
 """
 * Copyright 2020 Huawei Technologies Co., Ltd
 *
