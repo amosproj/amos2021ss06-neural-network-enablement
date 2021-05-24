@@ -283,7 +283,6 @@ class ColorizeProcess:
         data = self.GetInferenceOutputItem(dataSize, modelOutput)
         if data is None:
             return FAILED
-        size = int(dataSize)
 
         # get a and b channel result data
         inference_result = cv2.imread(modelOutput)
@@ -380,7 +379,6 @@ class ColorizeProcess:
                 return None
         else:
             data = dataBufferDev
-        itemDataSize = bufferSize
         return data
 
     def DestroyResource(self):
