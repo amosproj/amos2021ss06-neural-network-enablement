@@ -21,10 +21,6 @@ jobs:
         with:
           python-version: 3.7.5
 
-      - name: Set environment variables
-        run: |
-          echo "PYTHONPATH=$PYTHONPATH:$HOME/Ascend/ascend-toolkit/latest/pyACL/python/site-packages/acl" >> $GITHUB_ENV
-
       - name: Set up environment
         run: bash Webservice/scripts/setup.sh --yes
 
