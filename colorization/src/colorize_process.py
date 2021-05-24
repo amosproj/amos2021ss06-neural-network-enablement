@@ -1,3 +1,10 @@
+import numpy
+import acl
+import cv2
+import utils
+import acl_constants
+import os
+from model_process import Modelprocess
 """
 * Copyright 2020 Huawei Technologies Co., Ltd
 *
@@ -16,15 +23,6 @@
 * File sample_process.cpp
 * Description: handle acl resource
 """
-
-
-import numpy
-import acl
-import cv2
-import os
-import utils
-from model_process import Modelprocess
-import acl_constants
 
 # constant variables
 FAILED = 1
@@ -87,10 +85,7 @@ class ColorizeProcess:
             on success this function returns 0
             on failure this function returns 1
         """
-
-        #  ACLCONFIGPATH = "./acl.json"
-        ret = acl.init()
-        #  ret = acl.init(ACLCONFIGPATH)
+        ret = acl.init()  # no configuration.info as argument
         if ret != acl_constants.ACL_ERROR_NONE:
             print("Acl init failed")
             return FAILED
@@ -139,10 +134,12 @@ class ColorizeProcess:
             return FAILED
 
         (self.inputBuf, ret) = acl.rt.malloc(self.inputDataSize,
-                                             acl_constants.ACL_MEM_MALLOC_HUGE_FIRST)
+                                             acl_constants.
+                                             ACL_MEM_MALLOC_HUGE_FIRST)
         if self.inputBuf is None:
             print("Acl malloc image buffer failed.")
             return FAILED
+
         ret = self.model.CreateInput(self.inputBuf, self.inputDataSize)
         if ret != SUCCESS:      # check return value
             print("Create mode input dataset failed")
@@ -180,12 +177,33 @@ class ColorizeProcess:
         return SUCCESS
 
     def Preprocess(self, imageFile):
+        """
+        This function reads the imageFile as a float-Matrix;
+        downsize to modelWidth*modelHeight;
+        if the process run in Atlas, copys the picture data to the device;
+        copys the L channel into the malloc memory location.
+
+        Parameters:
+        -----------
+        input:
+        imageFile : str
+            the path of the picture
+
+        return value : int
+            on success this function returns 0
+            on failure this function returns 1
+        """
         # read image using OPENCV
         mat = cv2.imread(imageFile, cv2.IMREAD_COLOR).astype(numpy.float32)
+        if numpy.any(mat) is None:  # if matrix is empty, every term is none
+            return FAILED
 
         # resize
         reiszeMat = numpy.zeros(self.modelWidth, numpy.float32)
-        reiszeMat = cv2.resize(mat, (self.modelWidth, self. modelHeight), cv2.INTER_CUBIC)
+
+        reiszeMat = cv2.resize(mat, (self.modelWidth, self.modelHeight),
+                               cv2.INTER_CUBIC)
+
 
         # deal image
         reiszeMat = cv2.convertScaleAbs(reiszeMat, cv2.CV_32FC3)
@@ -195,32 +213,33 @@ class ColorizeProcess:
         channels = cv2.split(reiszeMat)
         reiszeMatL = channels[0] - 50
 
-        if numpy.any(mat) is None:  # if (mat is empty) return true,one false return false
-            return FAILED
-        # TODO
         if self.run_mode == 1:
             # if run in AI1, need to copy the picture data to the device
             ret = acl.rt.memcpy(self.inputBuf, self.inputDataSize, reiszeMatL,
-                                self.inputDataSize, acl.ACL_MEMCPY_HOST_TO_DEVICE)
-            # ACL_MEMCPY_HOST_TO_DEVICE = 1
-
-            if ret != acl_constants.ACL_ERROR_NONE:
+                                self.inputDataSize,
+                                acl_constants.ACL_MEMCPY_HOST_TO_DEVICE)
+            if ret != acl_constants.ACL_ERROR_NONE:  # ACL_ERROR_NONE will be
+                # deprecated in future releases.
+                # could Use ACL_SUCCESS instead.
                 print("Copy resized image data to device failed.")
                 return FAILED
             else:
-                # reiszeMat is local variable , cant pass out of funktion, need to copy it
+                # 'reiszeMatL' is local variable , cant pass out of function,
+                # need to copy it
                 acl.rt.memcpy(self.inputBuf, self.inputDataSize, reiszeMatL,
-                              self.inputDataSize, acl_constants.ACL_MEMCPY_DEVICE_TO_HOST)
+                              self.inputDataSize)
 
         return SUCCESS
 
     # Calling the model_process program to do the real colorize process.
     # input: object itself
     # output: pointer value for the result, and the flag SUCCESS or FAILED
-    # ATTENTION: THE INPUT AND OUTPUT ARE CHANGED, COMPARE TO THE ORIGINAL C++ CODE!!
+    # ATTENTION: THE INPUT AND OUTPUT ARE CHANGED,
+    # COMPARE TO THE ORIGINAL C++ CODE!!
     def inference(self):
         """
-        This function activate the model process after preprocess, and get result back.
+        This function activate the model process after preprocess,
+        and get result back.
 
 
         Parameters:
@@ -244,9 +263,11 @@ class ColorizeProcess:
         return inferenceOutput, SUCCESS
 
     def postprocess(self, input_image_path, output_image_path, modelOutput):
-        """This function converts LAB image to BGR image (colorization) and save it.
-         It combines L channel obtained from source image and ab channels from Inference
-         result.
+        """This function converts LAB image to BGR image (colorization)
+        and save it.
+         It combines L channel obtained from source image and ab channels
+         from Inference result.
+
          Parameters:
         -----------
         input_image_path : str
@@ -263,6 +284,7 @@ class ColorizeProcess:
         data = self.GetInferenceOutputItem(dataSize, modelOutput)
         if data is None:
             return FAILED
+
         # size = int(dataSize)
 
         # get a and b channel result data
@@ -275,8 +297,10 @@ class ColorizeProcess:
 
         input_image = cv2.imread(input_image_path, cv2.IMREAD_COLOR)
         input_image = cv2.resize(input_image, (self.modelWidth, self.modelHeight))
+
         input_image = numpy.float32(input_image)
-        input_image = 1.0 * input_image / 255  # Normalizing the input image values
+        input_image = 1.0 * input_image / 255  # Normalizing the
+        # input image values
         bgrtolab = cv2.cvtColor(input_image, cv2.COLOR_BGR2LAB)
         cv2.imshow("Lab_channel", bgrtolab)
         (L, A, B) = cv2.split(bgrtolab)
@@ -303,6 +327,7 @@ class ColorizeProcess:
         output_image = output_image * 255
         cv2.imshow('output_image', output_image)
         cv2.imwrite(output_image_path, output_image)
+
         # self.SaveImage(imageFile, output_image)
         return SUCCESS
 
@@ -318,40 +343,80 @@ class ColorizeProcess:
         newpath = os.path.join(origImageFile, "Saved_images")
         os.makedirs(newpath)
         image = cv2.imread(image)
-        cv2.imwrite(os.path.join(newpath, "Saved_image.png"), image)   # Saving images
+        cv2.imwrite(os.path.join(newpath, "Saved_image.png"), image)  # Saving
+        # images
         cv2.waitKey(0)
         cv2.destroyAllWindows()
 
-    def GetInferenceOutputItem(self, inferenceOutput):   # input: aclmdlDataset*,
-        # inferenceOutput
+    def GetInferenceOutputItem(self, itemDataSize, inferenceOutput):
+        """
+        This function obtains the first Buffer of inferenceOutput in dataBuffer;
+        obtains the address object of data of the dataBuffer;
+        obtains the memory size of data of the dataBuffer in bytes
+
+        Parameters:
+        -----------
+        input:
+        itemDataSize: int
+            data size
+        inferenceOutput: aclmdlDataset
+            pointer of the result saved after colorization
+
+        return value :
+        data: int
+        the dataset buffer address from model inference output
+        """
         dataBuffer = acl.mdl.get_dataset_buffer(inferenceOutput, 0)
         if dataBuffer is None:
             print("Get the dataset buffer from model inference output failed")
             return None
+
         dataBufferDev = acl.mdl.get_data_buffer_addr(dataBuffer)
         if dataBufferDev is None:
-            print("Get the dataset buffer address from model inference output failed")
+            print(
+                "Get the dataset buffer address from model inference output "
+                "failed")
             return None
+
         bufferSize = acl.mdl.get_data_buffer_size(dataBuffer)
         if bufferSize == 0:
             print("The dataset buffer size of model inference output is 0 ")
             return None
         data = None
-        if self.runMode_ == acl_constants.ACL_HOST:
+        if self.run_mode == acl_constants.ACL_HOST:
             data = utils.CopyDataDeviceToHost(dataBufferDev, bufferSize)
             if data is None:
                 print("Copy inference output to host failed")
                 return None
         else:
             data = dataBufferDev
+
         # itemDataSize = bufferSize
         return data
 
     def DestroyResource(self):
-        Modelprocess.Unload()
-        Modelprocess.DestroyDesc()
-        Modelprocess.DestroyInput()
-        Modelprocess.DestroyOutput()
+        """
+        This function uninstalls the model and releases resources after the
+        model inference is complete; destroys data of the aclmdlDesc type;
+        destroys input and output data; resets the computing device and
+        releases the resources (including the default context and stream,
+        and all streams created in the default context) on the device;
+        deinitializes ACL before the application processends;
+        frees the memory on the device allocated by acl.rt.malloc.
+
+
+        Parameters:
+        -----------
+        input:
+        self: class ColorizeProcess
+
+        return value :
+        None
+        """
+        self.model.Unload(self)
+        self.model.DestroyDesc(self)
+        self.model.DestroyInput(self)
+        self.model.DestroyOutput(self)
 
         ret = acl.rt.reset_device(self.deviceId)
         if ret != acl_constants.ACL_ERROR_NONE:
