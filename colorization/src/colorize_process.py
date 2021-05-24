@@ -203,8 +203,6 @@ class ColorizeProcess:
 
         reiszeMat = cv2.resize(mat, (self.modelWidth, self.modelHeight),
                                cv2.INTER_CUBIC)
-
-
         # deal image
         reiszeMat = cv2.convertScaleAbs(reiszeMat, cv2.CV_32FC3)
         reiszeMat = 1.0 * reiszeMat / 255

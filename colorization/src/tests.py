@@ -3,6 +3,7 @@ from pipeline import colorize_image
 from colorize_process import Preprocess
 import os
 import cv2
+from colorize_process import ColorizeProcess
 
 FAILED = 1
 SUCCESS = 0
@@ -21,6 +22,11 @@ class PipelineTests(unittest.TestCase):
     This class contains tests for each part of the pipeline
     See https://docs.python.org/3/library/unittest.html for more information.
     """
+
+    def setUp(self):
+        self.input_image_path = 'input_image.jpg'
+        self.output_image_path = 'output_image.jpg'
+        self.model_output = ''
 
     def test_step_preprocess_image(self):
         """
@@ -48,7 +54,12 @@ class PipelineTests(unittest.TestCase):
         Unit-Test to test the postprocessing of an image
         """
         # TODO test the postprocessing
-        self.assertTrue(True)
+        ret = ColorizeProcess.postprocess(self.input_image_path,
+                                          self.output_image_path, self.model_output)
+        if self.model_output is None:
+            self.assertEqual(ret, FAILED)
+        if self.model_output is not None:
+            self.assertEqual(ret, SUCCESS)
 
 
 class FunctionalTest(unittest.TestCase):
