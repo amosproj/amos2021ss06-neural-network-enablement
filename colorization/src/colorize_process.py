@@ -87,9 +87,9 @@ class ColorizeProcess:
             on failure this function returns 1
         """
 
-        ACLCONFIGPATH = ".../src/acl.json"
-        # ret = acl.init()
-        ret = acl.init(ACLCONFIGPATH)
+        #  ACLCONFIGPATH = "../acl.json"
+        ret = acl.init()
+        #  ret = acl.init(ACLCONFIGPATH)
         if ret != acl_constants.ACL_ERROR_NONE:
             print("Acl init failed")
             return FAILED
@@ -102,7 +102,7 @@ class ColorizeProcess:
             return FAILED
         print("Open device ", self.deviceId, " success.")
 
-        (self.run_mode, ret) = acl.re.get_run_mode()
+        (self.run_mode, ret) = acl.rt.get_run_mode()
         if ret != acl_constants.ACL_ERROR_NONE:
             print("acl get_run_mode failed.")
             return FAILED

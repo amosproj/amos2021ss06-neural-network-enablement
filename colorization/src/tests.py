@@ -43,7 +43,7 @@ class PipelineTests(unittest.TestCase):
         self.assertTrue(True)
 
 
-class IntegrationTest(unittest.TestCase):
+class FunctionalTest(unittest.TestCase):
     """
     This class contains tests for the complete pipeline.
     (i.e. the function pipeline.colorize_image)
@@ -51,7 +51,7 @@ class IntegrationTest(unittest.TestCase):
 
     def test_complete_colorize_image(self):
         """
-        Integration test to test the complete colorizing process
+        Functional test to test the complete colorizing process
         """
         path_input = "test_image.png"
         path_output = "colorized_image.png"
