@@ -1,11 +1,10 @@
 import numpy
 import acl
 import cv2
-ess — This check has started... import os
 import utils
-from model_process import Modelprocess
 import acl_constants
-
+from model_process import Modelprocess
+ess — This check has started... import os
 """
 * Copyright 2020 Huawei Technologies Co., Ltd
 *
@@ -86,10 +85,7 @@ class ColorizeProcess:
             on success this function returns 0
             on failure this function returns 1
         """
-
-
-
-        ret = acl.init() # no configuration.info as argument 
+        ret = acl.init()  # no configuration.info as argument
         if ret != acl_constants.ACL_ERROR_NONE:
             print("Acl init failed")
             return FAILED
