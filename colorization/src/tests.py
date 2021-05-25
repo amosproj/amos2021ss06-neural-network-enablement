@@ -31,14 +31,21 @@ class PipelineTests(unittest.TestCase):
         """
         Unit-Test to test the preprocessing of an image
         """
-        # test1: input a not existing file, should return FAILED
-        imageFile = "/home/ke/Pictures/notexisting.jpg"
-        result = ColorizeProcess.Preprocess(imageFile)
-        self.assertEqual(result, FAILED)
-        # test2: input a existing and right file, should return SUCCESS
-        imageFile2 = "../../Data/dog.png"
-        result2 = ColorizeProcess.Preprocess(imageFile2)
-        self.assertEqual(result2, SUCCESS)
+        # creat a new ColorizeProcess object namme proc
+        kModelWidth = numpy.uint32(224)
+        kModelHeight = numpy.uint32(224)
+        KMODELPATH = "../../model/colorization.om"  # the KMODELPATH is not in main
+        proc = ColorizeProcess(KMODELPATH, kModelWidth, kModelHeight)
+        ret = proc.Init()
+        if ret == SUCCESS:  # here only test if the Init() is success
+            # test1: input a not existing file, should return FAILED
+            imageFile = "/home/ke/Pictures/notexisting.jpg"
+            result = proc.Preprocess(imageFile)
+            self.assertEqual(result, FAILED)
+            # test2: input a existing and right file, should return SUCCESS
+            imageFile2 = "../../Data/dog.png"
+            result2 = proc.Preprocess(imageFile2)
+            self.assertEqual(result2, SUCCESS)
 
     def test_step_colorize_image(self):
         """
