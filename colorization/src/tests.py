@@ -1,6 +1,7 @@
 import unittest
 import os
 import cv2
+import numpy
 from colorize_process import ColorizeProcess
 from pipeline import colorize_image
 
