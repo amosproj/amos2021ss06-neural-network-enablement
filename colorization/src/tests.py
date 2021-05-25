@@ -1,7 +1,8 @@
 import unittest
-from pipeline import colorize_image
 import os
 import cv2
+from colorize_process import ColorizeProcess
+from pipeline import colorize_image
 
 FAILED = 1
 SUCCESS = 0
@@ -21,12 +22,23 @@ class PipelineTests(unittest.TestCase):
     See https://docs.python.org/3/library/unittest.html for more information.
     """
 
+    def setUp(self):
+        self.input_image_path = 'input_image.jpg'
+        self.output_image_path = 'output_image.jpg'
+        self.model_output = ''
+
     def test_step_preprocess_image(self):
         """
         Unit-Test to test the preprocessing of an image
         """
-        # TODO: test the preprocess function e.g. the output size etc.
-        self.assertTrue(True)
+        # test1: input a not existing file, should return FAILED
+        imageFile = "/home/ke/Pictures/notexisting.jpg"
+        result = ColorizeProcess.Preprocess(imageFile)
+        self.assertEqual(result, FAILED)
+        # test2: input a existing and right file, should return SUCCESS
+        imageFile2 = "../../Data/dog.png"
+        result2 = ColorizeProcess.Preprocess(imageFile2)
+        self.assertEqual(result2, SUCCESS)
 
     def test_step_colorize_image(self):
         """
@@ -40,10 +52,15 @@ class PipelineTests(unittest.TestCase):
         Unit-Test to test the postprocessing of an image
         """
         # TODO test the postprocessing
-        self.assertTrue(True)
+        ret = ColorizeProcess.postprocess(self.input_image_path,
+                                          self.output_image_path, self.model_output)
+        if self.model_output is None:
+            self.assertEqual(ret, FAILED)
+        if self.model_output is not None:
+            self.assertEqual(ret, SUCCESS)
 
 
-class IntegrationTest(unittest.TestCase):
+class FunctionalTest(unittest.TestCase):
     """
     This class contains tests for the complete pipeline.
     (i.e. the function pipeline.colorize_image)
@@ -51,7 +68,7 @@ class IntegrationTest(unittest.TestCase):
 
     def test_complete_colorize_image(self):
         """
-        Integration test to test the complete colorizing process
+        Functional test to test the complete colorizing process
         """
         path_input = "test_image.png"
         path_output = "colorized_image.png"

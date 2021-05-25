@@ -61,5 +61,4 @@ def CopyDataDeviceToHost(deviceData,dataSize):
     else:
         #malloc fails
         return 1
-
 '''

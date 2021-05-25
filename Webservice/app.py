@@ -19,14 +19,26 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.secret_key = b'wu8QvPtCDIM1/9ceoUS'
 
 
-@app.route('/')
+@app.route('/', methods=['GET'])
 def index():
+    '''
+    This endpoint displays the main html file.
+    Further functionality is provided via javascript.
+
+    Return type: html
+    '''
     return render_template("index.html")
 
 
 @app.route('/upload/', methods=['POST'])
 def upload():
-    # get the pics and videos
+    '''
+    This endpoint accepts a single image/video
+    and stores it in the folder specified in
+    app.config['UPLOAD_FOLDER']
+
+    Return type: json
+    '''
     file = request.files.get("file")
     if file and allowed_file(file.filename):
         sfilename = secure_filename(file.filename)
@@ -36,7 +48,7 @@ def upload():
         filename = str(nowtime) + "_" + sfilename
 
         # create folder and save file
-        folderpath = os.path.join(app.config['UPLOAD_FOLDER'], get_name(filename))
+        folderpath = os.path.join(UPLOAD_FOLDER, get_name(filename))
         os.mkdir(folderpath)
         filepath = os.path.join(folderpath, filename)
         file.save(filepath)
@@ -50,16 +62,24 @@ def upload():
         return jsonify(msg="No upload file"), 400
 
 
-# create url to sent files
-@app.route('/<fpath>/<filename>')
+@app.route('/<fpath>/<filename>', methods=['GET'])
 def uploaded_file(fpath, filename):
+    '''
+    This endpoint returns the image located at the given path
+
+    Return type: image
+    '''
     folderpath = os.path.join(UPLOAD_FOLDER, fpath)
     return send_from_directory(folderpath, filename)
 
 
-# return list of all urls of uploaded files
-@app.route('/all/')
+@app.route('/all/', methods=['GET'])
 def all():
+    '''
+    This endpoint returns a list of the urls of all uploaded images/videos
+
+    Return type: json
+    '''
     urls = []
     for root, dirs, files in os.walk(app.config['UPLOAD_FOLDER']):
         for filename in files:
@@ -71,10 +91,15 @@ def all():
     return jsonify(urls)
 
 
-# result
 # TODO: This should be a GET request
 @app.route('/result/', methods=['POST'])
 def result():
+    '''
+    This endpoint returns the urls of the given image/video (specified by its filename)
+    the colorized version of it.
+
+    Return type: json
+    '''
     filename = request.get_json()['name'] if 'name' in request.get_json() else None
 
     # get name and extension of origin img
@@ -84,25 +109,29 @@ def result():
     colorname = name + "_color." + extension
 
     # if is a video, get thumbnail img name
-    # thumbnailname = name + "_thumbnail." + extension
+    thumbnailname = name + "_thumbnail." + extension
 
     # generate all urls
     origin_url = url_for("uploaded_file", fpath=name, filename=filename)
     colorized_url = url_for("uploaded_file", fpath=name, filename=colorname)
-    # thumbnail_url = url_for("uploaded_file", fpath=name, filename=thumbnailname)
+    thumbnail_url = url_for("uploaded_file", fpath=name, filename=thumbnailname)
 
     result = {
         'origin': origin_url,
-        'colorized': colorized_url
-        # 'thumbnail': thumbnail_url
+        'colorized': colorized_url,
+        'thumbnail': thumbnail_url
     }
 
     return jsonify(result), 200
 
 
-# delete files
 @app.route('/delete/', methods=['POST'])
 def delete():
+    '''
+    This endpoint deletes the image/video (specified by its filename)
+
+    Return type: json
+    '''
     filename = request.get_json()['name'] if 'name' in request.get_json() else None
 
     if filename:
@@ -119,6 +148,12 @@ def delete():
 # colorize files
 @app.route('/colorize/', methods=['POST'])
 def colorize():
+    '''
+    This endpoint starts the colorizing process for the given image/video
+    (specified by its filename)
+
+    Return type: json
+    '''
     filename = request.get_json()['name'] if 'name' in request.get_json() else None
 
     if filename:
@@ -126,9 +161,9 @@ def colorize():
         name = get_name(filename)
         extension = get_extension(filename)
 
-        finpath = os.path.join(app.config['UPLOAD_FOLDER'], name, filename)
+        finpath = os.path.join(UPLOAD_FOLDER, name, filename)
         optfilename = name + "_color." + extension
-        foutpath = os.path.join(app.config['UPLOAD_FOLDER'], name, optfilename)
+        foutpath = os.path.join(UPLOAD_FOLDER, name, optfilename)
 
         # copy the file for now
         if not os.path.exists(foutpath):
