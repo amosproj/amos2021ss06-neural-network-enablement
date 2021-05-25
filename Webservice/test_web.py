@@ -56,7 +56,9 @@ class BasicTests(unittest.TestCase):
         len_before = len(urls_before)
 
         # check upload images
-        with open('test_img.png', 'rb') as test_img:
+        test_img_path = os.path.join(os.path.abspath(os.path.dirname(__file__)),
+                                     'test_img.png')
+        with open(test_img_path, 'rb') as test_img:
             test_img_io = BytesIO(test_img.read())
 
         rsp_upload = self.client.post('/upload/',
