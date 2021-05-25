@@ -48,7 +48,7 @@ def upload():
         filename = str(nowtime) + "_" + sfilename
 
         # create folder and save file
-        folderpath = os.path.join(UPLOAD_FOLDER, get_name(filename))
+        folderpath = os.path.join(app.config['UPLOAD_FOLDER'], get_name(filename))
         os.mkdir(folderpath)
         filepath = os.path.join(folderpath, filename)
         file.save(filepath)
@@ -161,9 +161,9 @@ def colorize():
         name = get_name(filename)
         extension = get_extension(filename)
 
-        finpath = os.path.join(UPLOAD_FOLDER, name, filename)
+        finpath = os.path.join(app.config['UPLOAD_FOLDER'], name, filename)
         optfilename = name + "_color." + extension
-        foutpath = os.path.join(UPLOAD_FOLDER, name, optfilename)
+        foutpath = os.path.join(app.config['UPLOAD_FOLDER'], name, optfilename)
 
         # copy the file for now
         if not os.path.exists(foutpath):
