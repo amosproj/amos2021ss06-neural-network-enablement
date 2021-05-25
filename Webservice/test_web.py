@@ -11,12 +11,12 @@ UPLOAD_FOLDER = os.path.abspath(os.path.dirname(__file__)) + "/webtest/"
 
 class BasicTests(unittest.TestCase):
     """
-    Unit-Test of Webservice
+    Integration Test of Webservice
     """
 
     def setUp(self):
         """
-        Set up web app for unit test, create temporary folder for operating on test
+        Set up web app for the test, create temporary folder for operating on test
         pictures
         """
         app.config['TESTING'] = True
@@ -30,21 +30,21 @@ class BasicTests(unittest.TestCase):
     # executed after each test
     def tearDown(self):
         """
-        tear down web app for unit test, remove temporary folder for operating on test
+        tear down web app for the test, remove temporary folder for operating on test
         pictures
         """
         os.rmdir(UPLOAD_FOLDER)
 
     def test_main_page(self):
         """
-        Unit-Test on the availability of main page of web application
+        Test the availability of main page of web application
         """
         response = self.client.get('/', follow_redirects=True)
         self.assertEqual(response.status_code, 200)
 
     def test_upload_image(self):
         """
-        Unit-Test on the
+        Integration Test on the
             upload images
             colorize images
             delete images
