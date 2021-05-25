@@ -39,15 +39,18 @@ class PipelineTests(unittest.TestCase):
         proc = ColorizeProcess(KMODELPATH, kModelWidth, kModelHeight)
         ret = proc.Init()
         self.assertEqual(ret, SUCCESS)
-        if ret == SUCCESS:  # here only test if the Init() is success
-            # test1: input a not existing file, should return FAILED
-            imageFile = "./Data/notexisting.jpg"
-            result = proc.Preprocess(imageFile)
-            self.assertEqual(result, FAILED)
-            # test2: input a existing and right file, should return SUCCESS
-            imageFile2 = "./Data/dog.png"
-            result2 = proc.Preprocess(imageFile2)
-            self.assertEqual(result2, SUCCESS)
+        # test1: input a not existing file, should return FAILED
+        img_path1 = os.path.join(os.path.abspath(os.path.dirname(__file__)),
+                                     '../../Data/notexist.png')
+        with open(img_path1, 'rb') as imageFile1
+        result = proc.Preprocess(imageFile1)
+        self.assertEqual(result, FAILED)
+        # test2: input a existing and right file, should return SUCCESS
+        img_path2 = os.path.join(os.path.abspath(os.path.dirname(__file__)),
+                                     '../../Data/dog.png')
+        with open(img_path2, 'rb') as imageFile2
+        result2 = proc.Preprocess(imageFile2)
+        self.assertEqual(result2, SUCCESS)
 
     def test_step_colorize_image(self):
         """
