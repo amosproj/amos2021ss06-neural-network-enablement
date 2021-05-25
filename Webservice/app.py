@@ -1,4 +1,3 @@
-from flasgger import Swagger
 from flask import Flask, jsonify, render_template, request, url_for, send_from_directory
 from werkzeug.utils import secure_filename
 import os
@@ -18,40 +17,15 @@ ALLOWED_EXTENSIONS = {
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.secret_key = b'wu8QvPtCDIM1/9ceoUS'
-swagger = Swagger(app)
 
 
 @app.route('/')
 def index():
-    """This is the main page
-        ---
-        responses:
-          200:
-            description: successfully load the main page
-        """
     return render_template("index.html")
 
 
 @app.route('/upload/', methods=['POST'])
 def upload():
-    """
-    This API is for pictures uploading.
-    Call this api passing a file and store it onto the server, return the result of
-    uploading process
-    ---
-    parameters:
-      - name: file
-        in: path
-        type: string
-        required: true
-        description: the file data
-    responses:
-      400:
-        description: Error, No upload file or The file format is not supported.
-      200:
-        description: The picture is uploaded successfully.
-
-    """
     # get the pics and videos
     file = request.files.get("file")
     if file and allowed_file(file.filename):
@@ -120,17 +94,17 @@ def result():
     colorname = name + "_color." + extension
 
     # if is a video, get thumbnail img name
-    thumbnailname = name + "_thumbnail." + extension
+    # thumbnailname = name + "_thumbnail." + extension
 
     # generate all urls
     origin_url = url_for("uploaded_file", fpath=name, filename=filename)
     colorized_url = url_for("uploaded_file", fpath=name, filename=colorname)
-    thumbnail_url = url_for("uploaded_file", fpath=name, filename=thumbnailname)
+    # thumbnail_url = url_for("uploaded_file", fpath=name, filename=thumbnailname)
 
     result = {
         'origin': origin_url,
-        'colorized': colorized_url,
-        'thumbnail': thumbnail_url
+        'colorized': colorized_url
+        # 'thumbnail': thumbnail_url
     }
 
     return jsonify(result), 200
