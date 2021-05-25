@@ -38,13 +38,14 @@ class PipelineTests(unittest.TestCase):
         KMODELPATH = "../../model/colorization.om"  # the KMODELPATH is not in main
         proc = ColorizeProcess(KMODELPATH, kModelWidth, kModelHeight)
         ret = proc.Init()
+        self.assertEqual(ret, SUCCESS)
         if ret == SUCCESS:  # here only test if the Init() is success
             # test1: input a not existing file, should return FAILED
-            imageFile = "/home/ke/Pictures/notexisting.jpg"
+            imageFile = "./Data/notexisting.jpg"
             result = proc.Preprocess(imageFile)
             self.assertEqual(result, FAILED)
             # test2: input a existing and right file, should return SUCCESS
-            imageFile2 = "../../Data/dog.png"
+            imageFile2 = "./Data/dog.png"
             result2 = proc.Preprocess(imageFile2)
             self.assertEqual(result2, SUCCESS)
 
