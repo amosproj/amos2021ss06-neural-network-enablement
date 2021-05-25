@@ -33,11 +33,11 @@ class PipelineTests(unittest.TestCase):
         """
         # test1: input a not existing file, should return FAILED
         imageFile = "/home/ke/Pictures/notexisting.jpg"
-        result = ColorizeProcess.Preprocess(self, imageFile)
+        result = ColorizeProcess.Preprocess(imageFile)
         self.assertEqual(result, FAILED)
         # test2: input a existing and right file, should return SUCCESS
-        imageFile2 = "../Data/dog.png "
-        result2 = ColorizeProcess.Preprocess(self, imageFile2)
+        imageFile2 = "../../Data/dog.png"
+        result2 = ColorizeProcess.Preprocess(imageFile2)
         self.assertEqual(result2, SUCCESS)
 
     def test_step_colorize_image(self):
