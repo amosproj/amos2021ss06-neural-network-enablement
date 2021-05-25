@@ -60,16 +60,6 @@ def uploaded_file(fpath, filename):
 # return list of all urls of uploaded files
 @app.route('/all/')
 def all():
-    """
-    This API is for getting all uploaded pictures.
-    Call this api and return a list of urls for all uploaded pictures
-    ---
-    responses:
-      200:
-        description: The picture is uploaded successfully.
-
-    """
-
     urls = []
     for root, dirs, files in os.walk(app.config['UPLOAD_FOLDER']):
         for filename in files:
