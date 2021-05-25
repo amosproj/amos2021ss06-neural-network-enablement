@@ -1,8 +1,8 @@
 import unittest
-from pipeline import colorize_image
 import os
 import cv2
 from colorize_process import ColorizeProcess
+from pipeline import colorize_image
 
 FAILED = 1
 SUCCESS = 0
@@ -33,11 +33,11 @@ class PipelineTests(unittest.TestCase):
         """
         # test1: input a not existing file, should return FAILED
         imageFile = "/home/ke/Pictures/notexisting.jpg"
-        result = colorize_process.Preprocess(self, imageFile)
+        result = ColorizeProcess.Preprocess(self, imageFile)
         self.assertEqual(result, FAILED)
         # test2: input a existing and right file, should return SUCCESS
         imageFile2 = "../Data/dog.png "
-        result2 = colorize_process.Preprocess(self, imageFile2)
+        result2 = ColorizeProcess.Preprocess(self, imageFile2)
         self.assertEqual(result2, SUCCESS)
 
     def test_step_colorize_image(self):
