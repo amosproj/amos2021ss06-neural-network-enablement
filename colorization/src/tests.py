@@ -1,6 +1,7 @@
 import unittest
 import os
 import cv2
+import numpy
 from colorize_process import ColorizeProcess
 from pipeline import colorize_image
 
@@ -31,13 +32,24 @@ class PipelineTests(unittest.TestCase):
         """
         Unit-Test to test the preprocessing of an image
         """
+        # creat a new ColorizeProcess object namme proc
+        kModelWidth = numpy.uint32(224)
+        kModelHeight = numpy.uint32(224)
+        # the KMODELPATH is not in main
+        KMODELPATH = img_path1 = os.path.join(os.path.abspath(os.path.dirname(__file__)),
+                                              '../../model/colorization.om')
+        proc = ColorizeProcess(KMODELPATH, kModelWidth, kModelHeight)
+        ret = proc.Init()
+        self.assertEqual(ret, SUCCESS)
         # test1: input a not existing file, should return FAILED
-        imageFile = "/home/ke/Pictures/notexisting.jpg"
-        result = ColorizeProcess.Preprocess(imageFile)
+        img_path1 = os.path.join(os.path.abspath(os.path.dirname(__file__)),
+                                 '../../Data/notexist.png')
+        result = proc.Preprocess(img_path1)
         self.assertEqual(result, FAILED)
         # test2: input a existing and right file, should return SUCCESS
-        imageFile2 = "../../Data/dog.png"
-        result2 = ColorizeProcess.Preprocess(imageFile2)
+        img_path2 = os.path.join(os.path.abspath(os.path.dirname(__file__)),
+                                 '../../Data/dog.png')
+        result2 = proc.Preprocess(img_path2)
         self.assertEqual(result2, SUCCESS)
 
     def test_step_colorize_image(self):
