@@ -35,7 +35,9 @@ class PipelineTests(unittest.TestCase):
         # creat a new ColorizeProcess object namme proc
         kModelWidth = numpy.uint32(224)
         kModelHeight = numpy.uint32(224)
-        KMODELPATH = "../../model/colorization.om"  # the KMODELPATH is not in main
+        # the KMODELPATH is not in main
+        KMODELPATH = img_path1 = os.path.join(os.path.abspath(os.path.dirname(__file__)),
+                                              '../../model/colorization.om')
         proc = ColorizeProcess(KMODELPATH, kModelWidth, kModelHeight)
         ret = proc.Init()
         self.assertEqual(ret, SUCCESS)
