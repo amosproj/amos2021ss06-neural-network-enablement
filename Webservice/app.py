@@ -1,3 +1,4 @@
+from flasgger import Swagger
 from flask import Flask, jsonify, render_template, request, url_for, send_from_directory
 from werkzeug.utils import secure_filename
 import os
@@ -17,15 +18,40 @@ ALLOWED_EXTENSIONS = {
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.secret_key = b'wu8QvPtCDIM1/9ceoUS'
+swagger = Swagger(app)
 
 
 @app.route('/')
 def index():
+    """This is the main page
+        ---
+        responses:
+          200:
+            description: successfully load the main page
+        """
     return render_template("index.html")
 
 
 @app.route('/upload/', methods=['POST'])
 def upload():
+    """
+    This API is for pictures uploading.
+    Call this api passing a file and store it onto the server, return the result of
+    uploading process
+    ---
+    parameters:
+      - name: file
+        in: path
+        type: string
+        required: true
+        description: the file data
+    responses:
+      400:
+        description: Error, No upload file or The file format is not supported.
+      200:
+        description: The picture is uploaded successfully.
+
+    """
     # get the pics and videos
     file = request.files.get("file")
     if file and allowed_file(file.filename):
@@ -36,7 +62,7 @@ def upload():
         filename = str(nowtime) + "_" + sfilename
 
         # create folder and save file
-        folderpath = os.path.join(UPLOAD_FOLDER, get_name(filename))
+        folderpath = os.path.join(app.config['UPLOAD_FOLDER'], get_name(filename))
         os.mkdir(folderpath)
         filepath = os.path.join(folderpath, filename)
         file.save(filepath)
@@ -60,6 +86,16 @@ def uploaded_file(fpath, filename):
 # return list of all urls of uploaded files
 @app.route('/all/')
 def all():
+    """
+    This API is for getting all uploaded pictures.
+    Call this api and return a list of urls for all uploaded pictures
+    ---
+    responses:
+      200:
+        description: The picture is uploaded successfully.
+
+    """
+
     urls = []
     for root, dirs, files in os.walk(app.config['UPLOAD_FOLDER']):
         for filename in files:
@@ -126,9 +162,9 @@ def colorize():
         name = get_name(filename)
         extension = get_extension(filename)
 
-        finpath = os.path.join(UPLOAD_FOLDER, name, filename)
+        finpath = os.path.join(app.config['UPLOAD_FOLDER'], name, filename)
         optfilename = name + "_color." + extension
-        foutpath = os.path.join(UPLOAD_FOLDER, name, optfilename)
+        foutpath = os.path.join(app.config['UPLOAD_FOLDER'], name, optfilename)
 
         # copy the file for now
         if not os.path.exists(foutpath):
