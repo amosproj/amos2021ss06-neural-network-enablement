@@ -46,7 +46,7 @@ class PipelineTests(unittest.TestCase):
         self.assertEqual(result, FAILED)
         # test2: input a existing and right file, should return SUCCESS
         img_path2 = os.path.join(os.path.abspath(os.path.dirname(__file__)),
-                                 '../../Data/dog.png
+                                 '../../Data/dog.png')
         result2 = proc.Preprocess(img_path2)
         self.assertEqual(result2, SUCCESS)
 
