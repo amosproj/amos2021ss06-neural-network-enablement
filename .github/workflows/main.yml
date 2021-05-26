@@ -45,5 +45,5 @@ jobs:
       - name: Try to import the acl library
         run: bash Webservice/scripts/check_acl_library.sh
 
-      - name: Run unittests
+      - name: Run tests
         run: bash Webservice/scripts/test.sh
