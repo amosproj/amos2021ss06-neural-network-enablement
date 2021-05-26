@@ -14,5 +14,6 @@ about: Suggest new feature (using user story)
 * ...
 
 ## Definition of done
-* Added only after week 5
-* The same for all features
+* All acceptance criteria met
+* Documentation completed
+* Peer code review passed
