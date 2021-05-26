@@ -1,6 +1,7 @@
 from colorize_process import ColorizeProcess
 # from utils import CopyDataDeviceToHost
 import numpy
+import os
 # import cv2
 # from Data.data import *
 # import splitVideo
@@ -51,7 +52,8 @@ def colorize_image(image_path_input, image_path_output):
 
     kModelWidth = numpy.uint32(224)
     kModelHeight = numpy.uint32(224)
-    KMODELPATH = "../model/colorization.om"
+    KMODELPATH = os.path.join(os.path.abspath(os.path.dirname(__file__)),
+                              "../../model/colorization.om")
     colorize = ColorizeProcess(KMODELPATH, kModelWidth, kModelHeight)
     ret = colorize.Init()
     if ret == FAILED:
