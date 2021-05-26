@@ -1,6 +1,5 @@
 import os
 import unittest
-# from flask import json
 from app import app
 import json
 from io import BytesIO
@@ -11,7 +10,7 @@ UPLOAD_FOLDER = os.path.abspath(os.path.dirname(__file__)) + "/webtest/"
 
 class BasicTests(unittest.TestCase):
     """
-    Integration Test of Webservice
+    Unit and Integration Test of Webservice
     """
 
     def setUp(self):
@@ -42,7 +41,7 @@ class BasicTests(unittest.TestCase):
         response = self.client.get('/', follow_redirects=True)
         self.assertEqual(response.status_code, 200)
 
-    def test_upload_image(self):
+    def test_integration_image(self):
         """
         Integration Test on the
             upload images
@@ -66,6 +65,7 @@ class BasicTests(unittest.TestCase):
                                       data={'file': (test_img_io, 'test_img.png')},
                                       follow_redirects=True)
         self.assertEqual(rsp_upload.status_code, 200)
+        self.assertIn(b'Upload successfully', rsp_upload.data)
 
         # check amount of urls added by 1 after uploading img
         rsp_all_2 = self.client.get('/all/')
@@ -95,3 +95,48 @@ class BasicTests(unittest.TestCase):
         # check files&folders is not there anymore
         d_path = os.path.join(app.config['UPLOAD_FOLDER'], filename.rsplit('.', 1)[0])
         self.assertEqual(os.path.exists(d_path), False)
+
+    def test_delete(self):
+        """
+        Unit Test of the fail situation of deleting pictures
+        """
+        # delete a picture which not on the server
+        response1 = self.client.post('/delete/', json={'name': 'nonfile.png'})
+        self.assertEqual(response1.status_code, 404)
+        self.assertIn(b'Pictures not found!', response1.data)
+
+        # no filename as the input parameter in POST request
+        response2 = self.client.post('/delete/', json={'name': ''})
+        self.assertEqual(response2.status_code, 400)
+        self.assertIn(b'request is empty', response2.data)
+
+    def test_colorize(self):
+        """
+        Unit Test of the fail situation of colorizing pictures
+        """
+        # no filename as the input parameter in POST request
+        response1 = self.client.post('/colorize/', json={'name': ''})
+        self.assertEqual(response1.status_code, 400)
+        self.assertIn(b'No input file', response1.data)
+
+    def test_upload(self):
+        """
+        Unit Test of the fail situation of uploading pictures
+        """
+        # no filename as the input parameter in POST request
+        response1 = self.client.post('/upload/', json={'name': ''})
+        self.assertEqual(response1.status_code, 400)
+        self.assertIn(b'No upload file', response1.data)
+
+        # the format of files are not supported
+        test_img_path = os.path.join(os.path.abspath(os.path.dirname(__file__)),
+                                     'test_img.png')
+        with open(test_img_path, 'rb') as test_img:
+            test_img_io = BytesIO(test_img.read())
+
+        response2 = self.client.post('/upload/',
+                                     content_type='multipart/form-data',
+                                     data={'file': (test_img_io, 'test_img.bmp')},
+                                     follow_redirects=True)
+        self.assertEqual(response2.status_code, 400)
+        self.assertIn(b'The file format is not supported', response2.data)
