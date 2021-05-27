@@ -17,7 +17,6 @@
 * Description: handle model process
 """
 
-
 import logging
 import acl
 import acl_constants
@@ -60,23 +59,25 @@ class Modelprocess:
             logging.error("has already loaded a model")
             return 1
         work_size, weight_size, ret = acl.mdl.query_size(modelPath)
-        print(work_size)
-        print(weight_size)
+        self.modelMemSize = work_size
+        self.modelWeightSize = weight_size
         if ret != acl_constants.ACL_ERROR_NONE:
             logging.error("query model failed, model file is %s", modelPath)
             return 1
-        #self.modelMemSize = acl.mdl.get_num_outputs(self.modelDesc)
-        ret = acl.rt.malloc(work_size, acl_constants.ACL_MEM_MALLOC_HUGE_FIRST)
-
+        work_ptr, ret = acl.rt.malloc(self.modelMemSize,
+                                      acl_constants.ACL_MEM_MALLOC_HUGE_FIRST)
         if ret != acl_constants.ACL_ERROR_NONE:
             logging.error("malloc buffer for mem failed, require size is %i",
-                          work_size)
+                          self.modelMemSize)
             return 1
-        ret = acl.rt.malloc(weight_size, acl_constants.ACL_MEM_MALLOC_HUGE_FIRST)
+        weight_ptr, ret = acl.rt.malloc(self.modelWeightSize,
+                                        acl_constants.ACL_MEM_MALLOC_HUGE_FIRST)
         if ret != acl_constants.ACL_ERROR_NONE:
             logging.error("malloc buffer for weight failed, require size is %i",
-                          weight_size)
+                          self.modelWeightSize)
             return 1
+        self.modelMemPtr = work_ptr
+        self.modelWeightPtr = weight_ptr
         model_id, ret = acl.mdl.load_from_file_with_mem(modelPath,
                                                         self.modelMemPtr,
                                                         self.modelMemSize,
@@ -102,7 +103,7 @@ class Modelprocess:
             logging.error("create model description failed")
             return 1
         ret = acl.mdl.get_desc(self.modelDesc, self.modelId)
-        if ret is not None:
+        if ret != acl_constants.ACL_ERROR_NONE:
             logging.error("get model description failed")
             return 1
         logging.info("create model description success")
