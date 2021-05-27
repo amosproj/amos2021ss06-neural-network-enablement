@@ -17,7 +17,6 @@
 * Description: handle model process
 """
 
-
 import logging
 import acl
 import acl_constants
@@ -62,16 +61,18 @@ class Modelprocess:
         work_size, weight_size, ret = acl.mdl.query_size(modelPath)
         self.modelMemSize = work_size
         self.modelWeightSize = weight_size
-        print(work_size,weight_size)
+        print(work_size, weight_size)
         if ret != acl_constants.ACL_ERROR_NONE:
             logging.error("query model failed, model file is %s", modelPath)
             return 1
-        work_ptr, ret = acl.rt.malloc(self.modelMemSize, acl_constants.ACL_MEM_MALLOC_HUGE_FIRST)
+        work_ptr, ret = acl.rt.malloc(self.modelMemSize,
+                                      acl_constants.ACL_MEM_MALLOC_HUGE_FIRST)
         if ret != acl_constants.ACL_ERROR_NONE:
             logging.error("malloc buffer for mem failed, require size is %i",
                           self.modelMemSize)
             return 1
-        weight_ptr, ret = acl.rt.malloc(self.modelWeightSize, acl_constants.ACL_MEM_MALLOC_HUGE_FIRST)
+        weight_ptr, ret = acl.rt.malloc(self.modelWeightSize,
+                                        acl_constants.ACL_MEM_MALLOC_HUGE_FIRST)
         if ret != acl_constants.ACL_ERROR_NONE:
             logging.error("malloc buffer for weight failed, require size is %i",
                           self.modelWeightSize)
@@ -103,7 +104,7 @@ class Modelprocess:
             logging.error("create model description failed")
             return 1
         ret = acl.mdl.get_desc(self.modelDesc, self.modelId)
-        if ret is not None:
+        if ret != acl_constants.ACL_ERROR_NONE:
             logging.error("get model description failed")
             return 1
         logging.info("create model description success")
