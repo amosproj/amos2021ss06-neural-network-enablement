@@ -44,10 +44,8 @@ class PipelineTests(unittest.TestCase):
         # test1: input a not existing file, should return FAILED
         img_path1 = os.path.join(os.path.abspath(os.path.dirname(__file__)),
                                  '../../Data/notexist.png')
-        if not img_path1:
-            print("directory does not exist")
-            result = proc.Preprocess(img_path1)
-            self.assertEqual(result, FAILED)
+        result = proc.Preprocess(img_path1)
+        self.assertEqual(result, FAILED)
         # test2: input a existing and right file, should return SUCCESS
         img_path2 = os.path.join(os.path.abspath(os.path.dirname(__file__)),
                                  '../../Data/dog.png')
