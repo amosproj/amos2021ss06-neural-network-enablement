@@ -197,9 +197,7 @@ class ColorizeProcess:
             on failure this function returns 1
         """
         # read image using OPENCV
-        #mat = cv2.imread(imageFile, cv2.IMREAD_COLOR).astype(numpy.float32)
-        mat = cv2.imread(imageFile, cv2.IMREAD_COLOR)
-        print(mat.shape)
+        mat = cv2.imread(imageFile, cv2.IMREAD_COLOR).astype(numpy.float32)
         if numpy.any(mat) is None:  # if matrix is empty, every term is none
             return FAILED
 
