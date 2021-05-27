@@ -58,31 +58,27 @@ class Modelprocess:
         if self.loadflag:
             logging.error("has already loaded a model")
             return 1
-        work_size, weight_size, ret = acl.mdl.query_size(modelPath)
-        self.modelMemSize = work_size
-        self.modelWeightSize = weight_size
+        self.modelMemSize, self.modelWeightSize, ret = acl.mdl.query_size(modelPath)
         if ret != acl_constants.ACL_ERROR_NONE:
             logging.error("query model failed, model file is %s", modelPath)
             return 1
-        work_ptr, ret = acl.rt.malloc(self.modelMemSize,
-                                      acl_constants.ACL_MEM_MALLOC_HUGE_FIRST)
+        self.modelMemPtr, ret = acl.rt.malloc(self.modelMemSize,
+                                              acl_constants.ACL_MEM_MALLOC_HUGE_FIRST)
         if ret != acl_constants.ACL_ERROR_NONE:
             logging.error("malloc buffer for mem failed, require size is %i",
                           self.modelMemSize)
             return 1
-        weight_ptr, ret = acl.rt.malloc(self.modelWeightSize,
-                                        acl_constants.ACL_MEM_MALLOC_HUGE_FIRST)
+        self.modelWeightPtr, ret = acl.rt.malloc(self.modelWeightSize,
+                                                 acl_constants.ACL_MEM_MALLOC_HUGE_FIRST)
         if ret != acl_constants.ACL_ERROR_NONE:
             logging.error("malloc buffer for weight failed, require size is %i",
                           self.modelWeightSize)
             return 1
-        self.modelMemPtr = work_ptr
-        self.modelWeightPtr = weight_ptr
-        model_id, ret = acl.mdl.load_from_file_with_mem(modelPath,
-                                                        self.modelMemPtr,
-                                                        self.modelMemSize,
-                                                        self.modelWeightPtr,
-                                                        self.modelWeightSize)
+        self.modelId, ret = acl.mdl.load_from_file_with_mem(modelPath,
+                                                            self.modelMemPtr,
+                                                            self.modelMemSize,
+                                                            self.modelWeightPtr,
+                                                            self.modelWeightSize)
         if ret != acl_constants.ACL_ERROR_NONE:
             logging.error("load model from file failed, model file is %s", modelPath)
             return 1
@@ -171,12 +167,12 @@ class Modelprocess:
             logging.error("cannot create dataset,create output failed")
             return 1
         outputSize = acl.mdl.get_num_outputs(self.modelDesc)
-        for i in range(outputSize):
+        for i in range(0, outputSize):
             buffer_size = acl.mdl.get_output_size_by_index(self.modelDesc, i)
-            outputBuffer = None
-            buffer, ret = acl.rt.malloc(buffer_size, acl_constants.ACL_MEM_MALLOC_NORMAL_ONLY)
+            outputBuffer, ret = acl.rt.malloc(buffer_size,
+                                              acl_constants.ACL_MEM_MALLOC_NORMAL_ONLY)
             if ret != acl_constants.ACL_ERROR_NONE:
-                logging.error("can't malloc buffer, size is %zu, create output failed",
+                logging.error("can't malloc buffer, size is %i, create output failed",
                               buffer_size)
                 return 1
             outputData = acl.create_data_buffer(outputBuffer, buffer_size)
@@ -184,7 +180,8 @@ class Modelprocess:
                 logging.error("can't create data buffer, create output failed")
                 acl.rt.free(outputBuffer)
                 return 1
-            ret = acl.mdl.add_dataset_buffer(self.output, outputData)
+            # should self.output used to store the address of buffer?
+            self.output, ret = acl.mdl.add_dataset_buffer(self.output, outputData)
             if ret != acl_constants.ACL_ERROR_NONE:
                 logging.error("can't add data buffer, create output failed")
                 acl.rt.free(outputBuffer)
@@ -215,7 +212,7 @@ class Modelprocess:
                     Other values indicate failure."""
         ret = acl.mdl.execute(self.modelId, self.input, self.output)
         if ret != acl_constants.ACL_ERROR_NONE:
-            logging.error("execute model failed, modelId is %u", self.modelId)
+            logging.error("execute model failed, modelId is %i", self.modelId)
             return 1
         logging.info("model execute success")
         return 0
@@ -228,7 +225,7 @@ class Modelprocess:
             return
         ret = acl.mdl.unload(self.modelId)
         if ret != acl_constants.ACL_ERROR_NONE:
-            logging.error("unload model failed, modelId is %u", self.modelId)
+            logging.error("unload model failed, modelId is %i", self.modelId)
         if self.modelDesc is not None:
             acl.mdl.destroy_desc(self.modelDesc)
             self.modelDesc = None
@@ -241,7 +238,7 @@ class Modelprocess:
             self.modelWeightPtr = None
             self.modelWeightSize = 0
         self.loadflag = False
-        logging.info("unload model success, modelId is %u", self.modelId)
+        logging.info("unload model success, modelId is %i", self.modelId)
 
     def GetModelOutputData(self):
         """Function Usage: Returns the output value
