@@ -24,7 +24,7 @@ import acl_constants
 
 
 class Modelprocess:
-    def __init__(self, loadflag=False, modelId=0, modelMemPtr=None, modelMemSize=0,
+    def __init__(self, loadflag=False, modelId=0, modelMemPtr=None, modelMemSize=70000000,
                  modelWeightPtr=None, modelWeightSize=0, modelDesc=None, input=None,
                  output=None):
         self.loadflag = loadflag
@@ -63,7 +63,7 @@ class Modelprocess:
         if ret != acl_constants.ACL_ERROR_NONE:
             logging.error("query model failed, model file is %s", modelPath)
             return 1
-        self.modelMemSize = acl.mdl.get_num_outputs(self.modelDesc)
+        #self.modelMemSize = acl.mdl.get_num_outputs(self.modelDesc)
         ret = acl.rt.malloc(self.modelMemSize, acl_constants.ACL_MEM_MALLOC_HUGE_FIRST)
 
         if ret != acl_constants.ACL_ERROR_NONE:
