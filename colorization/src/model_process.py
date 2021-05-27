@@ -169,7 +169,8 @@ class Modelprocess:
         outputSize = acl.mdl.get_num_outputs(self.modelDesc)
         for i in range(0, outputSize):
             buffer_size = acl.mdl.get_output_size_by_index(self.modelDesc, i)
-            outputBuffer, ret = acl.rt.malloc(buffer_size, acl_constants.ACL_MEM_MALLOC_NORMAL_ONLY)
+            outputBuffer, ret = acl.rt.malloc(buffer_size,
+                                              acl_constants.ACL_MEM_MALLOC_NORMAL_ONLY)
             if ret != acl_constants.ACL_ERROR_NONE:
                 logging.error("can't malloc buffer, size is %i, create output failed",
                               buffer_size)
