@@ -208,7 +208,7 @@ class ColorizeProcess:
                                cv2.INTER_CUBIC)
         # deal image
         reiszeMat = cv2.convertScaleAbs(reiszeMat, cv2.CV_32FC3)
-        reiszeMat = float(1.0 * reiszeMat / 255)
+        reiszeMat = 1.0 * reiszeMat / 255
 
         # pull out L channel and subtract 50 for mean-centering
         channels = cv2.split(reiszeMat)
