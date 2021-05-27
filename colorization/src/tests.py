@@ -2,6 +2,8 @@ import unittest
 import os
 import cv2
 import numpy
+import pytest
+
 from colorize_process import ColorizeProcess
 from pipeline import colorize_image
 
@@ -72,6 +74,7 @@ class PipelineTests(unittest.TestCase):
             self.assertEqual(ret, SUCCESS)
 
 
+@pytest.mark.skip(reason='Disabled until unit tests run')
 class FunctionalTest(unittest.TestCase):
     """
     This class contains tests for the complete pipeline.
