@@ -172,7 +172,7 @@ class Modelprocess:
             outputBuffer = None
             ret = acl.rt.malloc(buffer_size, acl_constants.ACL_MEM_MALLOC_NORMAL_ONLY)
             if ret != acl_constants.ACL_ERROR_NONE:
-                logging.error("can't malloc buffer, size is %zu, create output failed",
+                logging.error("can't malloc buffer, size is %i, create output failed",
                               buffer_size)
                 return 1
             outputData = acl.create_data_buffer(outputBuffer, buffer_size)
@@ -211,7 +211,7 @@ class Modelprocess:
                     Other values indicate failure."""
         ret = acl.mdl.execute(self.modelId, self.input, self.output)
         if ret != acl_constants.ACL_ERROR_NONE:
-            logging.error("execute model failed, modelId is %u", self.modelId)
+            logging.error("execute model failed, modelId is %i", self.modelId)
             return 1
         logging.info("model execute success")
         return 0
@@ -224,7 +224,7 @@ class Modelprocess:
             return
         ret = acl.mdl.unload(self.modelId)
         if ret != acl_constants.ACL_ERROR_NONE:
-            logging.error("unload model failed, modelId is %u", self.modelId)
+            logging.error("unload model failed, modelId is %i", self.modelId)
         if self.modelDesc is not None:
             acl.mdl.destroy_desc(self.modelDesc)
             self.modelDesc = None
@@ -237,7 +237,7 @@ class Modelprocess:
             self.modelWeightPtr = None
             self.modelWeightSize = 0
         self.loadflag = False
-        logging.info("unload model success, modelId is %u", self.modelId)
+        logging.info("unload model success, modelId is %i", self.modelId)
 
     def GetModelOutputData(self):
         """Function Usage: Returns the output value
