@@ -60,6 +60,8 @@ class Modelprocess:
             logging.error("has already loaded a model")
             return 1
         work_size, weight_size, ret = acl.mdl.query_size(modelPath)
+        self.modelMemSize = work_size
+        self.modelWeightSize = weight_size
         if ret != acl_constants.ACL_ERROR_NONE:
             logging.error("query model failed, model file is %s", modelPath)
             return 1
