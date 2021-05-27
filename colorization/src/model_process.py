@@ -65,12 +65,12 @@ class Modelprocess:
             return 1
         ret = acl.rt.malloc(self.modelMemSize, acl_constants.ACL_MEM_MALLOC_HUGE_FIRST)
         if ret != acl_constants.ACL_ERROR_NONE:
-            logging.error("malloc buffer for mem failed, require size is %zu",
+            logging.error("malloc buffer for mem failed, require size is %i",
                           self.modelMemSize)
             return 1
         ret = acl.rt.malloc(self.modelWeightSize, acl_constants.ACL_MEM_MALLOC_HUGE_FIRST)
         if ret != acl_constants.ACL_ERROR_NONE:
-            logging.error("malloc buffer for weight failed, require size is %zu",
+            logging.error("malloc buffer for weight failed, require size is %i",
                           self.modelWeightSize)
             return 1
         model_id, ret = acl.mdl.load_from_file_with_mem(modelPath,
