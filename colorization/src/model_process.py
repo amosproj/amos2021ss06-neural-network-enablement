@@ -58,31 +58,27 @@ class Modelprocess:
         if self.loadflag:
             logging.error("has already loaded a model")
             return 1
-        work_size, weight_size, ret = acl.mdl.query_size(modelPath)
-        self.modelMemSize = work_size
-        self.modelWeightSize = weight_size
+        self.modelMemSize, self.modelWeightSize, ret = acl.mdl.query_size(modelPath)
         if ret != acl_constants.ACL_ERROR_NONE:
             logging.error("query model failed, model file is %s", modelPath)
             return 1
-        work_ptr, ret = acl.rt.malloc(self.modelMemSize,
-                                      acl_constants.ACL_MEM_MALLOC_HUGE_FIRST)
+        self.modelMemPtr, ret = acl.rt.malloc(self.modelMemSize,
+                                              acl_constants.ACL_MEM_MALLOC_HUGE_FIRST)
         if ret != acl_constants.ACL_ERROR_NONE:
             logging.error("malloc buffer for mem failed, require size is %i",
                           self.modelMemSize)
             return 1
-        weight_ptr, ret = acl.rt.malloc(self.modelWeightSize,
-                                        acl_constants.ACL_MEM_MALLOC_HUGE_FIRST)
+        self.modelWeightPtr, ret = acl.rt.malloc(self.modelWeightSize,
+                                                 acl_constants.ACL_MEM_MALLOC_HUGE_FIRST)
         if ret != acl_constants.ACL_ERROR_NONE:
             logging.error("malloc buffer for weight failed, require size is %i",
                           self.modelWeightSize)
             return 1
-        self.modelMemPtr = work_ptr
-        self.modelWeightPtr = weight_ptr
-        model_id, ret = acl.mdl.load_from_file_with_mem(modelPath,
-                                                        self.modelMemPtr,
-                                                        self.modelMemSize,
-                                                        self.modelWeightPtr,
-                                                        self.modelWeightSize)
+        self.modelId, ret = acl.mdl.load_from_file_with_mem(modelPath,
+                                                            self.modelMemPtr,
+                                                            self.modelMemSize,
+                                                            self.modelWeightPtr,
+                                                            self.modelWeightSize)
         if ret != acl_constants.ACL_ERROR_NONE:
             logging.error("load model from file failed, model file is %s", modelPath)
             return 1
