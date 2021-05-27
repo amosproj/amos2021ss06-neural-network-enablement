@@ -79,6 +79,13 @@ class FunctionalTest(unittest.TestCase):
     """
 
     def test_complete_colorize_image(self):
+        #  check if the path for model is valid
+        KMODELPATH = os.path.join(os.path.abspath(os.path.dirname(__file__)),
+                                  "../../model/colorization.om")
+        ret = os.path.exists(KMODELPATH)
+        self.assertTrue(ret)
+        ret = os.path.isfile(KMODELPATH)
+        self.assertTrue(ret)
         """
         Functional test to test the complete colorizing process
         """
