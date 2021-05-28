@@ -1,5 +1,5 @@
 from colorize_process import ColorizeProcess
-# from utils import CopyDataDeviceToHost
+import utils
 import numpy
 import os
 # import cv2
@@ -49,11 +49,28 @@ def colorize_image(image_path_input, image_path_output):
     The directories already exists, and the image can be directly
     written to the given output path.
     """
-
     kModelWidth = numpy.uint32(224)
     kModelHeight = numpy.uint32(224)
     KMODELPATH = os.path.join(os.path.abspath(os.path.dirname(__file__)),
                               "../../model/colorization.om")
+
+    #  check if the input path is valid
+    if not utils.IsPathExist(image_path_input):
+        print("input path does not exist.")
+        return FAILED
+    if not utils.IsDirectory(image_path_input):
+        print("input path is not a file.")
+        return FAILED
+
+    #  check if the path for model is valid
+    if not utils.IsPathExist(KMODELPATH):
+        print("model path does not exist.")
+        return FAILED
+    if not utils.IsDirectory(KMODELPATH):
+        print("model path is not a file.")
+        return FAILED
+
+    #  call colorize process and start colorization
     colorize = ColorizeProcess(KMODELPATH, kModelWidth, kModelHeight)
     ret = colorize.Init()
     if ret == FAILED:
