@@ -5,6 +5,7 @@ import utils
 import acl_constants
 import os
 from model_process import Modelprocess
+
 """
 * Copyright 2020 Huawei Technologies Co., Ltd
 *
@@ -144,7 +145,7 @@ class ColorizeProcess:
             return FAILED
 
         ret = self.model.CreateInput(self.inputBuf, self.inputDataSize)
-        if ret != SUCCESS:      # check return value
+        if ret != SUCCESS:  # check return value
             print("Create mode input dataset failed")
             return FAILED
         return SUCCESS
@@ -197,10 +198,10 @@ class ColorizeProcess:
             on failure this function returns 1
         """
         # read image using OPENCV
-        mat = cv2.imread(imageFile, cv2.IMREAD_COLOR).astype(numpy.float32)
+        mat = cv2.imread(imageFile, cv2.IMREAD_COLOR)
         if numpy.any(mat) is None:  # if matrix is empty, every term is none
             return FAILED
-
+        mat = mat.astype(numpy.float32)
         # resize
         reiszeMat = numpy.zeros(self.modelWidth, numpy.float32)
 
@@ -215,21 +216,24 @@ class ColorizeProcess:
         reiszeMatL = channels[0] - 50
 
         if self.run_mode == 1:
-            # if run in AI1, need to copy the picture data to the device
+            # if run in host, need to copy the picture data to the device
+            # address:inputBuf
             ret = acl.rt.memcpy(self.inputBuf, self.inputDataSize, reiszeMatL,
                                 self.inputDataSize,
                                 acl_constants.ACL_MEMCPY_HOST_TO_DEVICE)
-            if ret != acl_constants.ACL_ERROR_NONE:  # ACL_ERROR_NONE will be
-                # deprecated in future releases.
-                # could Use ACL_SUCCESS instead.
-                print("Copy resized image data to device failed.")
-                return FAILED
-            else:
-                # 'reiszeMatL' is local variable , cant pass out of function,
-                # need to copy it
-                acl.rt.memcpy(self.inputBuf, self.inputDataSize, reiszeMatL,
-                              self.inputDataSize)
 
+        else:  # if run on the device
+            # 'reiszeMatL' is local variable , cant pass out of function,
+            # need to copy it to the device address: inputBuf
+            # dst:inputBuf, src:reiszeMatL, num:inputDataSize
+            ret = acl.rt.memcpy(self.inputBuf, self.inputDataSize, reiszeMatL,
+                                self.inputDataSize,
+                                acl_constants.ACL_MEMCPY_DEVICE_TO_DEVICE)
+        if ret != acl_constants.ACL_ERROR_NONE:  # ACL_ERROR_NONE will be
+            # deprecated in future releases.
+            # could Use ACL_SUCCESS instead.
+            print("Copy resized image data to device failed.")
+            return FAILED
         return SUCCESS
 
     # Calling the model_process program to do the real colorize process.
@@ -297,7 +301,8 @@ class ColorizeProcess:
         # pull out L channel in original/source image
 
         input_image = cv2.imread(input_image_path, cv2.IMREAD_COLOR)
-        input_image = cv2.resize(input_image, (self.modelWidth, self.modelHeight))
+        input_image = cv2.resize(input_image, (self.modelWidth,
+                                               self.modelHeight))
 
         input_image = numpy.float32(input_image)
         input_image = 1.0 * input_image / 255  # Normalizing the
@@ -350,8 +355,8 @@ class ColorizeProcess:
         cv2.destroyAllWindows()
 
     def GetInferenceOutputItem(self, itemDataSize, inferenceOutput):
-        """
-        This function obtains the first Buffer of inferenceOutput in dataBuffer;
+        """This function obtains the first Buffer
+        of inferenceOutput in dataBuffer;
         obtains the address object of data of the dataBuffer;
         obtains the memory size of data of the dataBuffer in bytes
 
