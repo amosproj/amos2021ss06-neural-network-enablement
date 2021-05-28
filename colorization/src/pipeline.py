@@ -55,18 +55,12 @@ def colorize_image(image_path_input, image_path_output):
                               "../../model/colorization.om")
 
     #  check if the input path is valid
-    if not utils.IsPathExist(image_path_input):
-        print("input path does not exist.")
-        return FAILED
-    if not utils.IsDirectory(image_path_input):
+    if not os.path.isfile(image_path_input):
         print("input path is not a file.")
         return FAILED
 
     #  check if the path for model is valid
-    if not utils.IsPathExist(KMODELPATH):
-        print("model path does not exist.")
-        return FAILED
-    if not utils.IsDirectory(KMODELPATH):
+    if not os.path.isfile(KMODELPATH):
         print("model path is not a file.")
         return FAILED
 
