@@ -219,17 +219,16 @@ class ColorizeProcess:
         if self.run_mode == 1:
             # if run in host, need to copy the picture data to the device
             # address:inputBuf
-            size = 1 * 1024 * 1024
-            ret = acl.rt.memcpy(self.inputBuf, self.inputDataSize, reiszeMatLArray,
-                                self.inputDataSize,
+            ret = acl.rt.memcpy(self.inputBuf, self.inputDataSize,
+                                reiszeMatLArray, self.inputDataSize,
                                 acl_constants.ACL_MEMCPY_HOST_TO_DEVICE)
 
         else:  # if run on the device
             # 'reiszeMatL' is local variable , cant pass out of function,
             # need to copy it to the device address: inputBuf
             # dst:inputBuf, src:reiszeMatL, num:inputDataSize
-            ret = acl.rt.memcpy(self.inputBuf, self.inputDataSize, reiszeMatLArray,
-                                self.inputDataSize,
+            ret = acl.rt.memcpy(self.inputBuf, self.inputDataSize,
+                                reiszeMatLArray, self.inputDataSize,
                                 acl_constants.ACL_MEMCPY_DEVICE_TO_DEVICE)
         if ret != acl_constants.ACL_ERROR_NONE:  # ACL_ERROR_NONE will be
             # deprecated in future releases.
