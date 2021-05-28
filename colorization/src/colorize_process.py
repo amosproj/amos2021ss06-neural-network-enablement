@@ -214,11 +214,13 @@ class ColorizeProcess:
         # pull out L channel and subtract 50 for mean-centering
         channels = cv2.split(reiszeMat)
         reiszeMatL = channels[0] - 50
+        reiszeMatLArray = numpy.squeeze(numpy.asarray(reiszeMatL))
 
         if self.run_mode == 1:
             # if run in host, need to copy the picture data to the device
             # address:inputBuf
-            ret = acl.rt.memcpy(self.inputBuf, self.inputDataSize, reiszeMatL,
+            size = 1 * 1024 * 1024
+            ret = acl.rt.memcpy(self.inputBuf, self.inputDataSize, reiszeMatLArray,
                                 self.inputDataSize,
                                 acl_constants.ACL_MEMCPY_HOST_TO_DEVICE)
 
@@ -226,7 +228,7 @@ class ColorizeProcess:
             # 'reiszeMatL' is local variable , cant pass out of function,
             # need to copy it to the device address: inputBuf
             # dst:inputBuf, src:reiszeMatL, num:inputDataSize
-            ret = acl.rt.memcpy(self.inputBuf, self.inputDataSize, reiszeMatL,
+            ret = acl.rt.memcpy(self.inputBuf, self.inputDataSize, reiszeMatLArray,
                                 self.inputDataSize,
                                 acl_constants.ACL_MEMCPY_DEVICE_TO_DEVICE)
         if ret != acl_constants.ACL_ERROR_NONE:  # ACL_ERROR_NONE will be
