@@ -64,7 +64,7 @@ class ColorizeProcess:
         self.modelPath = modelPath
         self.modelWidth = modelWidth
         self.modelHeight = modelHeight
-        self.inputDataSize = 4 * modelWidth * modelHeight
+        self.inputDataSize = int(4 * modelWidth * modelHeight)
         self.deviceId = deviceId
         self.inputBuf = inputBuf
         self.isInited = isInit
