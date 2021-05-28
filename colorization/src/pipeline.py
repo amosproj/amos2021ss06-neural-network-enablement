@@ -1,5 +1,4 @@
 from colorize_process import ColorizeProcess
-import utils
 import numpy
 import os
 # import cv2
