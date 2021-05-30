@@ -202,11 +202,12 @@ class ColorizeProcess:
         if numpy.any(mat) is None:  # if matrix is empty, every term is none
             return FAILED
         mat = mat.astype(numpy.float32)
+
         # resize
         reiszeMat = numpy.zeros(self.modelWidth, numpy.float32)
-
         reiszeMat = cv2.resize(mat, (self.modelWidth, self.modelHeight),
                                cv2.INTER_CUBIC)
+
         # deal image
         reiszeMat = cv2.convertScaleAbs(reiszeMat, cv2.CV_32FC3)
         reiszeMat = 1.0 * reiszeMat / 255
@@ -214,22 +215,22 @@ class ColorizeProcess:
         # pull out L channel and subtract 50 for mean-centering
         channels = cv2.split(reiszeMat)
         reiszeMatL = channels[0] - 50
-        reiszeMatLArray = numpy.squeeze(numpy.asarray(reiszeMatL))
 
         if self.run_mode == 1:
             # if run in host, need to copy the picture data to the device
             # address:inputBuf
-            ret = acl.rt.memcpy(self.inputBuf, self.inputDataSize,
-                                reiszeMatLArray, self.inputDataSize,
+            ret = acl.rt.memcpy(self.inputBuf, self.inputDataSize, reiszeMatL,
+                                self.inputDataSize,
                                 acl_constants.ACL_MEMCPY_HOST_TO_DEVICE)
 
         else:  # if run on the device
             # 'reiszeMatL' is local variable , cant pass out of function,
             # need to copy it to the device address: inputBuf
             # dst:inputBuf, src:reiszeMatL, num:inputDataSize
-            ret = acl.rt.memcpy(self.inputBuf, self.inputDataSize,
-                                reiszeMatLArray, self.inputDataSize,
+            ret = acl.rt.memcpy(self.inputBuf, self.inputDataSize, reiszeMatL,
+                                self.inputDataSize,
                                 acl_constants.ACL_MEMCPY_DEVICE_TO_DEVICE)
+
         if ret != acl_constants.ACL_ERROR_NONE:  # ACL_ERROR_NONE will be
             # deprecated in future releases.
             # could Use ACL_SUCCESS instead.

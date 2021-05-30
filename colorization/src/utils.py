@@ -1,6 +1,9 @@
 import os
-# import acl
+import acl
+import acl_constants
 
+FAILED = 1
+SUCCESS = 0
 
 def IsDirectory(inputpath):
     """This function checks whether a given path is a file.
@@ -20,7 +23,8 @@ def IsPathExist(inputpath):
             -----------
             inputpath : str
             return value :
-                Return True if path refers to an existing path or an open file descriptor
+                Return True if path refers to an existing
+                 path or an open file descriptor
                 Returns False for broken symbolic links.
             """
     return os.path.exists(inputpath)
@@ -37,28 +41,47 @@ def GetAllFiles(inputpath):
             -----------
             inputpath : str
             return value :
-                Return a list containing the names of the entries in the directory
+                Return a list containing the names
+                of the entries in the directory
                 given by path
             """
     return os.listdir(inputpath)
 
 
-'''
-def CopyDataDeviceToHost(deviceData,dataSize):
+def CopyDataDeviceToHost(deviceData, dataSize):
     # malloc for memory on host
     host_ptr, malret = acl.rt.malloc_host(dataSize)
     # check malloc success
     if malret == 0:
         # copy from device to host
-        cpyret = acl.rt.memcpy(host_ptr, dataSize, deviceData, dataSize,
-        ACL_MEMCPY_DEVICE_TO_HOST)
-        if cpyret == 0:
-            freehostret = acl.rt.free_host(host_ptr)
+        cpyret = acl.rt.memcpy(host_ptr, dataSize,
+                               deviceData, dataSize,
+                               acl_constants.ACL_MEMCPY_DEVICE_TO_HOST)
+        if cpyret == 0: #  SUCCESS
+            acl.rt.free_host(host_ptr)
             return host_ptr
         else:
-            #copy fails
+            # copy fails
+            return FAILED
+    else:
+        # malloc fails
+        return FAILED
+
+def CopyDataHostToDevice(deviceData, dataSize):
+    # malloc for memory on device
+    dev_ptr, malret = acl.rt.malloc(dataSize,acl_constants.ACL_MEM_MALLOC_NORMAL_ONLY)
+    # check malloc success
+    if malret == 0:
+        # copy from host to device
+        cpyret = acl.rt.memcpy(host_ptr, dataSize,
+                               deviceData, dataSize,
+                               acl_constants.ACL_MEMCPY_DEVICE_TO_HOST)
+        if cpyret == 0:
+            acl.rt.free_host(host_ptr)
+            return host_ptr
+        else:
+            # copy fails
             return 1
     else:
-        #malloc fails
+        # malloc fails
         return 1
-'''
