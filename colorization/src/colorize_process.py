@@ -412,7 +412,6 @@ class ColorizeProcess:
         deinitializes ACL before the application processends;
         frees the memory on the device allocated by acl.rt.malloc.
 
-
         Parameters:
         -----------
         input:
