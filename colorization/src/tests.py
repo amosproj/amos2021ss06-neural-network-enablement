@@ -47,6 +47,7 @@ class PipelineTests(unittest.TestCase):
                                 '../../Data/dog.png')
         result = proc.Preprocess(img_path)
         self.assertEqual(result, SUCCESS)
+        proc.DestroyResource()
 
     def test_step_colorize_image(self):
         """
