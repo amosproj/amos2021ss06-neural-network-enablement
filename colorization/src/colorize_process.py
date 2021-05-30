@@ -420,10 +420,10 @@ class ColorizeProcess:
         return value :
         None
         """
-        self.model.Unload(self)
-        self.model.DestroyDesc(self)
-        self.model.DestroyInput(self)
-        self.model.DestroyOutput(self)
+        self.model.Unload()
+        self.model.DestroyDesc()
+        self.model.DestroyInput()
+        self.model.DestroyOutput()
 
         ret = acl.rt.reset_device(self.deviceId)
         if ret != acl_constants.ACL_ERROR_NONE:
