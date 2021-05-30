@@ -36,16 +36,16 @@ class PipelineTests(unittest.TestCase):
         kModelWidth = numpy.uint32(224)
         kModelHeight = numpy.uint32(224)
         # the KMODELPATH is not in main
-        KMODELPATH = img_path1 = os.path.join(os.path.abspath(os.path.dirname(__file__)),
-                                              '../../model/colorization.om')
+        KMODELPATH = os.path.join(os.path.abspath(os.path.dirname(__file__)),
+                                  '../../model/colorization.om')
         proc = ColorizeProcess(KMODELPATH, kModelWidth, kModelHeight)
         ret = proc.Init()
         self.assertEqual(ret, SUCCESS)
 
         # test: input a existing and right file, should return SUCCESS
         img_path = os.path.join(os.path.abspath(os.path.dirname(__file__)),
-                                 '../../Data/dog.png')
-        result = proc.Preprocess(img_path2)
+                                '../../Data/dog.png')
+        result = proc.Preprocess(img_path)
         self.assertEqual(result, SUCCESS)
 
     def test_step_colorize_image(self):
