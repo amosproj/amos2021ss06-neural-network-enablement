@@ -379,14 +379,14 @@ class ColorizeProcess:
             print("Get the dataset buffer from model inference output failed")
             return None
 
-        dataBufferDev = acl.mdl.get_data_buffer_addr(dataBuffer)
+        dataBufferDev = acl.get_data_buffer_addr(dataBuffer)
         if dataBufferDev is None:
             print(
                 "Get the dataset buffer address from model inference output "
                 "failed")
             return None
 
-        bufferSize = acl.mdl.get_data_buffer_size(dataBuffer)
+        bufferSize = acl.get_data_buffer_size(dataBuffer)
         if bufferSize == 0:
             print("The dataset buffer size of model inference output is 0 ")
             return None
