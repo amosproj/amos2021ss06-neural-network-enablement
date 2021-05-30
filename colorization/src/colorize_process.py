@@ -59,6 +59,7 @@ class ColorizeProcess:
             0: ACL_DEVICE
             1: ACL_HOST
 
+
         return value : None
         """
 
@@ -216,7 +217,7 @@ class ColorizeProcess:
         channels = cv2.split(reiszeMat)
         reiszeMatL = acl.util.numpy_to_ptr(channels[0] - 50)
 
-        if self.run_mode == 1:
+        if self.run_mode == 1:  # if run on host
             # if run in host, need to copy the picture data to the device
             # address:inputBuf
             ret = acl.rt.memcpy(self.inputBuf, self.inputDataSize, reiszeMatL,
@@ -401,6 +402,7 @@ class ColorizeProcess:
         # itemDataSize = bufferSize
         return data
 
+
     def DestroyResource(self):
         """
         This function uninstalls the model and releases resources after the
@@ -420,21 +422,11 @@ class ColorizeProcess:
         return value :
         None
         """
-        self.model.Unload()
-        self.model.DestroyDesc()
-        self.model.DestroyInput()
-        self.model.DestroyOutput()
+        if (self.inputBuf is None) or (self.inputDataSize == 0):
+            print("Release image abnormaly, data is None")
+            return FAILED
 
-        ret = acl.rt.reset_device(self.deviceId)
-        if ret != acl_constants.ACL_ERROR_NONE:
-            print("reset device failed")
-
-        print("end to reset device is %d", self.deviceId)
-
-        ret = acl.finalize()
-        if ret != acl_constants.ACL_ERROR_NONE:
-            print("finalize acl failed")
-
-        print("end to finalize acl")
         acl.rt.free(self.inputBuf)
+
         self.inputBuf = None
+        self.inputDataSize = 0
