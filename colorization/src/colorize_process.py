@@ -226,7 +226,6 @@ class ColorizeProcess:
         else:  # if run on the device
             # 'reiszeMatL' is local variable , cant pass out of function,
             # need to copy it to the device address: inputBuf
-            # dst:inputBuf, src:reiszeMatL, num:inputDataSize
             ret = acl.rt.memcpy(self.inputBuf, self.inputDataSize, reiszeMatL,
                                 self.inputDataSize,
                                 acl_constants.ACL_MEMCPY_DEVICE_TO_DEVICE)
