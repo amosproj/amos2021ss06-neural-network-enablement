@@ -214,7 +214,7 @@ class ColorizeProcess:
 
         # pull out L channel and subtract 50 for mean-centering
         channels = cv2.split(reiszeMat)
-        reiszeMatL = channels[0] - 50
+        reiszeMatL = acl.util.numpy_to_ptr(channels[0] - 50)
 
         if self.run_mode == 1:
             # if run in host, need to copy the picture data to the device
