@@ -5,6 +5,7 @@ import utils
 import acl_constants
 import os
 from model_process import Modelprocess
+
 """
 * Copyright 2020 Huawei Technologies Co., Ltd
 *
@@ -57,6 +58,7 @@ class ColorizeProcess:
             the mode of run.
             0: ACL_DEVICE
             1: ACL_HOST
+
 
         return value : None
         """
@@ -144,7 +146,7 @@ class ColorizeProcess:
             return FAILED
 
         ret = self.model.CreateInput(self.inputBuf, self.inputDataSize)
-        if ret != SUCCESS:      # check return value
+        if ret != SUCCESS:  # check return value
             print("Create mode input dataset failed")
             return FAILED
         return SUCCESS
@@ -197,39 +199,43 @@ class ColorizeProcess:
             on failure this function returns 1
         """
         # read image using OPENCV
-        mat = cv2.imread(imageFile, cv2.IMREAD_COLOR).astype(numpy.float32)
+        mat = cv2.imread(imageFile, cv2.IMREAD_COLOR)
         if numpy.any(mat) is None:  # if matrix is empty, every term is none
             return FAILED
+        mat = mat.astype(numpy.float32)
 
         # resize
         reiszeMat = numpy.zeros(self.modelWidth, numpy.float32)
-
         reiszeMat = cv2.resize(mat, (self.modelWidth, self.modelHeight),
                                cv2.INTER_CUBIC)
+
         # deal image
         reiszeMat = cv2.convertScaleAbs(reiszeMat, cv2.CV_32FC3)
         reiszeMat = 1.0 * reiszeMat / 255
 
         # pull out L channel and subtract 50 for mean-centering
         channels = cv2.split(reiszeMat)
-        reiszeMatL = channels[0] - 50
+        reiszeMatL = acl.util.numpy_to_ptr(channels[0] - 50)
 
-        if self.run_mode == 1:
-            # if run in AI1, need to copy the picture data to the device
+        if self.run_mode == 1:  # if run on host
+            # if run in host, need to copy the picture data to the device
+            # address:inputBuf
             ret = acl.rt.memcpy(self.inputBuf, self.inputDataSize, reiszeMatL,
                                 self.inputDataSize,
                                 acl_constants.ACL_MEMCPY_HOST_TO_DEVICE)
-            if ret != acl_constants.ACL_ERROR_NONE:  # ACL_ERROR_NONE will be
-                # deprecated in future releases.
-                # could Use ACL_SUCCESS instead.
-                print("Copy resized image data to device failed.")
-                return FAILED
-            else:
-                # 'reiszeMatL' is local variable , cant pass out of function,
-                # need to copy it
-                acl.rt.memcpy(self.inputBuf, self.inputDataSize, reiszeMatL,
-                              self.inputDataSize)
 
+        else:  # if run on the device
+            # 'reiszeMatL' is local variable , cant pass out of function,
+            # need to copy it to the device address: inputBuf
+            ret = acl.rt.memcpy(self.inputBuf, self.inputDataSize, reiszeMatL,
+                                self.inputDataSize,
+                                acl_constants.ACL_MEMCPY_DEVICE_TO_DEVICE)
+
+        if ret != acl_constants.ACL_ERROR_NONE:  # ACL_ERROR_NONE will be
+            # deprecated in future releases.
+            # could Use ACL_SUCCESS instead.
+            print("Copy resized image data to device failed.")
+            return FAILED
         return SUCCESS
 
     # Calling the model_process program to do the real colorize process.
@@ -297,7 +303,8 @@ class ColorizeProcess:
         # pull out L channel in original/source image
 
         input_image = cv2.imread(input_image_path, cv2.IMREAD_COLOR)
-        input_image = cv2.resize(input_image, (self.modelWidth, self.modelHeight))
+        input_image = cv2.resize(input_image, (self.modelWidth,
+                                               self.modelHeight))
 
         input_image = numpy.float32(input_image)
         input_image = 1.0 * input_image / 255  # Normalizing the
@@ -350,8 +357,8 @@ class ColorizeProcess:
         cv2.destroyAllWindows()
 
     def GetInferenceOutputItem(self, itemDataSize, inferenceOutput):
-        """
-        This function obtains the first Buffer of inferenceOutput in dataBuffer;
+        """This function obtains the first Buffer
+        of inferenceOutput in dataBuffer;
         obtains the address object of data of the dataBuffer;
         obtains the memory size of data of the dataBuffer in bytes
 
@@ -372,14 +379,14 @@ class ColorizeProcess:
             print("Get the dataset buffer from model inference output failed")
             return None
 
-        dataBufferDev = acl.mdl.get_data_buffer_addr(dataBuffer)
+        dataBufferDev = acl.get_data_buffer_addr(dataBuffer)
         if dataBufferDev is None:
             print(
                 "Get the dataset buffer address from model inference output "
                 "failed")
             return None
 
-        bufferSize = acl.mdl.get_data_buffer_size(dataBuffer)
+        bufferSize = acl.get_data_buffer_size(dataBuffer)
         if bufferSize == 0:
             print("The dataset buffer size of model inference output is 0 ")
             return None
@@ -405,7 +412,6 @@ class ColorizeProcess:
         deinitializes ACL before the application processends;
         frees the memory on the device allocated by acl.rt.malloc.
 
-
         Parameters:
         -----------
         input:
@@ -414,21 +420,11 @@ class ColorizeProcess:
         return value :
         None
         """
-        self.model.Unload(self)
-        self.model.DestroyDesc(self)
-        self.model.DestroyInput(self)
-        self.model.DestroyOutput(self)
+        if (self.inputBuf is None) or (self.inputDataSize == 0):
+            print("Release image abnormaly, data is None")
+            return FAILED
 
-        ret = acl.rt.reset_device(self.deviceId)
-        if ret != acl_constants.ACL_ERROR_NONE:
-            print("reset device failed")
-
-        print("end to reset device is %d", self.deviceId)
-
-        ret = acl.finalize()
-        if ret != acl_constants.ACL_ERROR_NONE:
-            print("finalize acl failed")
-
-        print("end to finalize acl")
         acl.rt.free(self.inputBuf)
+
         self.inputBuf = None
+        self.inputDataSize = 0
