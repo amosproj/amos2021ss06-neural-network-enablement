@@ -402,7 +402,6 @@ class ColorizeProcess:
         # itemDataSize = bufferSize
         return data
 
-
     def DestroyResource(self):
         """
         This function uninstalls the model and releases resources after the
