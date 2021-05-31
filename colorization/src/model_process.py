@@ -180,7 +180,7 @@ class Modelprocess:
                 logging.error("can't create data buffer, create output failed")
                 acl.rt.free(outputBuffer)
                 return 1
-            # should self.output used to store the address of buffer?
+
             self.output, ret = acl.mdl.add_dataset_buffer(self.output, outputData)
             if ret != acl_constants.ACL_ERROR_NONE:
                 logging.error("can't add data buffer, create output failed")

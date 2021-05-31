@@ -1,5 +1,4 @@
 from colorize_process import ColorizeProcess
-# from utils import CopyDataDeviceToHost
 import numpy
 import os
 # import cv2
@@ -49,27 +48,42 @@ def colorize_image(image_path_input, image_path_output):
     The directories already exists, and the image can be directly
     written to the given output path.
     """
-
     kModelWidth = numpy.uint32(224)
     kModelHeight = numpy.uint32(224)
     KMODELPATH = os.path.join(os.path.abspath(os.path.dirname(__file__)),
                               "../../model/colorization.om")
+
+    #  check if the input path is valid
+    if not os.path.isfile(image_path_input):
+        print("input path is not a file.")
+        return FAILED
+
+    #  check if the path for model is valid
+    if not os.path.isfile(KMODELPATH):
+        print("model path is not a file.")
+        return FAILED
+
+    #  call colorize process and start colorization
     colorize = ColorizeProcess(KMODELPATH, kModelWidth, kModelHeight)
     ret = colorize.Init()
     if ret == FAILED:
         print("init colorize process failed")
         return FAILED
+
     #  load image located at <image_path_input> & preprocess, end image to device
     if colorize.Preprocess(image_path_input) == FAILED:
         print("Read file ", image_path_input, " failed, continue to read next")
         return FAILED
+
     #  inference & colorize
-    (inferenceOutput, ret) = colorize.inference()
-    if ret == FAILED or inferenceOutput is None:
+    inference_output_path = 'inference_output.npy'
+    ret = colorize.inference(inference_output_path)
+    if ret == FAILED:
         print("Inference model inference output data failed")
         return FAILED
+
     #  postprocess & save image
-    ret = colorize.postprocess(image_path_input, image_path_output, inferenceOutput)
+    ret = colorize.postprocess(image_path_input, inference_output_path, image_path_output)
     if ret == FAILED:
         print("Process model inference output data failed")
         return FAILED

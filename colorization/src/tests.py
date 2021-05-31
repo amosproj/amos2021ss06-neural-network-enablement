@@ -1,4 +1,5 @@
 import unittest
+
 import os
 import cv2
 import numpy
@@ -36,23 +37,18 @@ class PipelineTests(unittest.TestCase):
         kModelWidth = numpy.uint32(224)
         kModelHeight = numpy.uint32(224)
         # the KMODELPATH is not in main
-        KMODELPATH = img_path1 = os.path.join(os.path.abspath(os.path.dirname(__file__)),
-                                              '../../model/colorization.om')
+        KMODELPATH = os.path.join(os.path.abspath(os.path.dirname(__file__)),
+                                  '../../model/colorization.om')
         proc = ColorizeProcess(KMODELPATH, kModelWidth, kModelHeight)
         ret = proc.Init()
         self.assertEqual(ret, SUCCESS)
-        # test1: input a not existing file, should return FAILED
-        img_path1 = os.path.join(os.path.abspath(os.path.dirname(__file__)),
-                                 '../../Data/notexist.png')
-        if not img_path1:
-            print("image file does not exist")
-        # result = proc.Preprocess(img_path1)
-        # self.assertEqual(result, FAILED)
-        # test2: input a existing and right file, should return SUCCESS
-        img_path2 = os.path.join(os.path.abspath(os.path.dirname(__file__)),
-                                 '../../Data/dog.png')
-        result2 = proc.Preprocess(img_path2)
-        self.assertEqual(result2, SUCCESS)
+
+        # test: input a existing and right file, should return SUCCESS
+        img_path = os.path.join(os.path.abspath(os.path.dirname(__file__)),
+                                '../../Data/dog.png')
+        result = proc.Preprocess(img_path)
+        self.assertEqual(result, SUCCESS)
+        proc.DestroyResource()
 
     def test_step_colorize_image(self):
         """
@@ -84,13 +80,18 @@ class FunctionalTest(unittest.TestCase):
         """
         Functional test to test the complete colorizing process
         """
-        path_input = "test_image.png"
-        path_output = "colorized_image.png"
+        path_input = os.path.join(os.path.abspath(os.path.dirname(__file__)),
+                                  'test_image.png')
+        path_output = os.path.join(os.path.abspath(os.path.dirname(__file__)),
+                                   'colorized_image.png')
         ret = colorize_image(path_input, path_output)
         self.assertEqual(ret, SUCCESS)
-        # check if the image and the path exist
-        ret = os.path.exists(path_output)
-        self.assertTrue(ret)
+        # if the input path does not exist, expect FAILED:
+        path_input = os.path.join(os.path.abspath(os.path.dirname(__file__)),
+                                  '../../Data/notexist.png')
+        ret = colorize_image(path_input, path_output)
+        self.assertEqual(ret, FAILED)
+        # check if the colorized image and the path exist
         ret = os.path.isfile(path_output)
         self.assertTrue(ret)
         # check if the image in output path is colorized
