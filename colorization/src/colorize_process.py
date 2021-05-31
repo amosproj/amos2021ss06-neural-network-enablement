@@ -1,4 +1,5 @@
 import numpy
+import copy
 import acl
 import cv2
 import utils
@@ -72,6 +73,8 @@ class ColorizeProcess:
         self.isInited = isInit
         self.run_mode = run_mode
         self.model = Modelprocess()
+
+        self.itemDataSize = 0
 
     def InitResource(self):
         """
@@ -268,7 +271,21 @@ class ColorizeProcess:
         inferenceOutput = self.model.GetModelOutputData()
 
         dataSize = 0 # TODO
-        data = self.GetInferenceOutputItem(dataSize, inferenceOutput)
+        dataPtr = self.GetInferenceOutputItem(dataSize, inferenceOutput)
+
+
+
+        size = self.itemDataSize
+
+        np_output_ptr, ret =  acl.rt.malloc(size, acl_constants.ACL_MEM_MALLOC_NORMAL_ONLY)
+        print("image ", np_output_ptr)
+
+        ret = acl.rt.memcpy(np_output_ptr, size, dataPtr, size, 3)
+        if ret != acl_constants.ACL_ERROR_NONE:
+            print("Copy image to np array failed for memcpy error ", ret)
+            return FAILED
+
+        data = copy.deepcopy(acl.util.ptr_to_numpy(np_output_ptr, (size, ), acl_constants.NPY_BYTE))
 
         with open(model_output_path, 'w') as f:
             f.write(data)
@@ -404,7 +421,7 @@ class ColorizeProcess:
         else:
             data = dataBufferDev
 
-        # itemDataSize = bufferSize
+        self.itemDataSize = bufferSize
         return data
 
     def DestroyResource(self):
