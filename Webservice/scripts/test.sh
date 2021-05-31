@@ -6,4 +6,12 @@
 cd `dirname "$0"`/../../
 
 # Run the tests
-Webservice/venv/bin/pytest colorization/src/tests.py Webservice/test_web.py --cov=. --cov-config=.coveragerc
+
+# for the webservice
+Webservice/venv/bin/pytest Webservice/test_web.py --cov=. --cov-config=.coveragerc --cov-report=''
+
+# for the pipeline unittests
+Webservice/venv/bin/pytest colorization/src/tests.py -k 'PipelineTests' --cov=. --cov-config=.coveragerc --cov-append --cov-report=''
+
+# for the pipeline functional tests
+Webservice/venv/bin/pytest colorization/src/tests.py -k 'FunctionalTest' --cov=. --cov-config=.coveragerc --cov-append
