@@ -8,9 +8,9 @@ on:
 
 jobs:
 
-  # This doesn't run on the Atlas board
+  # This runs on the Atlas board
   codestyle:
-    runs-on: ubuntu-18.04
+    runs-on: self-hosted
 
     steps:
       # Checks-out your repository
