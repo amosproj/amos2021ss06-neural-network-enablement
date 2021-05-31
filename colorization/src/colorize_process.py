@@ -296,7 +296,7 @@ class ColorizeProcess:
          Parameters:
         -----------
         input_image_path : str
-            the path of the gray input image
+            the path of the (gray) image to obtain L channel
 
         inference_output_path : str
             Path to the .npy file containing the output of the inference function.
