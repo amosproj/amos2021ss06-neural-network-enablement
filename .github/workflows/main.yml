@@ -8,18 +8,18 @@ on:
 
 jobs:
 
-  # This runs on the Atlas board
+  # This doesn't run on the Atlas board
   codestyle:
-    runs-on: self-hosted
+    runs-on: ubuntu-18.04
 
     steps:
       # Checks-out your repository
       - uses: actions/checkout@v2
 
-      #      - name: Set up Python 3.7.5
-      #  uses: actions/setup-python@v2
-      #  with:
-        #    python-version: 3.7.5
+      - name: Set up Python 3.7.5
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.7.5
 
       - name: Set up environment
         run: bash Webservice/scripts/setup.sh --yes
