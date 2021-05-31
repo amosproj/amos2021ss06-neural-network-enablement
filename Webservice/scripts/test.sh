@@ -10,8 +10,10 @@ cd `dirname "$0"`/../../
 # for the webservice
 Webservice/venv/bin/pytest Webservice/test_web.py --cov=. --cov-config=.coveragerc --cov-report=''
 
-# for the pipeline unittests
-Webservice/venv/bin/pytest colorization/src/tests.py -k 'PipelineTests' --cov=. --cov-config=.coveragerc --cov-append --cov-report=''
+# for each pipeline unittest
+Webservice/venv/bin/pytest colorization/src/tests.py -k 'step_preprocess' --cov=. --cov-config=.coveragerc --cov-append --cov-report=''
+Webservice/venv/bin/pytest colorization/src/tests.py -k 'step_colorize' --cov=. --cov-config=.coveragerc --cov-append --cov-report=''
+Webservice/venv/bin/pytest colorization/src/tests.py -k 'step_postprocess' --cov=. --cov-config=.coveragerc --cov-append --cov-report=''
 
 # for the pipeline functional tests
 Webservice/venv/bin/pytest colorization/src/tests.py -k 'FunctionalTest' --cov=. --cov-config=.coveragerc --cov-append
