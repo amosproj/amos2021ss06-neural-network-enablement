@@ -295,7 +295,7 @@ class ColorizeProcess:
 
          Parameters:
         -----------
-        inference_output : image
+        inference_output_path : image
             Model output consisting of ab channels.
 
         output_image_path : str
@@ -313,7 +313,7 @@ class ColorizeProcess:
 
         print('SUCCESS!!')
 
-        inference_result = cv2.imread(model_output_path)
+        inference_result = cv2.imread(inference_output_path)
         inference_result = cv2.resize(inference_result, (self.modelWidth,
                                                          self.modelHeight))
         ab_channel = inference_result
