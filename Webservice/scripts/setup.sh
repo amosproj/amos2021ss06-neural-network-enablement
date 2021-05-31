@@ -77,13 +77,12 @@ fi
 
 echo
 
+
 PYTHON=python3
 
 # prefer 3.7.5 if available
 if [ -f /usr/local/python3.7.5/bin/python3.7 ]; then
     PYTHON=/usr/local/python3.7.5/bin/python3.7
-else
-    echo "Warning: Didn't find python binary in /usr/local/python3.7.5/bin/."
 fi
 
 
