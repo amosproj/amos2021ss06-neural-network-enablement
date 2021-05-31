@@ -1,4 +1,5 @@
 import numpy
+import copy
 import acl
 import cv2
 import utils
@@ -72,6 +73,8 @@ class ColorizeProcess:
         self.isInited = isInit
         self.run_mode = run_mode
         self.model = Modelprocess()
+
+        self.itemDataSize = 0
 
     def InitResource(self):
         """
@@ -238,12 +241,7 @@ class ColorizeProcess:
             return FAILED
         return SUCCESS
 
-    # Calling the model_process program to do the real colorize process.
-    # input: object itself
-    # output: pointer value for the result, and the flag SUCCESS or FAILED
-    # ATTENTION: THE INPUT AND OUTPUT ARE CHANGED,
-    # COMPARE TO THE ORIGINAL C++ CODE!!
-    def inference(self):
+    def inference(self, inference_output_path):
         """
         This function activate the model process after preprocess,
         and get result back.
@@ -251,11 +249,11 @@ class ColorizeProcess:
 
         Parameters:
         -----------
-        input:none
+        input:
 
-        return : inferenceOutput, result
-        inferenceOutput : int
-            pointer of the result saved after colorization
+        inference_output_path:
+            file path where the result is saved after colorization
+
         result : int
             on success this function returns 0
             on failure this function returns 1
@@ -265,11 +263,31 @@ class ColorizeProcess:
         ret = self.model.Execute()
         if ret != SUCCESS:
             print("Execute model inference failed")
-            return inferenceOutput, FAILED
-        inferenceOutput = self.model.GetModelOutputData()
-        return inferenceOutput, SUCCESS
+            return FAILED
 
-    def postprocess(self, input_image_path, output_image_path, modelOutput):
+        inferenceOutput = self.model.GetModelOutputData()
+
+        dataSize = 0   # TODO
+        dataPtr = self.GetInferenceOutputItem(dataSize, inferenceOutput)
+
+        size = self.itemDataSize
+
+        np_output_ptr, ret = acl.rt.malloc(size, acl_constants.ACL_MEM_MALLOC_NORMAL_ONLY)
+        print("image ", np_output_ptr)
+
+        ret = acl.rt.memcpy(np_output_ptr, size, dataPtr, size, 3)
+        if ret != acl_constants.ACL_ERROR_NONE:
+            print("Copy image to np array failed for memcpy error ", ret)
+            return FAILED
+
+        data = copy.deepcopy(acl.util.ptr_to_numpy(np_output_ptr, (size, ),
+                                                   acl_constants.NPY_BYTE))
+
+        numpy.save(inference_output_path, data)
+
+        return SUCCESS
+
+    def postprocess(self, input_image_path, inference_output_path, output_image_path):
         """This function converts LAB image to BGR image (colorization)
         and save it.
          It combines L channel obtained from source image and ab channels
@@ -279,24 +297,30 @@ class ColorizeProcess:
         -----------
         input_image_path : str
             the path of the (gray) image to obtain L channel
+
+        inference_output_path : str
+            Path to the .npy file containing the output of the inference function.
+            (Consisting of ab channels)
+
         output_image_path : str
             the path of the (colorized) image to save after processing
-        modelOutput : image
-            Model output consisting of ab channels.
+
         return value :
             on success this function returns 0
             on failure this function returns 1
         """
-        dataSize = 0
-        data = self.GetInferenceOutputItem(dataSize, modelOutput)
-        if data is None:
-            return FAILED
-
-        # size = int(dataSize)
 
         # get a and b channel result data
+        if not os.path.isfile(inference_output_path):
+            print('Output of inference not found.')
+            return FAILED
 
-        inference_result = cv2.imread(modelOutput)
+        print('SUCCESS!!')
+
+        # load the result from the colorization
+        inference_result = numpy.load(inference_output_path)
+
+        inference_result = cv2.imread(inference_output_path)
         inference_result = cv2.resize(inference_result, (self.modelWidth,
                                                          self.modelHeight))
         ab_channel = inference_result
@@ -399,7 +423,7 @@ class ColorizeProcess:
         else:
             data = dataBufferDev
 
-        # itemDataSize = bufferSize
+        self.itemDataSize = bufferSize
         return data
 
     def DestroyResource(self):
