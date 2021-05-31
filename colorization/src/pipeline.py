@@ -76,14 +76,14 @@ def colorize_image(image_path_input, image_path_output):
         return FAILED
 
     #  inference & colorize
-    inference_output = 'test.dat'
-    ret = colorize.inference(inference_output)
+    inference_output_path = 'test.dat'
+    ret = colorize.inference(inference_output_path)
     if ret == FAILED:
         print("Inference model inference output data failed")
         return FAILED
 
     #  postprocess & save image
-    ret = colorize.postprocess(inference_output, image_path_output)
+    ret = colorize.postprocess(inference_output_path, image_path_output)
     if ret == FAILED:
         print("Process model inference output data failed")
         return FAILED
