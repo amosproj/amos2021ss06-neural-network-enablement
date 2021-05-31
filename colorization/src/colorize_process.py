@@ -238,12 +238,7 @@ class ColorizeProcess:
             return FAILED
         return SUCCESS
 
-    # Calling the model_process program to do the real colorize process.
-    # input: object itself
-    # output: pointer value for the result, and the flag SUCCESS or FAILED
-    # ATTENTION: THE INPUT AND OUTPUT ARE CHANGED,
-    # COMPARE TO THE ORIGINAL C++ CODE!!
-    def inference(self):
+    def inference(self, model_output_path):
         """
         This function activate the model process after preprocess,
         and get result back.
@@ -251,11 +246,14 @@ class ColorizeProcess:
 
         Parameters:
         -----------
-        input:none
+        input:
+
+        model_output_path:
+            file path where the model output is stored
 
         return : inferenceOutput, result
-        inferenceOutput : int
-            pointer of the result saved after colorization
+        inferenceOutput : string
+            file path where the result is saved after colorization
         result : int
             on success this function returns 0
             on failure this function returns 1
@@ -265,11 +263,19 @@ class ColorizeProcess:
         ret = self.model.Execute()
         if ret != SUCCESS:
             print("Execute model inference failed")
-            return inferenceOutput, FAILED
-        inferenceOutput = self.model.GetModelOutputData()
-        return inferenceOutput, SUCCESS
+            return FAILED
 
-    def postprocess(self, input_image_path, output_image_path, modelOutput):
+        inferenceOutput = self.model.GetModelOutputData()
+
+        dataSize = 0 # TODO
+        data = self.GetInferenceOutputItem(dataSize, inferenceOutput)
+
+        with open(model_output_path, 'w') as f:
+            f.write(data)
+
+        return SUCCESS
+
+    def postprocess(self, inference_output_path, output_image_path):
         """This function converts LAB image to BGR image (colorization)
         and save it.
          It combines L channel obtained from source image and ab channels
@@ -277,26 +283,25 @@ class ColorizeProcess:
 
          Parameters:
         -----------
-        input_image_path : str
-            the path of the (gray) image to obtain L channel
+        inference_output : image
+            Model output consisting of ab channels.
+
         output_image_path : str
             the path of the (colorized) image to save after processing
-        modelOutput : image
-            Model output consisting of ab channels.
+
         return value :
             on success this function returns 0
             on failure this function returns 1
         """
-        dataSize = 0
-        data = self.GetInferenceOutputItem(dataSize, modelOutput)
-        if data is None:
-            return FAILED
-
-        # size = int(dataSize)
 
         # get a and b channel result data
+        if not os.path.isfile(inference_output_path):
+            print('Output of inference not found.')
+            return FAILED
 
-        inference_result = cv2.imread(modelOutput)
+        print('SUCCESS!!')
+
+        inference_result = cv2.imread(model_output_path)
         inference_result = cv2.resize(inference_result, (self.modelWidth,
                                                          self.modelHeight))
         ab_channel = inference_result
