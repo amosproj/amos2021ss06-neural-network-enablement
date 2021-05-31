@@ -19,7 +19,7 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.secret_key = b'wu8QvPtCDIM1/9ceoUS'
 
 
-@app.route('/', methods=['GET'])
+@app.get('/')
 def index():
     '''
     This endpoint displays the main html file.
@@ -30,7 +30,7 @@ def index():
     return render_template("index.html")
 
 
-@app.route('/upload/', methods=['POST'])
+@app.post('/upload/')
 def upload():
     '''
     This endpoint accepts a single image/video
@@ -62,7 +62,7 @@ def upload():
         return jsonify(msg="No upload file"), 400
 
 
-@app.route('/<fpath>/<filename>', methods=['GET'])
+@app.get('/<fpath>/<filename>')
 def uploaded_file(fpath, filename):
     '''
     This endpoint returns the image located at the given path
@@ -73,7 +73,7 @@ def uploaded_file(fpath, filename):
     return send_from_directory(folderpath, filename)
 
 
-@app.route('/all/', methods=['GET'])
+@app.get('/all/')
 def all():
     '''
     This endpoint returns a list of the urls of all uploaded images/videos
@@ -92,7 +92,7 @@ def all():
 
 
 # TODO: This should be a GET request
-@app.route('/result/', methods=['POST'])
+@app.post('/result/')
 def result():
     '''
     This endpoint returns the urls of the given image/video (specified by its filename)
@@ -125,7 +125,7 @@ def result():
     return jsonify(result), 200
 
 
-@app.route('/delete/', methods=['POST'])
+@app.post('/delete/')
 def delete():
     '''
     This endpoint deletes the image/video (specified by its filename)
@@ -146,7 +146,7 @@ def delete():
 
 
 # colorize files
-@app.route('/colorize/', methods=['POST'])
+@app.post('/colorize/')
 def colorize():
     '''
     This endpoint starts the colorizing process for the given image/video
