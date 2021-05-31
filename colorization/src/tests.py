@@ -90,9 +90,9 @@ class FunctionalTest(unittest.TestCase):
         Functional test to test the complete colorizing process
         """
         path_input = os.path.join(os.path.abspath(os.path.dirname(__file__)),
-                                  'test_image.png')
+                                  'test_data/input_image.png')
         path_output = os.path.join(os.path.abspath(os.path.dirname(__file__)),
-                                   'colorized_image.png')
+                                   'test_data/colorized_image.png')
         ret = colorize_image(path_input, path_output)
         self.assertEqual(ret, SUCCESS)
         # if the input path does not exist, expect FAILED:
