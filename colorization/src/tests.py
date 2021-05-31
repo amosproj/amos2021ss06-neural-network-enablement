@@ -18,16 +18,24 @@ SUCCESS = 0
 # these imports would also work here (The test shall be run on an Atlas Board)
 
 
-class PipelineTests(unittest.TestCase):
+class PipelineTestPreprocess(unittest.TestCase):
     """
-    This class contains tests for each part of the pipeline
+    This class contains a test for the preprocessing part of the pipeline
     See https://docs.python.org/3/library/unittest.html for more information.
     """
 
     def setUp(self):
-        self.input_image_path = 'input_image.jpg'
-        self.output_image_path = 'output_image.jpg'
-        self.model_output = ''
+        cwd = os.path.abspath(os.path.dirname(__file__))
+
+        self.model_path = os.path.join(cwd, '../../model/colorization.om')
+
+        self.input_image_path = os.path.join(cwd, 'test_data/input_image.jpg')
+        self.output_image_path = os.path.join(cwd, 'test_data/output_image.jpg')
+        self.inference_output = os.path.join(cwd, 'test_data/inference_output.npy')
+
+    def tearDown(self):
+        if os.path.isfile(self.output_image_path):
+            os.remove(self.output_image_path)
 
     def test_step_preprocess_image(self):
         """
@@ -36,17 +44,14 @@ class PipelineTests(unittest.TestCase):
         # creat a new ColorizeProcess object namme proc
         kModelWidth = numpy.uint32(224)
         kModelHeight = numpy.uint32(224)
-        # the KMODELPATH is not in main
-        KMODELPATH = os.path.join(os.path.abspath(os.path.dirname(__file__)),
-                                  '../../model/colorization.om')
-        proc = ColorizeProcess(KMODELPATH, kModelWidth, kModelHeight)
+
+        proc = ColorizeProcess(self.model_path, kModelWidth, kModelHeight)
         ret = proc.Init()
         self.assertEqual(ret, SUCCESS)
 
         # test: input a existing and right file, should return SUCCESS
-        img_path = os.path.join(os.path.abspath(os.path.dirname(__file__)),
-                                '../../Data/dog.png')
-        result = proc.Preprocess(img_path)
+        result = proc.Preprocess(self.input_image_path)
+
         self.assertEqual(result, SUCCESS)
         proc.DestroyResource()
 
@@ -61,6 +66,10 @@ class PipelineTests(unittest.TestCase):
         """
         Unit-Test to test the postprocessing of an image
         """
+
+        # check that the inference output npy file is available
+        self.assertTrue(os.path.isfile(self.inference_output))
+
         # TODO test the postprocessing
         ret = ColorizeProcess.postprocess(self.input_image_path,
                                           self.output_image_path, self.model_output)
