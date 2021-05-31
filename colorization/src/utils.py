@@ -1,5 +1,6 @@
 import os
-# import acl
+import acl
+import acl_constants
 
 
 def IsDirectory(inputpath):
@@ -43,7 +44,6 @@ def GetAllFiles(inputpath):
     return os.listdir(inputpath)
 
 
-
 def CopyDataDeviceToHost(deviceData, dataSize):
     # malloc for memory on host
     host_ptr, malret = acl.rt.malloc_host(dataSize)
@@ -51,7 +51,7 @@ def CopyDataDeviceToHost(deviceData, dataSize):
     if malret == 0:
         # copy from device to host
         cpyret = acl.rt.memcpy(host_ptr, dataSize, deviceData, dataSize,
-        ACL_MEMCPY_DEVICE_TO_HOST)
+                               acl_constants.ACL_MEMCPY_DEVICE_TO_HOST)
         if cpyret == 0:
             freehostret = acl.rt.free_host(host_ptr)
             return host_ptr
