@@ -267,7 +267,7 @@ class ColorizeProcess:
 
         inferenceOutput = self.model.GetModelOutputData()
 
-        dataSize = 0 # TODO
+        dataSize = 0   # TODO
         dataPtr = self.GetInferenceOutputItem(dataSize, inferenceOutput)
 
         size = self.itemDataSize
@@ -287,7 +287,7 @@ class ColorizeProcess:
 
         return SUCCESS
 
-    def postprocess(self, inference_output_path, output_image_path):
+    def postprocess(self, input_image_path, inference_output_path, output_image_path):
         """This function converts LAB image to BGR image (colorization)
         and save it.
          It combines L channel obtained from source image and ab channels
@@ -295,6 +295,9 @@ class ColorizeProcess:
 
          Parameters:
         -----------
+        input_image_path : str
+            the path of the gray input image
+
         inference_output_path : str
             Path to the .npy file containing the output of the inference function.
             (Consisting of ab channels)
