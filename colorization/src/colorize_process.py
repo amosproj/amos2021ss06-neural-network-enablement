@@ -270,10 +270,9 @@ class ColorizeProcess:
         dataSize = 0 # TODO
         dataPtr = self.GetInferenceOutputItem(dataSize, inferenceOutput)
 
-
         size = self.itemDataSize
 
-        np_output_ptr, ret =  acl.rt.malloc(size, acl_constants.ACL_MEM_MALLOC_NORMAL_ONLY)
+        np_output_ptr, ret = acl.rt.malloc(size, acl_constants.ACL_MEM_MALLOC_NORMAL_ONLY)
         print("image ", np_output_ptr)
 
         ret = acl.rt.memcpy(np_output_ptr, size, dataPtr, size, 3)
@@ -281,7 +280,8 @@ class ColorizeProcess:
             print("Copy image to np array failed for memcpy error ", ret)
             return FAILED
 
-        data = copy.deepcopy(acl.util.ptr_to_numpy(np_output_ptr, (size, ), acl_constants.NPY_BYTE))
+        data = copy.deepcopy(acl.util.ptr_to_numpy(np_output_ptr, (size, ),
+                                                   acl_constants.NPY_BYTE))
 
         numpy.save(inference_output_path, data)
 
