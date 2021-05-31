@@ -295,8 +295,9 @@ class ColorizeProcess:
 
          Parameters:
         -----------
-        inference_output_path : image
-            Model output consisting of ab channels.
+        inference_output_path : str
+            Path to the .npy file containing the output of the inference function.
+            (Consisting of ab channels)
 
         output_image_path : str
             the path of the (colorized) image to save after processing
