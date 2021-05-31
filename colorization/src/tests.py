@@ -1,5 +1,4 @@
 import unittest
-import pytest
 
 import os
 import cv2
@@ -19,7 +18,6 @@ SUCCESS = 0
 # these imports would also work here (The test shall be run on an Atlas Board)
 
 
-@pytest.mark.skip(reason='Skipping for now')
 class PipelineTests(unittest.TestCase):
     """
     This class contains tests for each part of the pipeline
