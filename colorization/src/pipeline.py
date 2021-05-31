@@ -76,7 +76,7 @@ def colorize_image(image_path_input, image_path_output):
         return FAILED
 
     #  inference & colorize
-    inference_output_path = 'test.dat'
+    inference_output_path = 'inference_output.npy'
     ret = colorize.inference(inference_output_path)
     if ret == FAILED:
         print("Inference model inference output data failed")

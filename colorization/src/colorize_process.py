@@ -241,7 +241,7 @@ class ColorizeProcess:
             return FAILED
         return SUCCESS
 
-    def inference(self, model_output_path):
+    def inference(self, inference_output_path):
         """
         This function activate the model process after preprocess,
         and get result back.
@@ -251,12 +251,9 @@ class ColorizeProcess:
         -----------
         input:
 
-        model_output_path:
-            file path where the model output is stored
-
-        return : inferenceOutput, result
-        inferenceOutput : string
+        inference_output_path:
             file path where the result is saved after colorization
+
         result : int
             on success this function returns 0
             on failure this function returns 1
@@ -274,7 +271,6 @@ class ColorizeProcess:
         dataPtr = self.GetInferenceOutputItem(dataSize, inferenceOutput)
 
 
-
         size = self.itemDataSize
 
         np_output_ptr, ret =  acl.rt.malloc(size, acl_constants.ACL_MEM_MALLOC_NORMAL_ONLY)
@@ -287,8 +283,7 @@ class ColorizeProcess:
 
         data = copy.deepcopy(acl.util.ptr_to_numpy(np_output_ptr, (size, ), acl_constants.NPY_BYTE))
 
-        with open(model_output_path, 'w') as f:
-            f.write(data)
+        numpy.save(inference_output_path, data)
 
         return SUCCESS
 
