@@ -18,9 +18,9 @@ SUCCESS = 0
 # these imports would also work here (The test shall be run on an Atlas Board)
 
 
-class PipelineTestPreprocess(unittest.TestCase):
+class PipelineTests(unittest.TestCase):
     """
-    This class contains a test for the preprocessing part of the pipeline
+    This class contains tests for each part of the pipeline
     See https://docs.python.org/3/library/unittest.html for more information.
     """
 
