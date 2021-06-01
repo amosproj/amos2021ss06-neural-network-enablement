@@ -318,8 +318,8 @@ class ColorizeProcess:
 
         # load the result from the colorization
         inference_result = numpy.load(inference_output_path)
-        inference_result = numpy.reshape(inference_result, int(self.modelWidth / 2),
-                                         int(self.modelHeight / 2), 2)
+        inference_result = numpy.reshape(inference_result, (int(self.modelWidth / 2),
+                                         int(self.modelHeight / 2), 2))
         ab_channel = inference_result
         print(ab_channel.shape)
         # pull out L channel in original/source image
