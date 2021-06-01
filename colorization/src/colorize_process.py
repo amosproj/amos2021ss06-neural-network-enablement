@@ -318,31 +318,31 @@ class ColorizeProcess:
 
         # load the result from the colorization
         inference_result = numpy.load(inference_output_path)
-        inference_result = numpy.reshape(inference_result, (int(self.modelWidth / 2),
-                                         int(self.modelHeight / 2), 2))
+        inference_result = numpy.reshape(inference_result, (float(self.modelWidth / 2),
+                                                            float(self.modelHeight / 2), 2))
         ab_channel = inference_result
         print(ab_channel.shape)
-        # pull out L channel in original/source image
 
+        # pull out L channel in original/source image
         input_image = cv2.imread(input_image_path, cv2.IMREAD_COLOR)
-        input_image = cv2.resize(input_image, (self.modelWidth,
-                                               self.modelHeight))
+        # input_image = cv2.resize(input_image, (self.modelWidth,
+        # self.modelHeight))
 
         input_image = numpy.float32(input_image)
         input_image = 1.0 * input_image / 255  # Normalizing the
         # input image values
         bgrtolab = cv2.cvtColor(input_image, cv2.COLOR_BGR2LAB)
         (L, A, B) = cv2.split(bgrtolab)
+        print(L.shape)
 
         # resize to match the size of original image L
-
-        # height = input_image[0]
-        # width = input_image[1]
-        # ab_channel_resize = cv2.resize(ab_channel, (height, width))
+        height = input_image_path[0]
+        width = input_image_path[1]
+        ab_channel_resize = cv2.resize(ab_channel, (height, width))
 
         # result Lab image
 
-        result_image = cv2.merge(L, ab_channel)
+        result_image = cv2.merge((L, ab_channel_resize))
         print(result_image.shape)
         # convert back to rgb
 
