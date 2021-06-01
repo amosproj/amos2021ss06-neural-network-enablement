@@ -28,6 +28,9 @@ class PipelineTests(unittest.TestCase):
         self.input_image_path = os.path.join(cwd, 'test_data/input_image_2.jpg')
 
         # path of result of the inference to be used for testing postprocess
+        self.temp_inference_output_path = os.path.join(cwd, 'test_data/inference_output_1.npy')
+
+        # path of result of the inference to be used for testing postprocess
         self.inference_output_path = os.path.join(cwd, 'test_data/inference_output_2.npy')
 
         # output image will be written to this path on success
@@ -37,7 +40,8 @@ class PipelineTests(unittest.TestCase):
         print('tear down called')
         if os.path.isfile(self.output_image_path):
             os.remove(self.output_image_path)
-
+        if os.path.isfile(self.temp_inference_output_path):
+            os.remove(self.temp_inference_output_path)
     def test_step_preprocess_image(self):
         """
         Unit-Test to test the preprocessing of an image
@@ -62,8 +66,28 @@ class PipelineTests(unittest.TestCase):
         """
         Unit-Test to test the colorizing of an image
         """
-        # TODO test the colorizing
-        self.assertTrue(True)
+        # creat a new ColorizeProcess object namme proc
+        kModelWidth = numpy.uint32(224)
+        kModelHeight = numpy.uint32(224)
+
+        proc = ColorizeProcess(self.model_path, kModelWidth, kModelHeight)
+        ret = proc.Init()
+        self.assertEqual(ret, SUCCESS)
+
+        self.assertTrue(os.path.isfile(self.input_image_path))
+
+        # test: input a existing and right file, should return SUCCESS
+        result = proc.Preprocess(self.input_image_path)
+
+        self.assertEqual(result, SUCCESS)
+
+        # test the colorizing
+        ret = proc.inference(self.temp_inference_output_path)
+        self.assertEqual(ret, SUCCESS)
+        # check that the inference output npy file is saved
+        self.assertTrue(os.path.isfile(self.temp_inference_output_path))
+
+        proc.DestroyResource()
 
     def test_step_postprocess_image(self):
         """
@@ -71,7 +95,7 @@ class PipelineTests(unittest.TestCase):
         """
 
         # check that the inference output npy file is available
-        self.assertTrue(os.path.isfile(self.inference_output))
+        self.assertTrue(os.path.isfile(self.inference_output_path))
 
         # TODO test the postprocessing
         ret = ColorizeProcess.postprocess(self.input_image_path,
@@ -90,10 +114,10 @@ class FunctionalTest(unittest.TestCase):
 
     def setUp(self):
         # init path variables
-        self.input_image_path = os.path.join(os.path.abspath(os.path.dirname(__file__)),
-                                  'test_data/input_image_1.png')
-        self.output_image_path = os.path.join(os.path.abspath(os.path.dirname(__file__)),
-                                   'test_data/output_image_1.png')
+        self.input_image_path = os.path.join(os.path.abspath(
+            os.path.dirname(__file__)),'test_data/input_image_1.png')
+        self.output_image_path = os.path.join(os.path.abspath(
+            os.path.dirname(__file__)),'test_data/output_image_1.png')
         self.fake_input_image_path = os.path.join(os.path.abspath(
             os.path.dirname(__file__)), '../../Data/notexist.png')
 
