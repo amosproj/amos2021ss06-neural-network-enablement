@@ -9,13 +9,8 @@ from pipeline import colorize_image
 FAILED = 1
 SUCCESS = 0
 
-# import colorize_process
-# import acl
 
-# ^
-# |
-# |
-# these imports would also work here (The test shall be run on an Atlas Board)
+# The test shall be run on an Atlas Board.
 
 
 class PipelineTests(unittest.TestCase):
@@ -29,11 +24,12 @@ class PipelineTests(unittest.TestCase):
 
         self.model_path = os.path.join(cwd, '../../model/colorization.om')
 
-        self.input_image_path = os.path.join(cwd, 'test_data/input_image.jpg')
-        self.output_image_path = os.path.join(cwd, 'test_data/output_image.jpg')
+        self.input_image_path = os.path.join(cwd, 'test_data/input_image_2.jpg')
+        self.output_image_path = os.path.join(cwd, 'test_data/output_image_2.jpg')
         self.inference_output = os.path.join(cwd, 'test_data/inference_output.npy')
 
     def tearDown(self):
+        print('tear down called')
         if os.path.isfile(self.output_image_path):
             os.remove(self.output_image_path)
 
