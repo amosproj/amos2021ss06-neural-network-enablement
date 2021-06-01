@@ -318,16 +318,17 @@ class ColorizeProcess:
 
         # load the result from the colorization
         inference_result = numpy.load(inference_output_path)
-        inference_result = numpy.resize(inference_result, (self.modelWidth,
-                                                           self.modelHeight))
+        print(inference_result.shape)
+        # inference_result = numpy.resize(inference_result, (self.modelWidth,
+                                                           # self.modelHeight))
         ab_channel = inference_result
-        #print(ab_channel.shape)
+        # print(ab_channel.shape)
 
         # pull out L channel in original/source image
 
         input_image = cv2.imread(input_image_path, cv2.IMREAD_COLOR)
         # input_image = cv2.resize(input_image, (self.modelWidth,
-                                               #self.modelHeight))
+                                               # self.modelHeight))
 
         input_image = numpy.float32(input_image)
         input_image = 1.0 * input_image / 255  # Normalizing the
