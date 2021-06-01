@@ -219,6 +219,7 @@ class ColorizeProcess:
         # pull out L channel and subtract 50 for mean-centering
         channels = cv2.split(reiszeMat)
         reiszeMatL = acl.util.numpy_to_ptr(channels[0] - 50)
+        print(reiszeMatL.shape)
 
         if self.run_mode == 1:  # if run on host
             # if run in host, need to copy the picture data to the device
@@ -319,8 +320,8 @@ class ColorizeProcess:
         # load the result from the colorization
         inference_result = numpy.load(inference_output_path)
 
-        inference_result = numpy.resize(inference_result, (self.modelWidth,
-                                                           self.modelHeight))
+        inference_result = numpy.reshape(inference_result, (self.modelWidth,
+                                                            self.modelHeight))
         ab_channel = inference_result
         print(ab_channel.shape)
         # pull out L channel in original/source image
