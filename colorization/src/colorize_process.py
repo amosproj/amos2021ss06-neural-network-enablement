@@ -343,7 +343,6 @@ class ColorizeProcess:
         # result Lab image
 
         result_image = cv2.merge(L, ab_channel)
-        cv2.imshow('result_image', result_image)
 
         # convert back to rgb
 
