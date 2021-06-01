@@ -321,7 +321,8 @@ class ColorizeProcess:
         inference_result = numpy.reshape(inference_result, (int(self.modelWidth / 2),
                                                             int(self.modelHeight / 2), 2))
         a_channel, b_channel = cv2.split(inference_result)
-        print(type(a_channel))
+        print(a_channel.shape)
+
         # pull out L channel in original/source image
         input_image = cv2.imread(input_image_path, cv2.IMREAD_COLOR)
         input_image = numpy.float32(input_image)
@@ -331,11 +332,10 @@ class ColorizeProcess:
         print(L.shape)
 
         # resize to match the size of original image L
-        rows = numpy.float32(input_image.shape[0])
-        print(type(rows))
-        cols = numpy.float32(input_image.shape[1])
-        a_channel_resize = cv2.resize(a_channel, (rows, cols))
-        b_channel_resize = cv2.resize(b_channel, (rows, cols))
+        rows = input_image.shape[0]
+        cols = input_image.shape[1]
+        a_channel_resize = cv2.resize(a_channel, (cols, rows), cv2.CV_32FC1)
+        b_channel_resize = cv2.resize(b_channel, (cols, rows))
 
         # result Lab image
         result_image = cv2.merge((L, a_channel_resize, b_channel_resize))
