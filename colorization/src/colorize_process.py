@@ -344,9 +344,7 @@ class ColorizeProcess:
         # convert back to rgb
         output_image = cv2.cvtColor(result_image, cv2.COLOR_Lab2BGR)
         output_image = output_image * 255
-        cv2.imshow('output_image', output_image)
         cv2.imwrite(output_image_path, output_image)
-
         # self.SaveImage(imageFile, output_image)
         return SUCCESS
 
