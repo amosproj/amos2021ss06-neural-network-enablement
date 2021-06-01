@@ -25,13 +25,13 @@ class PipelineTests(unittest.TestCase):
         self.model_path = os.path.join(cwd, '../../model/colorization.om')
 
         # path of the gray input image to process in test
-        self.input_image_path = os.path.join(cwd, 'test_data/input_image_2.png')
+        self.input_image_path = os.path.join(cwd, 'test_data/input_image_2.jpg')
 
         # path of result of the inference to be used for testing postprocess
         self.inference_output_path = os.path.join(cwd, 'test_data/inference_output_2.npy')
 
         # output image will be written to this path on success
-        self.output_image_path = os.path.join(cwd, 'test_data/output_image_2.png')
+        self.output_image_path = os.path.join(cwd, 'test_data/output_image_2.jpg')
 
     def tearDown(self):
         print('tear down called')
@@ -49,6 +49,8 @@ class PipelineTests(unittest.TestCase):
         proc = ColorizeProcess(self.model_path, kModelWidth, kModelHeight)
         ret = proc.Init()
         self.assertEqual(ret, SUCCESS)
+
+        self.assertTrue(os.path.isfile(self.input_image_path))
 
         # test: input a existing and right file, should return SUCCESS
         result = proc.Preprocess(self.input_image_path)
