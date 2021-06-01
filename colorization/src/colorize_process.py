@@ -334,6 +334,7 @@ class ColorizeProcess:
         rows = input_image.shape[0]
         cols = input_image.shape[1]
         a_channel = a_channel.astype('float32')
+        b_channel = b_channel.astype('float32')
         a_channel_resize = cv2.resize(a_channel, (cols, rows))
         b_channel_resize = cv2.resize(b_channel, (cols, rows))
 
