@@ -27,7 +27,7 @@ class PipelineTests(unittest.TestCase):
         # path of the gray input image to process in test
         self.input_image_path = os.path.join(cwd, 'test_data/input_image_2.jpg')
 
-        # path of result of the inference to be used for testing postprocess
+        # output of the inference will be written to this path on success
         self.temp_inference_output_path = os.path.join(
             cwd, 'test_data/inference_output_1.npy')
 
