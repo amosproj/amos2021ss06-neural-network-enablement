@@ -320,8 +320,8 @@ class ColorizeProcess:
         inference_result = numpy.load(inference_output_path)
         inference_result = numpy.reshape(inference_result, (int(self.modelWidth / 2),
                                                             int(self.modelHeight / 2), 2))
-        ab_channel = inference_result
-        print(ab_channel.shape)
+        a_channel, b_channel = cv2.split(inference_result)
+        print(a_channel.shape)
 
         # pull out L channel in original/source image
         input_image = cv2.imread(input_image_path, cv2.IMREAD_COLOR)
@@ -338,12 +338,14 @@ class ColorizeProcess:
         # resize to match the size of original image L
 
         height = input_image[0]
+        print(height)
         width = input_image[1]
-        ab_channel_resize = cv2.resize(ab_channel, (height, width))
+        a_channel_resize = cv2.resize(a_channel, (height, width))
+        b_channel_resize = cv2.resize(b_channel,(height,width))
 
         # result Lab image
 
-        result_image = cv2.merge((L, ab_channel_resize))
+        result_image = cv2.merge((L, a_channel_resize,b_channel_resize))
         print(result_image.shape)
         # convert back to rgb
 
