@@ -332,13 +332,7 @@ class ColorizeProcess:
         input_image = 1.0 * input_image / 255  # Normalizing the
         # input image values
         bgrtolab = cv2.cvtColor(input_image, cv2.COLOR_BGR2LAB)
-        cv2.imshow("Lab_channel", bgrtolab)
         (L, A, B) = cv2.split(bgrtolab)
-        cv2.imshow("L_channel", L)
-        cv2.imshow("A_channel", A)
-        cv2.imshow("B_channel", B)
-        cv2.waitKey(0)
-        cv2.destroyAllWindows()
 
         # resize to match the size of original image L
 
@@ -355,7 +349,6 @@ class ColorizeProcess:
 
         output_image = cv2.cvtColor(result_image, cv2.COLOR_Lab2BGR)
         output_image = output_image * 255
-        cv2.imshow('output_image', output_image)
         cv2.imwrite(output_image_path, output_image)
 
         # self.SaveImage(imageFile, output_image)
