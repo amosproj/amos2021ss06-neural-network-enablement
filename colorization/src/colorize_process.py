@@ -266,7 +266,7 @@ class ColorizeProcess:
 
         inferenceOutput = self.model.GetModelOutputData()
 
-        dataSize = 0   # TODO
+        dataSize = 0  # TODO
         dataPtr = self.GetInferenceOutputItem(dataSize, inferenceOutput)
 
         size = self.itemDataSize
@@ -279,7 +279,7 @@ class ColorizeProcess:
             print("Copy image to np array failed for memcpy error ", ret)
             return FAILED
 
-        data = copy.deepcopy(acl.util.ptr_to_numpy(np_output_ptr, (size, ),
+        data = copy.deepcopy(acl.util.ptr_to_numpy(np_output_ptr, (size,),
                                                    acl_constants.NPY_BYTE))
 
         numpy.save(inference_output_path, data)
@@ -318,9 +318,8 @@ class ColorizeProcess:
 
         # load the result from the colorization
         inference_result = numpy.load(inference_output_path)
-
-        inference_result = numpy.reshape(inference_result, (self.modelWidth/2,
-                                                            self.modelHeight/2, 2))
+        inference_result = numpy.reshape(inference_result, int(self.modelWidth / 2),
+                                         int(self.modelHeight / 2), 2)
         ab_channel = inference_result
         print(ab_channel.shape)
         # pull out L channel in original/source image
