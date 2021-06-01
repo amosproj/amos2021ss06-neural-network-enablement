@@ -321,7 +321,7 @@ class ColorizeProcess:
         inference_result = numpy.reshape(inference_result, (int(self.modelWidth / 2),
                                                             int(self.modelHeight / 2), 2))
         a_channel, b_channel = cv2.split(inference_result)
-        print(a_channel.shape)
+        print(type(a_channel))
 
         # pull out L channel in original/source image
         input_image = cv2.imread(input_image_path, cv2.IMREAD_COLOR)
