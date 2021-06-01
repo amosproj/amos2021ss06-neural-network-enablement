@@ -318,38 +318,30 @@ class ColorizeProcess:
 
         # load the result from the colorization
         inference_result = numpy.load(inference_output_path)
-        print(inference_result.shape)
-        # inference_result = numpy.resize(inference_result, (self.modelWidth,
-                                                           # self.modelHeight))
-        ab_channel = inference_result
-        # print(ab_channel.shape)
+        inference_result = numpy.reshape(inference_result, (int(self.modelWidth/2),
+                                                            int(self.modelHeight/2), 2))
+        a_channel, b_channel = cv2.split(inference_result)
 
         # pull out L channel in original/source image
-
         input_image = cv2.imread(input_image_path, cv2.IMREAD_COLOR)
-        # input_image = cv2.resize(input_image, (self.modelWidth,
-                                               # self.modelHeight))
-
         input_image = numpy.float32(input_image)
-        input_image = 1.0 * input_image / 255  # Normalizing the
-        # input image values
-        print(input_image.shape)
+        input_image = 1.0 * input_image / 255  # Normalizing
         bgrtolab = cv2.cvtColor(input_image, cv2.COLOR_BGR2LAB)
         (L, A, B) = cv2.split(bgrtolab)
-        print(L.shape)
-        # resize to match the size of original image L
 
-        # height = input_image[0]
-        # width = input_image[1]
-        # ab_channel_resize = cv2.resize(ab_channel, (height, width))
+        # resize to match the size of original image L
+        rows = input_image.shape[0]
+        cols = input_image.shape[1]
+        a_channel = a_channel.astype('float32')
+        b_channel = a_channel.astype('float32')
+        a_channel_resize = cv2.resize(a_channel, (cols, rows))
+        b_channel_resize = cv2.resize(b_channel, (cols, rows))
 
         # result Lab image
-
-        result_image = cv2.merge(L, ab_channel)
+        result_image = cv2.merge((L, a_channel_resize, b_channel_resize))
         print(result_image.shape)
 
         # convert back to rgb
-
         output_image = cv2.cvtColor(result_image, cv2.COLOR_Lab2BGR)
         output_image = output_image * 255
         cv2.imshow('output_image', output_image)
