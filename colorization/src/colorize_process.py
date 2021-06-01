@@ -332,8 +332,8 @@ class ColorizeProcess:
         print(L.shape)
 
         # resize to match the size of original image L
-        rows = input_image.shape[0]
-        cols = input_image.shape[1]
+        rows = numpy.float32(input_image.shape[0])
+        cols = numpy.float32(input_image.shape[1])
         a_channel_resize = cv2.resize(a_channel, (cols, rows))
         b_channel_resize = cv2.resize(b_channel, (rows, cols))
 
