@@ -89,34 +89,35 @@ class FunctionalTest(unittest.TestCase):
     """
 
     def setUp(self):
-        # TODO: inits path variables
-        pass
+        # init path variables
+        self.input_image_path = os.path.join(os.path.abspath(os.path.dirname(__file__)),
+                                  'test_data/input_image_1.png')
+        self.output_image_path = os.path.join(os.path.abspath(os.path.dirname(__file__)),
+                                   'test_data/output_image_1.png')
+        self.fake_input_image_path = os.path.join(os.path.abspath(
+            os.path.dirname(__file__)), '../../Data/notexist.png')
 
     def tearDown(self):
-        # TODO: cleanup files, that were created in the
+        # cleanup files, that were created in the
         # test_complete_colorize_image test run
-        pass
+        print('tear down called')
+        if os.path.isfile(self.output_image_path):
+            os.remove(self.output_image_path)
 
     def test_complete_colorize_image(self):
         """
         Functional test to test the complete colorizing process
         """
-        path_input = os.path.join(os.path.abspath(os.path.dirname(__file__)),
-                                  'test_data/input_image_1.png')
-        path_output = os.path.join(os.path.abspath(os.path.dirname(__file__)),
-                                   'test_data/output_image_1.png')
-        ret = colorize_image(path_input, path_output)
+        ret = colorize_image(self.input_image_path, self.output_image_path)
         self.assertEqual(ret, SUCCESS)
         # if the input path does not exist, expect FAILED:
-        path_input = os.path.join(os.path.abspath(os.path.dirname(__file__)),
-                                  '../../Data/notexist.png')
-        ret = colorize_image(path_input, path_output)
+        ret = colorize_image(self.fake_input_image_path, self.output_image_path)
         self.assertEqual(ret, FAILED)
         # check if the colorized image and the path exist
-        ret = os.path.isfile(path_output)
+        ret = os.path.isfile(self.output_image_path)
         self.assertTrue(ret)
         # check if the image in output path is colorized
-        img = cv2.imread(path_output)
+        img = cv2.imread(self.output_image_path)
         ret = len(img.shape)
         self.assertGreaterEqual(3, ret)
         ret = img.shape[2]
