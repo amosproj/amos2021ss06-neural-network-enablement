@@ -28,7 +28,8 @@ class PipelineTests(unittest.TestCase):
         self.input_image_path = os.path.join(cwd, 'test_data/input_image_2.jpg')
 
         # path of result of the inference to be used for testing postprocess
-        self.temp_inference_output_path = os.path.join(cwd, 'test_data/inference_output_1.npy')
+        self.temp_inference_output_path = os.path.join(
+            cwd, 'test_data/inference_output_1.npy')
 
         # path of result of the inference to be used for testing postprocess
         self.inference_output_path = os.path.join(cwd, 'test_data/inference_output_2.npy')
@@ -42,6 +43,7 @@ class PipelineTests(unittest.TestCase):
             os.remove(self.output_image_path)
         if os.path.isfile(self.temp_inference_output_path):
             os.remove(self.temp_inference_output_path)
+
     def test_step_preprocess_image(self):
         """
         Unit-Test to test the preprocessing of an image
@@ -115,9 +117,9 @@ class FunctionalTest(unittest.TestCase):
     def setUp(self):
         # init path variables
         self.input_image_path = os.path.join(os.path.abspath(
-            os.path.dirname(__file__)),'test_data/input_image_1.png')
+            os.path.dirname(__file__)), 'test_data/input_image_1.png')
         self.output_image_path = os.path.join(os.path.abspath(
-            os.path.dirname(__file__)),'test_data/output_image_1.png')
+            os.path.dirname(__file__)), 'test_data/output_image_1.png')
         self.fake_input_image_path = os.path.join(os.path.abspath(
             os.path.dirname(__file__)), '../../Data/notexist.png')
 
