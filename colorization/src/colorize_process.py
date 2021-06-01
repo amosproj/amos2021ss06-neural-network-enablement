@@ -333,7 +333,7 @@ class ColorizeProcess:
         # resize to match the size of original image L
         rows = input_image.shape[0]
         cols = input_image.shape[1]
-        a_channel_resize = cv2.resize(a_channel, (cols, rows))
+        a_channel_resize = cv2.resize(a_channel, (rows, cols))
         b_channel_resize = cv2.resize(b_channel, (rows, cols))
 
         # result Lab image
