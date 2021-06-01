@@ -332,7 +332,7 @@ class ColorizeProcess:
         # input image values
         bgrtolab = cv2.cvtColor(input_image, cv2.COLOR_BGR2LAB)
         (L, A, B) = cv2.split(bgrtolab)
-
+        print(L.shape)
         # resize to match the size of original image L
 
         # height = input_image[0]
@@ -341,7 +341,7 @@ class ColorizeProcess:
 
         # result Lab image
 
-        result_image = cv2.merge(L, ab_channel)
+        result_image = cv2.merge((L, ab_channel))
         print(result_image.shape)
         # convert back to rgb
 
