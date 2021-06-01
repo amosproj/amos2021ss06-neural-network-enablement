@@ -100,12 +100,21 @@ class PipelineTests(unittest.TestCase):
         self.assertTrue(os.path.isfile(self.inference_output_path))
 
         # TODO test the postprocessing
-        ret = ColorizeProcess.postprocess(self.input_image_path,
-                                          self.output_image_path, self.model_output)
-        if self.model_output is None:
-            self.assertEqual(ret, FAILED)
-        if self.model_output is not None:
-            self.assertEqual(ret, SUCCESS)
+        kModelWidth = numpy.uint32(224)
+        kModelHeight = numpy.uint32(224)
+
+        proc = ColorizeProcess(self.model_path, kModelWidth, kModelHeight)
+        ret = proc.Init()
+        self.assertEqual(ret, SUCCESS)
+
+        self.assertTrue(os.path.isfile(self.input_image_path))
+
+        # test: input a existing and right file, should return SUCCESS
+        result = proc.postprocess(self.input_image_path, self.inference_output_path,
+                                  self.output_image_path)
+
+        self.assertEqual(result, SUCCESS)
+        proc.DestroyResource()
 
 
 class FunctionalTest(unittest.TestCase):
