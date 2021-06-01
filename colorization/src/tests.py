@@ -110,7 +110,7 @@ class PipelineTests(unittest.TestCase):
 
         self.assertTrue(os.path.isfile(self.input_image_path))
         self.assertTrue(os.path.isfile(self.inference_output_path))
-        self.assertTrue(os.path.isfile(self.output_image_path_image_path))
+        self.assertTrue(os.path.isfile(self.output_image_path))
         # test: input a existing and right file, should return SUCCESS
         result = proc.postprocess(self.input_image_path, self.inference_output_path,
                                   self.output_image_path)
