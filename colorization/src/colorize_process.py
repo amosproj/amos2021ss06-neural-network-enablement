@@ -259,7 +259,6 @@ class ColorizeProcess:
             on failure this function returns 1
         """
 
-        inferenceOutput = None
         ret = self.model.Execute()
         if ret != SUCCESS:
             print("Execute model inference failed")
