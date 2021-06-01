@@ -24,9 +24,14 @@ class PipelineTests(unittest.TestCase):
 
         self.model_path = os.path.join(cwd, '../../model/colorization.om')
 
-        self.input_image_path = os.path.join(cwd, 'test_data/input_image_2.jpg')
-        self.output_image_path = os.path.join(cwd, 'test_data/output_image_2.jpg')
-        self.inference_output = os.path.join(cwd, 'test_data/inference_output.npy')
+        # path of the gray input image to process in test
+        self.input_image_path = os.path.join(cwd, 'test_data/input_image_2.png')
+
+        # path of result of the inference to be used for testing postprocess
+        self.inference_output_path = os.path.join(cwd, 'test_data/inference_output_2.npy')
+
+        # output image will be written to this path on success
+        self.output_image_path = os.path.join(cwd, 'test_data/output_image_2.png')
 
     def tearDown(self):
         print('tear down called')
@@ -81,14 +86,23 @@ class FunctionalTest(unittest.TestCase):
     (i.e. the function pipeline.colorize_image)
     """
 
+    def setUp(self):
+        # TODO: inits path variables
+        pass
+
+    def tearDown(self):
+        # TODO: cleanup files, that were created in the
+        # test_complete_colorize_image test run
+        pass
+
     def test_complete_colorize_image(self):
         """
         Functional test to test the complete colorizing process
         """
         path_input = os.path.join(os.path.abspath(os.path.dirname(__file__)),
-                                  'test_data/input_image.png')
+                                  'test_data/input_image_1.png')
         path_output = os.path.join(os.path.abspath(os.path.dirname(__file__)),
-                                   'test_data/colorized_image.png')
+                                   'test_data/output_image_1.png')
         ret = colorize_image(path_input, path_output)
         self.assertEqual(ret, SUCCESS)
         # if the input path does not exist, expect FAILED:
