@@ -337,15 +337,15 @@ class ColorizeProcess:
 
         # resize to match the size of original image L
 
-        height = input_image[0]
+        height = input_image.shape[0]
         print(height)
-        width = input_image[1]
+        width = input_image.shape[1]
         a_channel_resize = cv2.resize(a_channel, (height, width))
-        b_channel_resize = cv2.resize(b_channel,(height,width))
+        b_channel_resize = cv2.resize(b_channel, (height, width))
 
         # result Lab image
 
-        result_image = cv2.merge((L, a_channel_resize,b_channel_resize))
+        result_image = cv2.merge((L, a_channel_resize, b_channel_resize))
         print(result_image.shape)
         # convert back to rgb
 
