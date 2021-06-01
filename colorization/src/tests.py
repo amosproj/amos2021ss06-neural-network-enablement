@@ -1,4 +1,5 @@
 import unittest
+
 import os
 import cv2
 import numpy
@@ -8,13 +9,8 @@ from pipeline import colorize_image
 FAILED = 1
 SUCCESS = 0
 
-# import colorize_process
-# import acl
 
-# ^
-# |
-# |
-# these imports would also work here (The test shall be run on an Atlas Board)
+# The test shall be run on an Atlas Board.
 
 
 class PipelineTests(unittest.TestCase):
@@ -24,9 +20,23 @@ class PipelineTests(unittest.TestCase):
     """
 
     def setUp(self):
-        self.input_image_path = 'input_image.jpg'
-        self.output_image_path = 'output_image.jpg'
-        self.model_output = ''
+        cwd = os.path.abspath(os.path.dirname(__file__))
+
+        self.model_path = os.path.join(cwd, '../../model/colorization.om')
+
+        # path of the gray input image to process in test
+        self.input_image_path = os.path.join(cwd, 'test_data/input_image_2.jpg')
+
+        # path of result of the inference to be used for testing postprocess
+        self.inference_output_path = os.path.join(cwd, 'test_data/inference_output_2.npy')
+
+        # output image will be written to this path on success
+        self.output_image_path = os.path.join(cwd, 'test_data/output_image_2.jpg')
+
+    def tearDown(self):
+        print('tear down called')
+        if os.path.isfile(self.output_image_path):
+            os.remove(self.output_image_path)
 
     def test_step_preprocess_image(self):
         """
@@ -35,17 +45,16 @@ class PipelineTests(unittest.TestCase):
         # creat a new ColorizeProcess object namme proc
         kModelWidth = numpy.uint32(224)
         kModelHeight = numpy.uint32(224)
-        # the KMODELPATH is not in main
-        KMODELPATH = os.path.join(os.path.abspath(os.path.dirname(__file__)),
-                                  '../../model/colorization.om')
-        proc = ColorizeProcess(KMODELPATH, kModelWidth, kModelHeight)
+
+        proc = ColorizeProcess(self.model_path, kModelWidth, kModelHeight)
         ret = proc.Init()
         self.assertEqual(ret, SUCCESS)
 
+        self.assertTrue(os.path.isfile(self.input_image_path))
+
         # test: input a existing and right file, should return SUCCESS
-        img_path = os.path.join(os.path.abspath(os.path.dirname(__file__)),
-                                '../../Data/dog.png')
-        result = proc.Preprocess(img_path)
+        result = proc.Preprocess(self.input_image_path)
+
         self.assertEqual(result, SUCCESS)
         proc.DestroyResource()
 
@@ -60,6 +69,10 @@ class PipelineTests(unittest.TestCase):
         """
         Unit-Test to test the postprocessing of an image
         """
+
+        # check that the inference output npy file is available
+        self.assertTrue(os.path.isfile(self.inference_output))
+
         # TODO test the postprocessing
         ret = ColorizeProcess.postprocess(self.input_image_path,
                                           self.output_image_path, self.model_output)
@@ -75,14 +88,23 @@ class FunctionalTest(unittest.TestCase):
     (i.e. the function pipeline.colorize_image)
     """
 
+    def setUp(self):
+        # TODO: inits path variables
+        pass
+
+    def tearDown(self):
+        # TODO: cleanup files, that were created in the
+        # test_complete_colorize_image test run
+        pass
+
     def test_complete_colorize_image(self):
         """
         Functional test to test the complete colorizing process
         """
         path_input = os.path.join(os.path.abspath(os.path.dirname(__file__)),
-                                  'test_image.png')
+                                  'test_data/input_image_1.png')
         path_output = os.path.join(os.path.abspath(os.path.dirname(__file__)),
-                                   'colorized_image.png')
+                                   'test_data/output_image_1.png')
         ret = colorize_image(path_input, path_output)
         self.assertEqual(ret, SUCCESS)
         # if the input path does not exist, expect FAILED:
