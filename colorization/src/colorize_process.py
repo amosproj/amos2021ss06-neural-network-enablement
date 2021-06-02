@@ -318,47 +318,33 @@ class ColorizeProcess:
 
         # load the result from the colorization
         inference_result = numpy.load(inference_output_path)
+        inference_result = numpy.reshape(inference_result, (int(self.modelWidth/2),
+                                                            int(self.modelHeight/2), 2))
+        a_channel, b_channel = cv2.split(inference_result)
 
-        inference_result = cv2.imread(inference_output_path)
-        inference_result = cv2.resize(inference_result, (self.modelWidth,
-                                                         self.modelHeight))
-        ab_channel = inference_result
         # pull out L channel in original/source image
-
         input_image = cv2.imread(input_image_path, cv2.IMREAD_COLOR)
-        input_image = cv2.resize(input_image, (self.modelWidth,
-                                               self.modelHeight))
-
         input_image = numpy.float32(input_image)
-        input_image = 1.0 * input_image / 255  # Normalizing the
-        # input image values
+        input_image = 1.0 * input_image / 255  # Normalizing
         bgrtolab = cv2.cvtColor(input_image, cv2.COLOR_BGR2LAB)
-        cv2.imshow("Lab_channel", bgrtolab)
         (L, A, B) = cv2.split(bgrtolab)
-        cv2.imshow("L_channel", L)
-        cv2.imshow("A_channel", A)
-        cv2.imshow("B_channel", B)
-        cv2.waitKey(0)
-        cv2.destroyAllWindows()
 
         # resize to match the size of original image L
-
-        height = input_image[0]
-        width = input_image[1]
-        ab_channel_resize = cv2.resize(ab_channel, (height, width))
+        rows = input_image.shape[0]
+        cols = input_image.shape[1]
+        a_channel = a_channel.astype('float32')
+        b_channel = a_channel.astype('float32')
+        a_channel_resize = cv2.resize(a_channel, (cols, rows))
+        b_channel_resize = cv2.resize(b_channel, (cols, rows))
 
         # result Lab image
-
-        result_image = cv2.merge(L, ab_channel_resize)
-        cv2.imshow('result_image', result_image)
+        result_image = cv2.merge((L, a_channel_resize, b_channel_resize))
+        print(result_image.shape)
 
         # convert back to rgb
-
         output_image = cv2.cvtColor(result_image, cv2.COLOR_Lab2BGR)
         output_image = output_image * 255
-        cv2.imshow('output_image', output_image)
         cv2.imwrite(output_image_path, output_image)
-
         # self.SaveImage(imageFile, output_image)
         return SUCCESS
 
