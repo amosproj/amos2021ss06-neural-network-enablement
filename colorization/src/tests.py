@@ -36,6 +36,8 @@ class PipelineTests(unittest.TestCase):
 
         # output image will be written to this path on success
         self.output_image_path = os.path.join(cwd, 'test_data/output_image_2.jpg')
+        self.kModelWidth = numpy.uint32(224)
+        self.kModelHeight = numpy.uint32(224)
 
     def tearDown(self):
         print('tear down called')
@@ -100,12 +102,19 @@ class PipelineTests(unittest.TestCase):
         self.assertTrue(os.path.isfile(self.inference_output_path))
 
         # TODO test the postprocessing
-        ret = ColorizeProcess.postprocess(self.input_image_path,
-                                          self.output_image_path, self.model_output)
-        if self.model_output is None:
-            self.assertEqual(ret, FAILED)
-        if self.model_output is not None:
-            self.assertEqual(ret, SUCCESS)
+
+        proc = ColorizeProcess(self.model_path, self.kModelWidth,
+                               self.kModelHeight)
+        ret = proc.Init()
+        self.assertEqual(ret, SUCCESS)
+
+        self.assertTrue(os.path.isfile(self.input_image_path))
+        self.assertTrue(os.path.isfile(self.inference_output_path))
+        # test: input a existing and right file, should return SUCCESS
+        result = proc.postprocess(self.input_image_path, self.inference_output_path,
+                                  self.output_image_path)
+        self.assertEqual(result, SUCCESS)
+        proc.DestroyResource()
 
 
 class FunctionalTest(unittest.TestCase):
