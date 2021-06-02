@@ -39,12 +39,12 @@ class PipelineTests(unittest.TestCase):
         self.kModelWidth = numpy.uint32(224)
         self.kModelHeight = numpy.uint32(224)
 
-    def tearDown(self):
-        print('tear down called')
-        if os.path.isfile(self.output_image_path):
-            os.remove(self.output_image_path)
-        if os.path.isfile(self.temp_inference_output_path):
-            os.remove(self.temp_inference_output_path)
+    # def tearDown(self):
+    #     print('tear down called')
+    #     if os.path.isfile(self.output_image_path):
+    #         os.remove(self.output_image_path)
+    #     if os.path.isfile(self.temp_inference_output_path):
+    #         os.remove(self.temp_inference_output_path)
 
     def test_step_preprocess_image(self):
         """
