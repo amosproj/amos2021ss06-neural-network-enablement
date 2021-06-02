@@ -328,7 +328,7 @@ class ColorizeProcess:
         input_image = 1.0 * input_image / 255  # Normalizing
         bgrtolab = cv2.cvtColor(input_image, cv2.COLOR_BGR2LAB)
         (L, A, B) = cv2.split(bgrtolab)
-
+        print(L.shape)
         # resize to match the size of original image L
         rows = input_image.shape[0]
         cols = input_image.shape[1]
