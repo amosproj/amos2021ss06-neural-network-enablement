@@ -51,10 +51,8 @@ class PipelineTests(unittest.TestCase):
         Unit-Test to test the preprocessing of an image
         """
         # creat a new ColorizeProcess object namme proc
-        kModelWidth = numpy.uint32(224)
-        kModelHeight = numpy.uint32(224)
 
-        proc = ColorizeProcess(self.model_path, kModelWidth, kModelHeight)
+        proc = ColorizeProcess(self.model_path, self.kModelWidth, self.kModelHeight)
         ret = proc.Init()
         self.assertEqual(ret, SUCCESS)
 
@@ -71,10 +69,8 @@ class PipelineTests(unittest.TestCase):
         Unit-Test to test the colorizing of an image
         """
         # creat a new ColorizeProcess object namme proc
-        kModelWidth = numpy.uint32(224)
-        kModelHeight = numpy.uint32(224)
 
-        proc = ColorizeProcess(self.model_path, kModelWidth, kModelHeight)
+        proc = ColorizeProcess(self.model_path, self.kModelWidth, self.kModelHeight)
         ret = proc.Init()
         self.assertEqual(ret, SUCCESS)
 
