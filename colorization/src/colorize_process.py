@@ -213,7 +213,6 @@ class ColorizeProcess:
                                cv2.INTER_CUBIC)
 
         # deal image
-        reiszeMat = cv2.convertScaleAbs(reiszeMat, cv2.CV_32FC3)
         reiszeMat = cv2.cvtColor(reiszeMat, cv2.COLOR_BGR2Lab)
         reiszeMat = 1.0 * reiszeMat / 255
 
