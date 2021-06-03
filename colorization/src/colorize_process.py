@@ -76,6 +76,9 @@ class ColorizeProcess:
 
         self.itemDataSize = 0
 
+    def __del__(self):
+        self.DestroyResource()
+
     def InitResource(self):
         """
         This function does the initiation of resource.
@@ -430,6 +433,8 @@ class ColorizeProcess:
         return value :
         None
         """
+
+        print('called destroy resource of colorize_process')
         if (self.inputBuf is None) or (self.inputDataSize == 0):
             print("Release image abnormaly, data is None")
             return FAILED
@@ -438,3 +443,4 @@ class ColorizeProcess:
 
         self.inputBuf = None
         self.inputDataSize = 0
+        print('finished destroy resource of colorize_process')
