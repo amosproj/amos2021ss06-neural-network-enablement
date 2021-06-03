@@ -211,9 +211,11 @@ class ColorizeProcess:
 
         # deal image
         reiszeMat = cv2.convertScaleAbs(reiszeMat, cv2.CV_32FC3)
+        reiszeMat = cv2.cvtColor(reiszeMat, cv2.COLOR_BGR2Lab)
         reiszeMat = 1.0 * reiszeMat / 255
 
         # pull out L channel and subtract 50 for mean-centering
+        # channel[0] = L, [1] = A, [2] = B
         channels = cv2.split(reiszeMat)
         reiszeMatL = acl.util.numpy_to_ptr(channels[0] - 50)
 
