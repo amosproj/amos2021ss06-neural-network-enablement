@@ -1,4 +1,5 @@
 import numpy
+import copy
 import acl
 import cv2
 import utils
@@ -72,6 +73,8 @@ class ColorizeProcess:
         self.isInited = isInit
         self.run_mode = run_mode
         self.model = Modelprocess()
+
+        self.itemDataSize = 0
 
     def InitResource(self):
         """
@@ -240,12 +243,7 @@ class ColorizeProcess:
             return FAILED
         return SUCCESS
 
-    # Calling the model_process program to do the real colorize process.
-    # input: object itself
-    # output: pointer value for the result, and the flag SUCCESS or FAILED
-    # ATTENTION: THE INPUT AND OUTPUT ARE CHANGED,
-    # COMPARE TO THE ORIGINAL C++ CODE!!
-    def inference(self):
+    def inference(self, inference_output_path):
         """
         This function activate the model process after preprocess,
         and get result back.
@@ -253,25 +251,44 @@ class ColorizeProcess:
 
         Parameters:
         -----------
-        input:none
+        input:
 
-        return : inferenceOutput, result
-        inferenceOutput : int
-            pointer of the result saved after colorization
+        inference_output_path:
+            file path where the result is saved after colorization
+
         result : int
             on success this function returns 0
             on failure this function returns 1
         """
 
-        inferenceOutput = None
         ret = self.model.Execute()
         if ret != SUCCESS:
             print("Execute model inference failed")
-            return inferenceOutput, FAILED
-        inferenceOutput = self.model.GetModelOutputData()
-        return inferenceOutput, SUCCESS
+            return FAILED
 
-    def postprocess(self, input_image_path, output_image_path, modelOutput):
+        inferenceOutput = self.model.GetModelOutputData()
+
+        dataSize = 0
+        dataPtr = self.GetInferenceOutputItem(dataSize, inferenceOutput)
+
+        size = self.itemDataSize
+
+        np_output_ptr, ret = acl.rt.malloc(size, acl_constants.ACL_MEM_MALLOC_NORMAL_ONLY)
+        print("image ", np_output_ptr)
+
+        ret = acl.rt.memcpy(np_output_ptr, size, dataPtr, size, 3)
+        if ret != acl_constants.ACL_ERROR_NONE:
+            print("Copy image to np array failed for memcpy error ", ret)
+            return FAILED
+
+        data = copy.deepcopy(acl.util.ptr_to_numpy(np_output_ptr, (size, ),
+                                                   acl_constants.NPY_BYTE))
+
+        numpy.save(inference_output_path, data)
+
+        return SUCCESS
+
+    def postprocess(self, input_image_path, inference_output_path, output_image_path):
         """This function converts LAB image to BGR image (colorization)
         and save it.
          It combines L channel obtained from source image and ab channels
@@ -281,63 +298,55 @@ class ColorizeProcess:
         -----------
         input_image_path : str
             the path of the (gray) image to obtain L channel
+
+        inference_output_path : str
+            Path to the .npy file containing the output of the inference function.
+            (Consisting of ab channels)
+
         output_image_path : str
             the path of the (colorized) image to save after processing
-        modelOutput : image
-            Model output consisting of ab channels.
+
         return value :
             on success this function returns 0
             on failure this function returns 1
         """
-        dataSize = 0
-        data = self.GetInferenceOutputItem(dataSize, modelOutput)
-        if data is None:
-            return FAILED
-
-        # size = int(dataSize)
 
         # get a and b channel result data
+        if not os.path.isfile(inference_output_path):
+            print('Output of inference not found.')
+            return FAILED
 
-        inference_result = cv2.imread(modelOutput)
-        inference_result = cv2.resize(inference_result, (self.modelWidth,
-                                                         self.modelHeight))
-        ab_channel = inference_result
+        print('SUCCESS!!')
+
+        # load the result from the colorization
+        inference_result = numpy.load(inference_output_path)
+        inference_result = numpy.reshape(inference_result, (int(self.modelWidth/2),
+                                                            int(self.modelHeight/2), 2))
+        a_channel, b_channel = cv2.split(inference_result)
+
         # pull out L channel in original/source image
-
         input_image = cv2.imread(input_image_path, cv2.IMREAD_COLOR)
-        input_image = cv2.resize(input_image, (self.modelWidth,
-                                               self.modelHeight))
-
         input_image = numpy.float32(input_image)
-        input_image = 1.0 * input_image / 255  # Normalizing the
-        # input image values
+        input_image = 1.0 * input_image / 255  # Normalizing
         bgrtolab = cv2.cvtColor(input_image, cv2.COLOR_BGR2LAB)
-        cv2.imshow("Lab_channel", bgrtolab)
         (L, A, B) = cv2.split(bgrtolab)
-        cv2.imshow("L_channel", L)
-        cv2.imshow("A_channel", A)
-        cv2.imshow("B_channel", B)
-        cv2.waitKey(0)
-        cv2.destroyAllWindows()
 
         # resize to match the size of original image L
-
-        height = input_image[0]
-        width = input_image[1]
-        ab_channel_resize = cv2.resize(ab_channel, (height, width))
+        rows = input_image.shape[0]
+        cols = input_image.shape[1]
+        a_channel = a_channel.astype('float32')
+        b_channel = a_channel.astype('float32')
+        a_channel_resize = cv2.resize(a_channel, (cols, rows))
+        b_channel_resize = cv2.resize(b_channel, (cols, rows))
 
         # result Lab image
-
-        result_image = cv2.merge(L, ab_channel_resize)
-        cv2.imshow('result_image', result_image)
+        result_image = cv2.merge((L, a_channel_resize, b_channel_resize))
+        print(result_image.shape)
 
         # convert back to rgb
-
         output_image = cv2.cvtColor(result_image, cv2.COLOR_Lab2BGR)
         output_image = output_image * 255
-        cv2.imshow('output_image', output_image)
         cv2.imwrite(output_image_path, output_image)
-
         # self.SaveImage(imageFile, output_image)
         return SUCCESS
 
@@ -401,7 +410,7 @@ class ColorizeProcess:
         else:
             data = dataBufferDev
 
-        # itemDataSize = bufferSize
+        self.itemDataSize = bufferSize
         return data
 
     def DestroyResource(self):
