@@ -1,9 +1,9 @@
 from colorize_process import ColorizeProcess
 import numpy
 import os
-import cv2
-from Data.data import *
-import splitVideo
+# import cv2
+# from Data.data import *
+# import splitVideo
 
 
 # error codes
