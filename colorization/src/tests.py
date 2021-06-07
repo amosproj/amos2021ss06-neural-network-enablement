@@ -86,7 +86,6 @@ class PipelineTests(unittest.TestCase):
         # check that the inference output npy file is saved
         self.assertTrue(os.path.isfile(self.temp_inference_output_path))
 
-
     def test_step_postprocess_image(self):
         """
         Unit-Test to test the postprocessing of an image
