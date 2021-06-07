@@ -32,3 +32,6 @@ The main function of the neural network allows for colorization of black & white
 Core technologies: Python, Python frameworks, and Linux
 Team language: English
 Needed resources: The Atlas 200DK System 
+
+**User Documentation:**
+[Open User Documentation](https://github.com/amosproj/amos-ss2021-neural-network-enablement/wiki/User-Documentation)
