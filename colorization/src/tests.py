@@ -62,7 +62,6 @@ class PipelineTests(unittest.TestCase):
         result = proc.Preprocess(self.input_image_path)
 
         self.assertEqual(result, SUCCESS)
-        proc.DestroyResource()
 
     def test_step_colorize_image(self):
         """
@@ -87,7 +86,6 @@ class PipelineTests(unittest.TestCase):
         # check that the inference output npy file is saved
         self.assertTrue(os.path.isfile(self.temp_inference_output_path))
 
-        proc.DestroyResource()
 
     def test_step_postprocess_image(self):
         """
@@ -110,7 +108,6 @@ class PipelineTests(unittest.TestCase):
         result = proc.postprocess(self.input_image_path, self.inference_output_path,
                                   self.output_image_path)
         self.assertEqual(result, SUCCESS)
-        proc.DestroyResource()
 
 
 class FunctionalTest(unittest.TestCase):
