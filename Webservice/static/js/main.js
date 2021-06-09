@@ -86,8 +86,10 @@ function deleteImage(imgName) {
   $.ajax({
     type: "POST",
     url: "/delete/",
-    data: JSON.stringify({'name' : imgName}),
-    success: function () {
+    data: JSON.stringify({
+      'name': imgName
+    }),
+    success: function() {
       console.log('success');
 
       function reload() {
@@ -96,7 +98,7 @@ function deleteImage(imgName) {
 
       setTimeout(reload, 500);
     },
-    error: function () {
+    error: function() {
       showWarningToast("Deleting image failed.", "Couldn't connect to server. Is the service running?");
     },
     dataType: 'json',
@@ -114,11 +116,13 @@ function colorizeImage(imgName) {
   $.ajax({
     type: "POST",
     url: "/colorize/",
-    data: JSON.stringify({'name' : imgName}),
-    success: function () {
+    data: JSON.stringify({
+      'name': imgName
+    }),
+    success: function() {
       console.log('colorization success');
     },
-    error: function (error) {
+    error: function(error) {
       console.log(error);
       showWarningToast("Colorizing image failed.", "Couldn't connect to server. Is the service running?");
       return 1;
@@ -139,8 +143,10 @@ function showResult(imgName) {
   $.ajax({
     type: "POST",
     url: "/result/",
-    data: JSON.stringify({'name' : imgName}),
-    success: function (response) {
+    data: JSON.stringify({
+      'name': imgName
+    }),
+    success: function(response) {
       console.log('colorization success');
       // console.log(response);
 
@@ -161,7 +167,7 @@ function showResult(imgName) {
         }, 100);
       }
     },
-    error: function (error) {
+    error: function(error) {
       console.log(error);
       showWarningToast("Loading the result failed.", "Couldn't connect to server. Is the service running?");
       return 1;
@@ -177,7 +183,7 @@ function showResult(imgName) {
 //
 // load images and display them in gallery
 $.get('/all/', null, function(data) {
-  data.sort().forEach( function(url) {
+  data.sort().forEach(function(url) {
     console.log(url);
 
     let div = document.createElement('div');
