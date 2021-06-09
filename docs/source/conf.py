@@ -168,6 +168,3 @@ texinfo_documents = [
      author, 'NeuralNetworkEnablement', 'One line description of project.',
      'Miscellaneous'),
 ]
-
-
-
