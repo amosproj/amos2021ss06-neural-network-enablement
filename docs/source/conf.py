@@ -18,12 +18,9 @@
 #
 import os
 import sys
-
+import mock
 sys.path.insert(0, os.path.abspath('../../colorization/src/'))
 sys.path.insert(0, os.path.abspath('../../Data'))
-
-import mock
-
 MOCK_MODULES = ['acl']
 for mod_name in MOCK_MODULES:
     sys.modules[mod_name] = mock.Mock()
@@ -146,10 +143,10 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'NeuralNetworkEnablement.tex', u'Neural Network Enablement Documentation',
+    (master_doc, 'NeuralNetworkEnablement.tex', u'Neural Network Enablement '
+                                                u'Documentation',
      u'Huawei Technologies Co., Ltd', 'manual'),
 ]
-
 
 # -- Options for manual page output ---------------------------------------
 
