@@ -76,6 +76,9 @@ class ColorizeProcess:
 
         self.itemDataSize = 0
 
+    def __del__(self):
+        self.DestroyResource()
+
     def InitResource(self):
         """
         This function does the initiation of resource.
@@ -213,10 +216,11 @@ class ColorizeProcess:
                                cv2.INTER_CUBIC)
 
         # deal image
-        reiszeMat = cv2.convertScaleAbs(reiszeMat, cv2.CV_32FC3)
+        reiszeMat = cv2.cvtColor(reiszeMat, cv2.COLOR_BGR2Lab)
         reiszeMat = 1.0 * reiszeMat / 255
 
         # pull out L channel and subtract 50 for mean-centering
+        # channel[0] = L, [1] = A, [2] = B
         channels = cv2.split(reiszeMat)
         reiszeMatL = acl.util.numpy_to_ptr(channels[0] - 50)
 
@@ -266,7 +270,7 @@ class ColorizeProcess:
 
         inferenceOutput = self.model.GetModelOutputData()
 
-        dataSize = 0  # TODO
+        dataSize = 0
         dataPtr = self.GetInferenceOutputItem(dataSize, inferenceOutput)
 
         size = self.itemDataSize
@@ -279,7 +283,7 @@ class ColorizeProcess:
             print("Copy image to np array failed for memcpy error ", ret)
             return FAILED
 
-        data = copy.deepcopy(acl.util.ptr_to_numpy(np_output_ptr, (size,),
+        data = copy.deepcopy(acl.util.ptr_to_numpy(np_output_ptr, (size, ),
                                                    acl_constants.NPY_BYTE))
 
         numpy.save(inference_output_path, data)
@@ -318,10 +322,9 @@ class ColorizeProcess:
 
         # load the result from the colorization
         inference_result = numpy.load(inference_output_path)
-        inference_result = numpy.reshape(inference_result, (int(self.modelWidth / 2),
-                                                            int(self.modelHeight / 2), 2))
+        inference_result = numpy.reshape(inference_result, (int(self.modelWidth/2),
+                                                            int(self.modelHeight/2), 2))
         a_channel, b_channel = cv2.split(inference_result)
-        print(a_channel.shape)
 
         # pull out L channel in original/source image
         input_image = cv2.imread(input_image_path, cv2.IMREAD_COLOR)
@@ -334,7 +337,7 @@ class ColorizeProcess:
         rows = input_image.shape[0]
         cols = input_image.shape[1]
         a_channel = a_channel.astype('float32')
-        b_channel = b_channel.astype('float32')
+        b_channel = a_channel.astype('float32')
         a_channel_resize = cv2.resize(a_channel, (cols, rows))
         b_channel_resize = cv2.resize(b_channel, (cols, rows))
 
@@ -346,7 +349,6 @@ class ColorizeProcess:
         output_image = cv2.cvtColor(result_image, cv2.COLOR_Lab2BGR)
         output_image = output_image * 255
         cv2.imwrite(output_image_path, output_image)
-
         # self.SaveImage(imageFile, output_image)
         return SUCCESS
 
@@ -431,6 +433,8 @@ class ColorizeProcess:
         return value :
         None
         """
+
+        print('called destroy resource of colorize_process')
         if (self.inputBuf is None) or (self.inputDataSize == 0):
             print("Release image abnormaly, data is None")
             return FAILED
@@ -439,3 +443,4 @@ class ColorizeProcess:
 
         self.inputBuf = None
         self.inputDataSize = 0
+        print('finished destroy resource of colorize_process')

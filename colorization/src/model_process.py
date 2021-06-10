@@ -38,10 +38,12 @@ class Modelprocess:
         self.output = output  # int, pointer object of the output data of model inference.
 
     def __del__(self):  # Calling destructor
+        print('called destructor of model process.')
         self.Unload()
         self.DestroyDesc()
         self.DestroyInput()
         self.DestroyOutput()
+        print('destructor of model process finished.')
 
     def LoadModelFromFileWithMem(self, modelPath):
 

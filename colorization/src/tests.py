@@ -36,6 +36,8 @@ class PipelineTests(unittest.TestCase):
 
         # output image will be written to this path on success
         self.output_image_path = os.path.join(cwd, 'test_data/output_image_2.jpg')
+        self.kModelWidth = numpy.uint32(224)
+        self.kModelHeight = numpy.uint32(224)
 
     def tearDown(self):
         print('tear down called')
@@ -49,10 +51,8 @@ class PipelineTests(unittest.TestCase):
         Unit-Test to test the preprocessing of an image
         """
         # creat a new ColorizeProcess object namme proc
-        kModelWidth = numpy.uint32(224)
-        kModelHeight = numpy.uint32(224)
 
-        proc = ColorizeProcess(self.model_path, kModelWidth, kModelHeight)
+        proc = ColorizeProcess(self.model_path, self.kModelWidth, self.kModelHeight)
         ret = proc.Init()
         self.assertEqual(ret, SUCCESS)
 
@@ -62,17 +62,14 @@ class PipelineTests(unittest.TestCase):
         result = proc.Preprocess(self.input_image_path)
 
         self.assertEqual(result, SUCCESS)
-        proc.DestroyResource()
 
     def test_step_colorize_image(self):
         """
         Unit-Test to test the colorizing of an image
         """
         # creat a new ColorizeProcess object namme proc
-        kModelWidth = numpy.uint32(224)
-        kModelHeight = numpy.uint32(224)
 
-        proc = ColorizeProcess(self.model_path, kModelWidth, kModelHeight)
+        proc = ColorizeProcess(self.model_path, self.kModelWidth, self.kModelHeight)
         ret = proc.Init()
         self.assertEqual(ret, SUCCESS)
 
@@ -89,31 +86,27 @@ class PipelineTests(unittest.TestCase):
         # check that the inference output npy file is saved
         self.assertTrue(os.path.isfile(self.temp_inference_output_path))
 
-        proc.DestroyResource()
-
     def test_step_postprocess_image(self):
         """
         Unit-Test to test the postprocessing of an image
         """
 
         # check that the inference output npy file is available
-        # creat a new ColorizeProcess object namme proc
-        kModelWidth = numpy.uint32(224)
-        kModelHeight = numpy.uint32(224)
+        self.assertTrue(os.path.isfile(self.inference_output_path))
 
-        proc = ColorizeProcess(self.model_path, kModelWidth, kModelHeight)
+        # TODO test the postprocessing
+
+        proc = ColorizeProcess(self.model_path, self.kModelWidth,
+                               self.kModelHeight)
         ret = proc.Init()
         self.assertEqual(ret, SUCCESS)
 
         self.assertTrue(os.path.isfile(self.input_image_path))
-
+        self.assertTrue(os.path.isfile(self.inference_output_path))
         # test: input a existing and right file, should return SUCCESS
         result = proc.postprocess(self.input_image_path, self.inference_output_path,
                                   self.output_image_path)
-
         self.assertEqual(result, SUCCESS)
-
-        proc.DestroyResource()
 
 
 class FunctionalTest(unittest.TestCase):
