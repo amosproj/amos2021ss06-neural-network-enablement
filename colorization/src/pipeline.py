@@ -1,6 +1,7 @@
 from colorize_process import ColorizeProcess
 import numpy
 import os
+import tempfile
 # import cv2
 # from Data.data import *
 # import splitVideo
@@ -51,7 +52,7 @@ def colorize_image(image_path_input, image_path_output):
     kModelWidth = numpy.uint32(224)
     kModelHeight = numpy.uint32(224)
     KMODELPATH = os.path.join(os.path.abspath(os.path.dirname(__file__)),
-                              "../../model/colorization.om")
+                              "../../model.colorization.om")
 
     #  check if the input path is valid
     if not os.path.isfile(image_path_input):
@@ -76,18 +77,22 @@ def colorize_image(image_path_input, image_path_output):
         return FAILED
 
     #  inference & colorize
-    inference_output_path = 'inference_output.npy'
+    tmpdir = tempfile.TemporaryDirectory(suffix="_npy", prefix="tp_inference_", dir="/tmp")
+    inference_output_path = tmpdir.name + '/inference_output.npy'
     ret = colorize.inference(inference_output_path)
     if ret == FAILED:
         print("Inference model inference output data failed")
+        tmpdir.cleanup()
         return FAILED
 
     #  postprocess & save image
     ret = colorize.postprocess(image_path_input, inference_output_path, image_path_output)
     if ret == FAILED:
         print("Process model inference output data failed")
+        tmpdir.cleanup()
         return FAILED
     #  return success code
+    tmpdir.cleanup()
     return SUCCESS
 
 
