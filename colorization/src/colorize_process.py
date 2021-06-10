@@ -211,13 +211,11 @@ class ColorizeProcess:
         mat = mat.astype(numpy.float32)
 
         # resize
-        reiszeMat = numpy.zeros(self.modelWidth, numpy.float32)
-        reiszeMat = cv2.resize(mat, (self.modelWidth, self.modelHeight),
-                               cv2.INTER_CUBIC)
+        reiszeMat = cv2.resize(mat, (self.modelWidth, self.modelHeight))
 
         # deal image
-        reiszeMat = cv2.cvtColor(reiszeMat, cv2.COLOR_BGR2Lab)
         reiszeMat = 1.0 * reiszeMat / 255
+        reiszeMat = cv2.cvtColor(reiszeMat, cv2.COLOR_BGR2Lab)
 
         # pull out L channel and subtract 50 for mean-centering
         # channel[0] = L, [1] = A, [2] = B
