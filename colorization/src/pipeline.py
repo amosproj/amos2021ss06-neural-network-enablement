@@ -79,7 +79,7 @@ def colorize_image(image_path_input, image_path_output):
     #  inference & colorize
     tmpdir = tempfile.TemporaryDirectory(suffix="_npy", prefix="tp_inference_",
                                          dir="/tmp")
-    inference_output_path = tmpdir.name + '/inference_output.npy'
+    inference_output_path = os.path.join(tmpdir.name, 'inference_output.npy')
     ret = colorize.inference(inference_output_path)
     if ret == FAILED:
         print("Inference model inference output data failed")
