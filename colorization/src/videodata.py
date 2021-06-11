@@ -44,7 +44,7 @@ def video2frames(videopath, videoName):
 
 def frames2video(image_input_folder_path, video_output_path):
     filelist = os.listdir(image_input_folder_path)
-    FPS = 60  # adopted from above
+    FPS = 60  # adopted from above, maybe change into a lower value?
     fourcc = cv2.VideoWriter_fourcc("I", "4", "2", "0")
     video = cv2.VideoWriter(video_output_path, fourcc, FPS, (224, 224))
     for item in filelist:
