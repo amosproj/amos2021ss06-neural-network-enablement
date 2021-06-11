@@ -286,6 +286,8 @@ class ColorizeProcess:
 
         numpy.save(inference_output_path, data)
 
+        acl.rt.free(np_output_ptr)
+
         return SUCCESS
 
     def postprocess(self, input_image_path, inference_output_path, output_image_path):
