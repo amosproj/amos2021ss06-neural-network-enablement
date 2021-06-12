@@ -50,7 +50,7 @@ class PipelineTests(unittest.TestCase):
         """
         Unit-Test to test the preprocessing of an image
         """
-        # creat a new ColorizeProcess object namme proc
+        # creat a new ColorizeProcess object name proc
 
         proc = ColorizeProcess(self.model_path, self.kModelWidth, self.kModelHeight)
         ret = proc.Init()
@@ -67,7 +67,7 @@ class PipelineTests(unittest.TestCase):
         """
         Unit-Test to test the colorizing of an image
         """
-        # creat a new ColorizeProcess object namme proc
+        # creat a new ColorizeProcess object name proc
 
         proc = ColorizeProcess(self.model_path, self.kModelWidth, self.kModelHeight)
         ret = proc.Init()
@@ -107,6 +107,17 @@ class PipelineTests(unittest.TestCase):
         result = proc.postprocess(self.input_image_path, self.inference_output_path,
                                   self.output_image_path)
         self.assertEqual(result, SUCCESS)
+
+class PipelineTestsForVideo(unittest.TestCase):
+    """
+    This class contains tests for the pipeline of video
+    """
+    def test_step_video2frames_video(self):
+        """
+        Unit-Test to test the video2frames function of a video
+        """
+
+
 
 
 class FunctionalTest(unittest.TestCase):

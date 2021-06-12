@@ -43,8 +43,15 @@ def video2frames(videopath, videoName):
 
 
 def frames2video(image_input_folder_path, video_output_path):
+    '''This function is used to convert images into a video.
+         Args:
+            image_input_folder_path: path to the splitted images.
+            video_output_path: path to the video
+         Returns:
+            0 for success.
+         '''
     filelist = os.listdir(image_input_folder_path)
-    FPS = 60  # adopted from above, maybe change into a lower value?
+    FPS = 60
     fourcc = cv2.VideoWriter_fourcc("I", "4", "2", "0")
     video = cv2.VideoWriter(video_output_path, fourcc, FPS, (224, 224))
     for item in filelist:
@@ -52,3 +59,4 @@ def frames2video(image_input_folder_path, video_output_path):
         img = cv2.imread(item)
         video.write(img)
     video.release()
+    return 0
