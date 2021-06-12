@@ -2,6 +2,9 @@ import cv2
 import os
 
 
+# expected function:
+# (video_input_path, image_output_folder_path)
+# input path includes filename, output path is just a folder
 def video2frames(videopath, videoName):
     '''This function is used to convert video into images.
      Args:
@@ -33,3 +36,19 @@ def video2frames(videopath, videoName):
     video.release()
     cv2.destroyAllWindows()
     return newpath
+
+# frames2video function :
+# (image_input_folder_path, video_output_path)
+# input path is a folder, output path includes the filename
+
+
+def frames2video(image_input_folder_path, video_output_path):
+    filelist = os.listdir(image_input_folder_path)
+    FPS = 60  # adopted from above, maybe change into a lower value?
+    fourcc = cv2.VideoWriter_fourcc("I", "4", "2", "0")
+    video = cv2.VideoWriter(video_output_path, fourcc, FPS, (224, 224))
+    for item in filelist:
+        item = os.path.join(image_input_folder_path, item)
+        img = cv2.imread(item)
+        video.write(img)
+    video.release()
