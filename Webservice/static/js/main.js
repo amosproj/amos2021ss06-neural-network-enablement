@@ -184,7 +184,7 @@ function showResult(imgName) {
 // load images and display them in gallery
 $.get('/all/', null, function (data) {
     if (data.length > 0) {
-        document.getElementById('drpzn').style.display = 'none';
+        document.getElementById('drpzn').classList.remove('invisible');
         data.sort().forEach(function (url) {
             console.log(url);
 
