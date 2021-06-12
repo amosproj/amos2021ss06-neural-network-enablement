@@ -7,7 +7,7 @@ def video2frames(video_input_path, image_output_folder_path):
         video_input_path: filename of the video.
         image_output_folder_path: Output folder path containing images
      Returns:
-        folder of the splitted images.
+        0 on success.
      '''
     video = cv2.VideoCapture(video_input_path)
     if (video.isOpened() is False):
