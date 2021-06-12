@@ -2,29 +2,25 @@ import cv2
 import os
 
 
-# expected function:
-# (video_input_path, image_output_folder_path)
-# input path includes filename, output path is just a folder
-def video2frames(videopath, videoName):
-    '''This function is used to convert video into images.
+def video2frames(video_input_path, image_output_folder_path):
+    """This function is used to convert video into images.
      Args:
-        videopath: path to the video.
-        videoName: name of the video eg. greyscalevideo.mp4
+        video_input_path: filename of the video.
+        image_output_folder_path: Output folder path containing images
      Returns:
-        path to the splitted images.
-     '''
-    videoName = os.path.join(videopath, videoName)
-    video = cv2.VideoCapture(videoName)
+        0 on success.
+     """
+    video = cv2.VideoCapture(video_input_path)
     if (video.isOpened() is False):
         print("Error opening video")
     FPS = 60  # frames per second
     video.set(cv2.CAP_PROP_FPS, FPS)
     currentFrame = 0
-    newpath = os.path.join(videopath, "Saved_frames")
     while (video.isOpened()):
         ret, frame = video.read()
         if ret is True:
-            folder_name = os.path.join(newpath, str(currentFrame) + '.png')
+            folder_name = os.path.join(image_output_folder_path,
+                                       str(currentFrame) + '.png')
             print('Creating...' + folder_name)
             cv2.imshow('Frame', frame)
             cv2.imwrite(folder_name, frame)
@@ -35,7 +31,7 @@ def video2frames(videopath, videoName):
             break
     video.release()
     cv2.destroyAllWindows()
-    return newpath
+    return 0
 
 # frames2video function :
 # (image_input_folder_path, video_output_path)
