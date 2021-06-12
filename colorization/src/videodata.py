@@ -1,14 +1,15 @@
 import cv2
 import os
 
+
 def video2frames(video_input_path, image_output_folder_path):
-    '''This function is used to convert video into images.
+    """This function is used to convert video into images.
      Args:
         video_input_path: filename of the video.
         image_output_folder_path: Output folder path containing images
      Returns:
         0 on success.
-     '''
+     """
     video = cv2.VideoCapture(video_input_path)
     if (video.isOpened() is False):
         print("Error opening video")
@@ -18,7 +19,8 @@ def video2frames(video_input_path, image_output_folder_path):
     while (video.isOpened()):
         ret, frame = video.read()
         if ret is True:
-            folder_name = os.path.join(image_output_folder_path, str(currentFrame) + '.png')
+            folder_name = os.path.join(image_output_folder_path,
+                                       str(currentFrame) + '.png')
             print('Creating...' + folder_name)
             cv2.imshow('Frame', frame)
             cv2.imwrite(folder_name, frame)
