@@ -48,6 +48,7 @@ def frames2video(image_input_folder_path, video_output_path):
     Returns:
         0 for SUCCESS.
         1 for FAILED.
+
     '''
     mat = cv2.imread(os.path.join(image_input_folder_path + '/0.png'),
                      cv2.IMREAD_COLOR)
