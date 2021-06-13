@@ -46,8 +46,9 @@ def frames2video(image_input_folder_path, video_output_path):
         image_input_folder_path: path to the split images.
         video_output_path: path to the merged video
     Returns:
-        SUCCESS for fail.
-        FAILED for success.
+        0 for SUCCESS.
+        1 for FAILED.
+
     '''
     mat = cv2.imread(os.path.join(image_input_folder_path + '/0.png'),
                      cv2.IMREAD_COLOR)
