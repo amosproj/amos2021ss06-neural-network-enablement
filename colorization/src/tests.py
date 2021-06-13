@@ -112,6 +112,7 @@ class PipelineTests(unittest.TestCase):
                                   self.output_image_path)
         self.assertEqual(result, SUCCESS)
 
+
 class SplitAndMergeTestsForVideo(unittest.TestCase):
     """
     This class contains tests for the split and merge tests of video
@@ -158,8 +159,9 @@ class SplitAndMergeTestsForVideo(unittest.TestCase):
         # prblems
         self.assertEqual(ret, SUCCESS)
         # destroy the frames folder and video folder after test
-        #shutil.rmtree(image_output_folder_path)
-        #shutil.rmtree(video_output_path)
+        shutil.rmtree(image_output_folder_path)
+        shutil.rmtree(video_output_path)
+
 
 class FunctionalTest(unittest.TestCase):
     """

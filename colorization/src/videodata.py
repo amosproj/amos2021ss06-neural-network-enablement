@@ -3,6 +3,8 @@ import os
 import acl_constants
 import numpy
 import shutil
+
+
 def video2frames(video_input_path, image_output_folder_path):
     """This function is used to convert video into images.
      Args:
@@ -69,4 +71,3 @@ def frames2video(image_input_folder_path, video_output_path):
     # after merged video delate the image_input_folder_path folder
     shutil.rmtree(image_input_folder_path)
     return acl_constants.SUCCESS
-
