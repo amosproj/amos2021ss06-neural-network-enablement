@@ -18,10 +18,11 @@
 <body class="bg-indigo-400 flex h-screen justify-center">
   <div class="justify-items-center m-auto align-middle max-w-4xl">
 
+    <!-- the div that contains the gallery images -->
     <div id="drpzn" class="invisible rounded p-6 bg-indigo-100 shadow-xl mx-auto overflow-y-auto max-h-96
                                 grid grid-flow-row lg:grid-cols-4 md:grid-cols-3 gap-4 justify-items-center">
 
-      <!-- images are added via javascript. the template is below: template-gallery-image-->
+      <!-- images are added here via javascript. the template is below: template-gallery-image-->
     </div>
 
     <div id="upload-button" class="h-20 mt-8 px-8 bg-white hover:bg-indigo-100 cursor-pointer border-dashed border-2 border-indigo-400 flex justify-center">
@@ -31,7 +32,7 @@
   </div>
 
   <!-- the div to display the colorization result (made visible when the user clicks on the colorize button) -->
-  <div id="result-colorize" class="invisible absolute justify-center bg-gray-600 flex w-full h-full">
+  <div id="result-colorize" class="invisible absolute justify-center bg-gray-600 flex w-screen h-screen">
 
     <div class="absolute top-0 right-0 h-20 w-20 flex justify-center text-gray-100 cursor-pointer" onclick="document.querySelector('#result-colorize').classList.add('invisible')">
 
@@ -42,9 +43,23 @@
 
     </div>
 
+    <div class="m-4 mr-8 text-center my-auto h-screen flex p-6">
+        <div class="relative flex">
+          <p class="absolute bottom-0 bold tracking-widest bg-gray-800 text-gray-100 text-xl p-1 p2-2"> original </p>
+          <img class="w-full object-cover" id="result-image-colorized">
+        </div>
+      </div>
+
+      <div class="m-4 mr-8 text-center my-auto h-screen flex p-6">
+        <div class="relative flex">
+          <p class="absolute bottom-0 bold tracking-widest bg-gray-800 text-gray-100 text-xl p-1 pr-2"> colorized </p>
+          <img class="w-full object-cover" id="result-image-colorized">
+        </div>
+      </div>
+<!--
 
     <div class="m-4 ml-8 text-center my-auto">
-      <img id="result-image-original">
+      <img class="object-scale-down" id="result-image-original">
       <p class="uppercase bold tracking-widest text-gray-100 mt-4 text-xl"> original </p>
     </div>
 
@@ -52,6 +67,8 @@
       <img id="result-image-colorized">
       <p class="uppercase bold tracking-widest text-gray-100 mt-4 text-xl"> colorized </p>
     </div>
+
+-->
 
   </div>
 
