@@ -35,18 +35,15 @@
   <div id="result-colorize" class="invisible absolute justify-center bg-gray-600 flex w-screen h-screen">
 
     <div class="m-6 mr-4 py-6 text-center my-auto h-full w-full flex">
-      <div class="relative flex w-full h-full">
-        <p class="absolute bottom-0 p-4 bold tracking-widest bg-gray-600 text-gray-100 text-xl"> original </p>
-        <img class="w-full h-full object-contain" id="result-image-original">
-      </div>
+      <img class="w-full h-full object-contain" id="result-image-original">
     </div>
 
     <div class="m-6 mr-4 py-6 text-center my-auto h-full w-full flex">
-      <div class="relative flex w-full h-full">
-        <p class="absolute bottom-0 right-0 p-4 bold tracking-widest bg-gray-600 text-gray-100 text-xl"> colorized </p>
-        <img class="w-full h-full object-contain" id="result-image-colorized">
-      </div>
+      <img class="w-full h-full object-contain" id="result-image-colorized">
     </div>
+
+    <p class="absolute bottom-0 left-0 p-4 bold tracking-widest bg-gray-600 text-gray-100 text-xl"> original </p>
+    <p class="absolute bottom-0 right-0 p-4 bold tracking-widest bg-gray-600 text-gray-100 text-xl"> colorized </p>
 
     <div class="absolute top-0 right-0 h-16 w-16 flex justify-center text-gray-100 bg-gray-600 cursor-pointer" onclick="document.querySelector('#result-colorize').classList.add('invisible')">
 
