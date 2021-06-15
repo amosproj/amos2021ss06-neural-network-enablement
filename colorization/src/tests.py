@@ -1,8 +1,9 @@
 import unittest
-
 import os
 import cv2
 import numpy
+import shutil
+import videodata
 from colorize_process import ColorizeProcess
 from pipeline import colorize_image
 
@@ -50,9 +51,10 @@ class PipelineTests(unittest.TestCase):
         """
         Unit-Test to test the preprocessing of an image
         """
-        # creat a new ColorizeProcess object namme proc
+        # creat a new ColorizeProcess object name proc
 
-        proc = ColorizeProcess(self.model_path, self.kModelWidth, self.kModelHeight)
+        proc = ColorizeProcess(self.model_path, self.kModelWidth,
+                               self.kModelHeight)
         ret = proc.Init()
         self.assertEqual(ret, SUCCESS)
 
@@ -67,9 +69,10 @@ class PipelineTests(unittest.TestCase):
         """
         Unit-Test to test the colorizing of an image
         """
-        # creat a new ColorizeProcess object namme proc
+        # creat a new ColorizeProcess object name proc
 
-        proc = ColorizeProcess(self.model_path, self.kModelWidth, self.kModelHeight)
+        proc = ColorizeProcess(self.model_path, self.kModelWidth,
+                               self.kModelHeight)
         ret = proc.Init()
         self.assertEqual(ret, SUCCESS)
 
@@ -104,9 +107,60 @@ class PipelineTests(unittest.TestCase):
         self.assertTrue(os.path.isfile(self.input_image_path))
         self.assertTrue(os.path.isfile(self.inference_output_path))
         # test: input a existing and right file, should return SUCCESS
-        result = proc.postprocess(self.input_image_path, self.inference_output_path,
+        result = proc.postprocess(self.input_image_path,
+                                  self.inference_output_path,
                                   self.output_image_path)
         self.assertEqual(result, SUCCESS)
+
+
+class SplitAndMergeTestsForVideo(unittest.TestCase):
+    """
+    This class contains tests for the split and merge tests of video
+    """
+    def test_step_video2frames(self):
+        """
+        Unit-Test to test the video2frames function of a video
+        """
+        # Test1: for right video and path
+        # current path
+        cwd = os.path.abspath(os.path.dirname(__file__))
+        # video path
+        video_input_path = os.path.join(cwd, 'test_data/greyscaleVideo.mp4')
+        # split_frames path
+        image_output_folder_path = os.path.join(cwd, 'test_data/split_frames')
+        # creat split_frames path folder
+        os.mkdir(image_output_folder_path)
+        # split the video
+        ret = videodata.video2frames(video_input_path, image_output_folder_path)
+        self.assertEqual(ret, SUCCESS)
+
+        # Test2: for wrong path (as a picture)
+        video_input_path2 = os.path.join(cwd, 'test_data/input_image_2.jpg')
+        # split the video
+        ret2 = videodata.video2frames(video_input_path2,
+                                      image_output_folder_path)
+        self.assertEqual(ret2, FAILED)
+
+    def test_step_frames2video(self):
+        """
+        Unit-Test to test the frames2video function of a video
+        """
+        # current path
+        cwd = os.path.abspath(os.path.dirname(__file__))
+        # input frames path
+        image_output_folder_path = os.path.join(cwd, 'test_data/split_frames')
+        # output video path
+        video_output_path = os.path.join(cwd, 'test_data/merged_video')
+        # creat the output video folder
+        os.mkdir(video_output_path)
+        # merge the video
+        ret = videodata.frames2video(image_output_folder_path,
+                                     video_output_path)
+        # prblems
+        self.assertEqual(ret, SUCCESS)
+        # destroy the frames folder and video folder after test
+        shutil.rmtree(image_output_folder_path)
+        shutil.rmtree(video_output_path)
 
 
 class FunctionalTest(unittest.TestCase):
