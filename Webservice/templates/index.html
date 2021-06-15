@@ -34,7 +34,21 @@
   <!-- the div to display the colorization result (made visible when the user clicks on the colorize button) -->
   <div id="result-colorize" class="invisible absolute justify-center bg-gray-600 flex w-screen h-screen">
 
-    <div class="absolute top-0 right-0 h-20 w-20 flex justify-center text-gray-100 cursor-pointer" onclick="document.querySelector('#result-colorize').classList.add('invisible')">
+    <div class="m-6 mr-4 py-6 text-center my-auto h-full w-full flex">
+      <div class="relative flex w-full h-full">
+        <p class="absolute bottom-0 bold tracking-widest bg-gray-600 text-gray-100 text-xl pr-2"> original </p>
+        <img class="w-full object-cover" id="result-image-original">
+      </div>
+    </div>
+
+    <div class="m-6 mr-4 py-6 text-center my-auto h-full w-full flex">
+      <div class="relative flex bg-red-600 w-full h-full">
+        <p class="absolute bottom-0 bold tracking-widest bg-gray-600 text-gray-100 text-xl pr-2"> colorized </p>
+        <img class="w-full h-full object-cover" id="result-image-colorized">
+      </div>
+    </div>
+
+    <div class="absolute top-0 right-0 h-16 w-16 flex justify-center text-gray-100 bg-gray-600 cursor-pointer" onclick="document.querySelector('#result-colorize').classList.add('invisible')">
 
       <!-- svg taken from https://heroicons.com/ 'X' -->
       <svg class="my-auto w-10 h-10" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -42,20 +56,6 @@
       </svg>
 
     </div>
-
-    <div class="m-6 mr-4 py-6 text-center my-auto h-screen flex">
-        <div class="relative flex">
-          <p class="absolute bottom-0 bold tracking-widest bg-gray-600 text-gray-100 text-xl pr-2"> original </p>
-          <img class="w-full object-cover" id="result-image-original">
-        </div>
-      </div>
-
-      <div class="m-6 mr-4 py-6 text-center my-auto h-screen flex">
-        <div class="relative flex">
-          <p class="absolute bottom-0 bold tracking-widest bg-gray-600 text-gray-100 text-xl pr-2"> colorized </p>
-          <img class="w-full object-cover" id="result-image-colorized">
-        </div>
-      </div>
 
   </div>
 
