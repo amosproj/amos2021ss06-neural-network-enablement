@@ -172,7 +172,7 @@ def colorize():
 
         else:
             # colorize_image
-            if extension in ALLOWED_EXTENSIONS['pic']:
+            if extension.lower() in ALLOWED_EXTENSIONS['pic']:
                 # temporarily use if True
                 # if colorize_image(finpath, foutpath) == 0:
                 if True:
