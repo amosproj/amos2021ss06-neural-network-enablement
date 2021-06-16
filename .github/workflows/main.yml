@@ -38,6 +38,8 @@ jobs:
       - name: Set environment variables
         run: |
           echo "PYTHONPATH=$PYTHONPATH:$HOME/Ascend/ascend-toolkit/latest/pyACL/python/site-packages/acl" >> $GITHUB_ENV
+          echo "PATH=$PATH:$HOME/ascend_ddk/arm/bin" >> $GITHUB_ENV
+          echo "LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$HOME/ascend_ddk/arm/lib" >> $GITHUB_ENV
 
       - name: Set up environment
         run: bash Webservice/scripts/setup.sh --yes
