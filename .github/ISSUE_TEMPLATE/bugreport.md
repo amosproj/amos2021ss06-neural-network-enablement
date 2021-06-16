@@ -1,3 +1,8 @@
+---
+name: Bugreport
+about: Report a bug
+---
+
 ## Description
 1. As a {}
 2. I want / get {}
