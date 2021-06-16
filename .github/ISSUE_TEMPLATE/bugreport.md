@@ -1,7 +1,8 @@
 ## Description
 1. As a {}
-2. I want / need {}
+2. I want / get {}
 3. So that {}
+4. But {}
 
 ### Steps to reproduce
 * 
