@@ -1,3 +1,8 @@
+---
+name: Refactoring
+about: Suggest a refactoring
+---
+
 ## Description
 1. As a {}
 2. I want / need {}
