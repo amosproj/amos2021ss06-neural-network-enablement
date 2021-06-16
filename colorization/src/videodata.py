@@ -3,6 +3,7 @@ import os
 import acl_constants
 import numpy
 import shutil
+from moviepy.editor import AudioFileClip
 
 
 def video2frames(video_input_path, image_output_folder_path):
@@ -71,4 +72,24 @@ def frames2video(image_input_folder_path, video_output_path):
     video.release()
     # after merged video delate the image_input_folder_path folder
     shutil.rmtree(image_input_folder_path)
+    return acl_constants.SUCCESS
+
+
+def splitVoicefromVideo(video_input_path, voice_output_path):
+    '''This function is used to extract voice from a video.
+    Args:
+        video_input_path: path of the origin video
+        voice_output_path: path to the voice file
+    Returns: int
+        on success this function returns 0
+        on failure this function returns 1
+    '''
+    if not os.path.isfile(video_input_path):
+        print("invalid video path")
+        return acl_constants.FAILED
+    my_audio_clip = AudioFileClip(video_input_path)
+    my_audio_clip.write_audiofile(voice_output_path)
+    if not os.path.isfile(voice_output_path):
+        print("invalid output path")
+        return acl_constants.FAILED
     return acl_constants.SUCCESS

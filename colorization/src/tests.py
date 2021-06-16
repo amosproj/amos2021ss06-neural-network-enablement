@@ -162,6 +162,20 @@ class SplitAndMergeTestsForVideo(unittest.TestCase):
         shutil.rmtree(image_output_folder_path)
         shutil.rmtree(video_output_path)
 
+    def test_step_splitVoicefromVideo(self):
+        """
+        Unit-Test to test the splitVoicefromVideo function
+        """
+        video_input_path = os.path.join(os.path.abspath(
+            os.path.dirname(__file__)), 'test_data/test_video_with_voice.mp4')
+        voice_output_path = os.path.join(os.path.abspath(
+            os.path.dirname(__file__)), 'test_data/voice_from_video.wav')
+        ret = videodata.splitVoicefromVideo(video_input_path, voice_output_path)
+        self.assertEqual(ret. SUCCESS)
+        # destroy the voice file path
+        shutil.rmtree(voice_output_path)
+
+
 
 class FunctionalTest(unittest.TestCase):
     """
