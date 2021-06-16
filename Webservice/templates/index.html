@@ -18,10 +18,11 @@
 <body class="bg-indigo-400 flex h-screen justify-center">
   <div class="justify-items-center m-auto align-middle max-w-4xl">
 
-    <div id="drpzn" class="rounded p-6 bg-indigo-100 shadow-xl mx-auto overflow-y-auto max-h-96
+    <!-- the div that contains the gallery images -->
+    <div id="drpzn" class="invisible rounded p-6 bg-indigo-100 shadow-xl mx-auto overflow-y-auto max-h-96
                                 grid grid-flow-row lg:grid-cols-4 md:grid-cols-3 gap-4 justify-items-center">
 
-      <!-- images are added via javascript. the template is below: template-gallery-image-->
+      <!-- images are added here via javascript. the template is below: template-gallery-image-->
     </div>
 
     <div id="upload-button" class="h-20 mt-8 px-8 bg-white hover:bg-indigo-100 cursor-pointer border-dashed border-2 border-indigo-400 flex justify-center">
@@ -31,26 +32,26 @@
   </div>
 
   <!-- the div to display the colorization result (made visible when the user clicks on the colorize button) -->
-  <div id="result-colorize" class="invisible absolute justify-center bg-gray-600 flex w-full h-full">
+  <div id="result-colorize" class="invisible absolute justify-center bg-gray-600 flex w-full h-full p-10">
 
-    <div class="absolute top-0 right-0 h-20 w-20 flex justify-center text-gray-100 cursor-pointer" onclick="document.querySelector('#result-colorize').classList.add('invisible')">
+    <div class="m-6 mr-4 py-6 text-center my-auto h-full w-full flex">
+      <img class="w-full h-full object-contain" id="result-image-original">
+    </div>
+
+    <div class="m-6 mr-4 py-6 text-center my-auto h-full w-full flex">
+      <img class="w-full h-full object-contain" id="result-image-colorized">
+    </div>
+
+    <p class="absolute bottom-0 left-0 p-4 bold tracking-widest bg-gray-600 text-gray-100 text-xl"> original </p>
+    <p class="absolute bottom-0 right-0 p-4 bold tracking-widest bg-gray-600 text-gray-100 text-xl"> colorized </p>
+
+    <div class="absolute top-0 right-0 h-16 w-16 flex justify-center text-gray-100 bg-gray-600 cursor-pointer" onclick="document.querySelector('#result-colorize').classList.add('invisible')">
 
       <!-- svg taken from https://heroicons.com/ 'X' -->
       <svg class="my-auto w-10 h-10" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
       </svg>
 
-    </div>
-
-
-    <div class="m-4 ml-8 text-center my-auto">
-      <img id="result-image-original">
-      <p class="uppercase bold tracking-widest text-gray-100 mt-4 text-xl"> original </p>
-    </div>
-
-    <div class="m-4 mr-8 text-center my-auto">
-      <img id="result-image-colorized">
-      <p class="uppercase bold tracking-widest text-gray-100 mt-4 text-xl"> colorized </p>
     </div>
 
   </div>
