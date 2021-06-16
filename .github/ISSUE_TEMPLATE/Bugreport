@@ -1,22 +1,21 @@
 ## Description
-When presenting the result of an image in portrait format, the images overflow the screen.
 
-### Steps to reproduce (on 1600x900 screen)
-- Upload image in portrait format (https://mymodernmet.com/wp/wp-content/uploads/2017/03/gabrielius-khiterer-stray-cats-4.jpg)
-- Click the 'colorize button'
+
+### Steps to reproduce
+* 
 
 ### Observed behavior
-images overflow screen, scrollbar is displayed
+* 
 
 ### Expected behavior
-images fit on screen, no scrollbar is displayed, complete background is gray
+* 
 
 ### Screenshot
 ![Screenshot](https://user-images.githubusercontent.com/)
 
 
 ## Acceptance criteria
-* The service works as described in 'Expected behavior'
+* 
 
 ## Definition of done
 * All acceptance criteria met
