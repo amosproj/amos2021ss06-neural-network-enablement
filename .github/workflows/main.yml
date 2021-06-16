@@ -22,10 +22,10 @@ jobs:
           python-version: 3.7.5
 
       - name: Set up environment
-        run: bash Webservice/scripts/setup.sh --yes
+        run: bash scripts/setup.sh --yes
 
       - name: Check code style
-        run: bash Webservice/scripts/check_code_formatting.sh
+        run: bash scripts/check_code_formatting.sh
 
   # This runs on the Atlas board
   test:
@@ -40,10 +40,10 @@ jobs:
           echo "PYTHONPATH=$PYTHONPATH:$HOME/Ascend/ascend-toolkit/latest/pyACL/python/site-packages/acl" >> $GITHUB_ENV
 
       - name: Set up environment
-        run: bash Webservice/scripts/setup.sh --yes
+        run: bash scripts/setup.sh --yes
 
       - name: Try to import the acl library
-        run: bash Webservice/scripts/check_acl_library.sh
+        run: bash scripts/check_acl_library.sh
 
       - name: Run tests
-        run: bash Webservice/scripts/test.sh
+        run: bash scripts/test.sh
