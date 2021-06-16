@@ -162,7 +162,7 @@ class SplitAndMergeTestsForVideo(unittest.TestCase):
         voice_output_path = os.path.join(os.path.abspath(
             os.path.dirname(__file__)), 'test_data/voice_from_video.wav')
         ret = videodata.splitVoicefromVideo(video_input_path, voice_output_path)
-        self.assertEqual(ret. SUCCESS)
+        self.assertEqual(ret, SUCCESS)
         # destroy the voice file path
         shutil.rmtree(voice_output_path)
 
