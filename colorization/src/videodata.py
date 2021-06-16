@@ -54,7 +54,6 @@ def frames2video(image_input_folder_path, video_output_path):
                      cv2.IMREAD_COLOR)
     print(os.path.join(image_input_folder_path + '/0.png'))
     if numpy.any(mat) is None:
-        print("the mat picture is none")
         return acl_constants.FAILED
     size = mat.shape[:2]
     FPS = 60
