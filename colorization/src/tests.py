@@ -176,7 +176,6 @@ class SplitAndMergeTestsForVideo(unittest.TestCase):
         shutil.rmtree(voice_output_path)
 
 
-
 class FunctionalTest(unittest.TestCase):
     """
     This class contains tests for the complete pipeline.
