@@ -112,25 +112,14 @@ class PipelineTests(unittest.TestCase):
                                   self.output_image_path)
         self.assertEqual(result, SUCCESS)
 
-class PipelineTestsForVideo(unittest.TestCase):
-    """
-    This class contains tests for the pipeline of video
-    """
-    def test_step_video2frames_video(self):
-        """
-        Unit-Test to test the video2frames function of a video
-        """
-
-
-
 
 class SplitAndMergeTestsForVideo(unittest.TestCase):
     """
     This class contains tests for the split and merge tests of video
     """
-    def test_step_video2frames(self):
+    def test_step_video2frames_frames2video(self):
         """
-        Unit-Test to test the video2frames function of a video
+        Unit-Test to test the video2frames and frames2video function of a video
         """
         # Test1: for right video and path
         # current path
@@ -148,18 +137,11 @@ class SplitAndMergeTestsForVideo(unittest.TestCase):
         # Test2: for wrong path (as a picture)
         video_input_path2 = os.path.join(cwd, 'test_data/input_image_2.jpg')
         # split the video
-        ret2 = videodata.video2frames(video_input_path2,
-                                      image_output_folder_path)
-        self.assertEqual(ret2, FAILED)
+        ret = videodata.video2frames(video_input_path2,
+                                     image_output_folder_path)
+        self.assertEqual(ret, FAILED)
 
-    def test_step_frames2video(self):
-        """
-        Unit-Test to test the frames2video function of a video
-        """
-        # current path
-        cwd = os.path.abspath(os.path.dirname(__file__))
-        # input frames path
-        image_output_folder_path = os.path.join(cwd, 'test_data/split_frames')
+        # Test3: test to merge the frames
         # output video path
         video_output_path = os.path.join(cwd, 'test_data/merged_video')
         # creat the output video folder
@@ -167,10 +149,8 @@ class SplitAndMergeTestsForVideo(unittest.TestCase):
         # merge the video
         ret = videodata.frames2video(image_output_folder_path,
                                      video_output_path)
-        # prblems
         self.assertEqual(ret, SUCCESS)
         # destroy the frames folder and video folder after test
-        shutil.rmtree(image_output_folder_path)
         shutil.rmtree(video_output_path)
 
 
