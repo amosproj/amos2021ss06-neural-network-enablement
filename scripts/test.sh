@@ -8,7 +8,7 @@ cd `dirname "$0"`/..
 # Run the tests
 
 # for the webservice
-venv/bin/pytest Webservice/test_web.py --cov=. --cov-config=.coveragerc --cov-report='' --capture=tee-sys
+venv/bin/pytest webservice/test_web.py --cov=. --cov-config=.coveragerc --cov-report='' --capture=tee-sys
 
 # for each pipeline unittest
 venv/bin/pytest colorization/tests.py -k 'step_preprocess'  --cov=. --cov-config=.coveragerc --cov-append --cov-report='' --capture=tee-sys

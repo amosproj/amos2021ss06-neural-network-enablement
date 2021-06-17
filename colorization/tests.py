@@ -23,7 +23,7 @@ class PipelineTests(unittest.TestCase):
     def setUp(self):
         cwd = os.path.abspath(os.path.dirname(__file__))
 
-        self.model_path = os.path.join(cwd, '../../model/colorization.om')
+        self.model_path = os.path.join(cwd, '../model/colorization.om')
 
         # path of the gray input image to process in test
         self.input_image_path = os.path.join(cwd, 'test_data/input_image_2.jpg')
