@@ -21,4 +21,4 @@ if [ $HOSTNAME != "davinci-mini" ]; then
     (sleep 1; xdg-open "http://localhost:5000") &
 fi
 
-venv/bin/python3 app.py
+venv/bin/python3 webservice/app.py
