@@ -52,7 +52,7 @@ def colorize_image(image_path_input, image_path_output):
     kModelWidth = numpy.uint32(224)
     kModelHeight = numpy.uint32(224)
     KMODELPATH = os.path.join(os.path.abspath(os.path.dirname(__file__)),
-                              "../../model/colorization.om")
+                              "../model/colorization.om")
 
     #  check if the input path is valid
     if not os.path.isfile(image_path_input):
