@@ -3,6 +3,7 @@ from werkzeug.utils import secure_filename
 import os
 import datetime
 import shutil
+import cv2
 
 # from colorization.src.pipeline import *
 
@@ -53,6 +54,18 @@ def upload():
         filepath = os.path.join(folderpath, filename)
         file.save(filepath)
 
+        # get and save the thumbnail
+        #thumbnailname = get_name(filename) + "_thumbnail.jpg"
+        thumbnailname = get_name(filename) + ".jpg"
+        thumbnailpath = os.path.join(folderpath, thumbnailname)
+
+        vcap = cv2.VideoCapture(filepath)
+        res, thumbnail = vcap.read()
+        if res:
+            cv2.imwrite(thumbnailpath, thumbnail)
+        else:
+            return jsonify(msg="Fail to read the video"), 400
+
         return jsonify(msg="Upload successfully"), 200
 
     elif file and not allowed_file(file.filename):
@@ -83,11 +96,13 @@ def all():
     urls = []
     for root, dirs, files in os.walk(app.config['UPLOAD_FOLDER']):
         for filename in files:
-            if allowed_file(filename):
-                name = get_name(filename)
+            extension = get_extension(filename)
+            name = get_name(filename)
+            if extension in ALLOWED_EXTENSIONS['pic'] or extension.lower() == 'jpg':
                 # exclude the colored file
                 if name.rsplit("_", 1)[1] != "color":
                     urls.append(url_for("uploaded_file", fpath=name, filename=filename))
+    print(urls)
     return jsonify(urls)
 
 
@@ -109,12 +124,12 @@ def result():
     colorname = name + "_color." + extension
 
     # if is a video, get thumbnail img name
-    thumbnailname = name + "_thumbnail." + extension
+    #thumbnailname = name + "_thumbnail." + extension
 
     # generate all urls
     origin_url = url_for("uploaded_file", fpath=name, filename=filename)
     colorized_url = url_for("uploaded_file", fpath=name, filename=colorname)
-    thumbnail_url = url_for("uploaded_file", fpath=name, filename=thumbnailname)
+    #thumbnail_url = url_for("uploaded_file", fpath=name, filename=thumbnailname)
 
     result = {
         'origin': origin_url,
@@ -187,9 +202,10 @@ def colorize():
 
 
 def allowed_file(filename):
-    return '.' in filename and get_extension(filename).lower() in (
-            ALLOWED_EXTENSIONS['pic'] or ALLOWED_EXTENSIONS['video'])
-
+    lower_extension = get_extension(filename).lower()
+    if lower_extension in ALLOWED_EXTENSIONS['pic'] or lower_extension in \
+            ALLOWED_EXTENSIONS['video']:
+        return True
 
 def get_extension(filename):
     return filename.rsplit('.', 1)[1]
