@@ -49,22 +49,25 @@ def upload():
         filename = str(nowtime) + "_" + sfilename
 
         # create folder and save file
-        folderpath = os.path.join(app.config['UPLOAD_FOLDER'], get_name(filename))
+        name = get_name(filename)
+        extension = get_extension(filename)
+
+        folderpath = os.path.join(app.config['UPLOAD_FOLDER'], name)
         os.mkdir(folderpath)
         filepath = os.path.join(folderpath, filename)
         file.save(filepath)
 
-        # get and save the thumbnail
-        #thumbnailname = get_name(filename) + "_thumbnail.jpg"
-        thumbnailname = get_name(filename) + ".jpg"
-        thumbnailpath = os.path.join(folderpath, thumbnailname)
+        # get and save the thumbnail if the type is video
+        if extension in ALLOWED_EXTENSIONS['video']:
+            thumbnailname = name + "_thumbnail.jpg"
+            thumbnailpath = os.path.join(folderpath, thumbnailname)
 
-        vcap = cv2.VideoCapture(filepath)
-        res, thumbnail = vcap.read()
-        if res:
-            cv2.imwrite(thumbnailpath, thumbnail)
-        else:
-            return jsonify(msg="Fail to read the video"), 400
+            vcap = cv2.VideoCapture(filepath)
+            res, thumbnail = vcap.read()
+            if res:
+                cv2.imwrite(thumbnailpath, thumbnail)
+            else:
+                return jsonify(msg="Fail to read the video"), 400
 
         return jsonify(msg="Upload successfully"), 200
 
@@ -100,9 +103,11 @@ def all():
             name = get_name(filename)
             if extension in ALLOWED_EXTENSIONS['pic'] or extension.lower() == 'jpg':
                 # exclude the colored file
-                if name.rsplit("_", 1)[1] != "color":
+                if name.rsplit("_", 1)[1] == "thumbnail":
+                    name = name.rsplit("_", 1)[0]
                     urls.append(url_for("uploaded_file", fpath=name, filename=filename))
-    print(urls)
+                elif name.rsplit("_", 1)[1] != "color":
+                    urls.append(url_for("uploaded_file", fpath=name, filename=filename))
     return jsonify(urls)
 
 
@@ -120,16 +125,18 @@ def result():
     # get name and extension of origin img
     name = get_name(filename)
     extension = get_extension(filename)
-    # get name of colored img
-    colorname = name + "_color." + extension
 
-    # if is a video, get thumbnail img name
-    #thumbnailname = name + "_thumbnail." + extension
+    thumbnail_url = None
+    if name.rsplit('_', 1)[1] == 'thumbnail':
+        thumbnailname = name
+        name = get_name(filename).rsplit('_', 1)[0]
+        thumbnail_url = url_for("uploaded_file", fpath=name, filename=thumbnailname)
+
+    colorname = name + "_color." + extension
 
     # generate all urls
     origin_url = url_for("uploaded_file", fpath=name, filename=filename)
     colorized_url = url_for("uploaded_file", fpath=name, filename=colorname)
-    #thumbnail_url = url_for("uploaded_file", fpath=name, filename=thumbnailname)
 
     result = {
         'origin': origin_url,
@@ -150,7 +157,11 @@ def delete():
     filename = request.get_json()['name'] if 'name' in request.get_json() else None
 
     if filename:
-        deletepath = os.path.join(app.config['UPLOAD_FOLDER'], get_name(filename))
+        name = get_name(filename)
+        if name.rsplit('_', 1)[1] == 'thumbnail':
+            name = name.rsplit('_', 1)[0]
+        print(name)
+        deletepath = os.path.join(app.config['UPLOAD_FOLDER'], name)
         if os.path.exists(deletepath):
             shutil.rmtree(deletepath)
             return jsonify(msg="Deleted!"), 200
@@ -206,6 +217,7 @@ def allowed_file(filename):
     if lower_extension in ALLOWED_EXTENSIONS['pic'] or lower_extension in \
             ALLOWED_EXTENSIONS['video']:
         return True
+
 
 def get_extension(filename):
     return filename.rsplit('.', 1)[1]
