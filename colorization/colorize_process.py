@@ -322,33 +322,36 @@ class ColorizeProcess:
 
         # load the result from the colorization
         inference_result = numpy.load(inference_output_path)
-        inference_result = numpy.reshape(inference_result, (int(self.modelWidth/2),
-                                                            int(self.modelHeight/2), 2))
-        a_channel, b_channel = cv2.split(inference_result)
+        a_channel = inference_result[0, :, :]
+        b_channel = inference_result[1, :, :]
 
         # pull out L channel in original/source image
-        input_image = cv2.imread(input_image_path, cv2.IMREAD_COLOR)
-        input_image = numpy.float32(input_image)
-        input_image = 1.0 * input_image / 255  # Normalizing
-        bgrtolab = cv2.cvtColor(input_image, cv2.COLOR_BGR2LAB)
-        (L, A, B) = cv2.split(bgrtolab)
+        mat = cv2.imread(input_image_path, cv2.IMREAD_COLOR)
+        print(mat.shape)
+        reiszeMat = mat.astype(numpy.float32)
+        reiszeMat = 1.0 * reiszeMat / 255
+        reiszeMat = cv2.cvtColor(reiszeMat, cv2.COLOR_BGR2Lab)
+        # pull out L channel and subtract 50 for mean-centering
+        channels = cv2.split(reiszeMat)
+        L_channel = channels[0] - 50
+        print(L_channel.shape)
 
         # resize to match the size of original image L
-        rows = input_image.shape[0]
-        cols = input_image.shape[1]
-        a_channel = a_channel.astype('float32')
-        b_channel = a_channel.astype('float32')
+        rows = mat.shape[0]
+        cols = mat.shape[1]
+        print(rows)
         a_channel_resize = cv2.resize(a_channel, (cols, rows))
         b_channel_resize = cv2.resize(b_channel, (cols, rows))
 
         # result Lab image
-        result_image = cv2.merge((L, a_channel_resize, b_channel_resize))
+        result_image = cv2.merge([channels[0], a_channel_resize, b_channel_resize])
         print(result_image.shape)
 
         # convert back to rgb
         output_image = cv2.cvtColor(result_image, cv2.COLOR_Lab2BGR)
-        output_image = output_image * 255
+        # output_image = output_image * 255
         cv2.imwrite(output_image_path, output_image)
+        print('Successfully saved')
         # self.SaveImage(imageFile, output_image)
         return SUCCESS
 
