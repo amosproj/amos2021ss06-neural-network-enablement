@@ -82,7 +82,7 @@ def inference(model_path, input_image):
     return canvas
 
 
-def postprocess(input_image_path, inference_output_path):
+def postprocess(input_image_path, inference_result):
 
     """This function converts LAB image to BGR image (colorization)
     and save it.
@@ -106,15 +106,7 @@ def postprocess(input_image_path, inference_output_path):
         on failure this function returns 1
     """
 
-    # get a and b channel result data
-    if not os.path.isfile(inference_output_path):
-        print('Output of inference not found.')
-        return FAILED
-
-    print('SUCCESS!!')
-
     # load the result from the colorization
-    inference_result = np.load(inference_output_path)
     a_channel = inference_result[0, :, :]
     b_channel = inference_result[1, :, :]
 
