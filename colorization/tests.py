@@ -62,11 +62,12 @@ class PipelineTests(unittest.TestCase):
         self.assertTrue(os.path.isfile(self.input_image_path))
 
         # test: input a existing and right file, should return SUCCESS
-        result = preprocess(self.input_image_path)
-        self.assertEqual(result.shape, (224, 224, 1))
+        input_image = cv2.imread(self.input_image_path, cv2.IMREAD_COLOR)
+        result = preprocess(input_image)
+        self.assertEqual(result.shape, (224, 224))
 
         # test the colorizing
-        ret = inference(self.model_path, self.input_image_path)
+        ret = inference(self.model_path, result)
         self.assertEqual(ret.shape, (56, 56, 2))
 
     def test_step_postprocess_image(self):
