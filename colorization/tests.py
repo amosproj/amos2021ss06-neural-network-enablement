@@ -49,7 +49,8 @@ class PipelineTests(unittest.TestCase):
         self.assertTrue(os.path.isfile(self.input_image_path))
 
         # test: input a existing and right file, should return SUCCESS
-        result = preprocess(self.input_image_path)
+        input_image = cv2.imread(self.input_image_path, cv2.IMREAD_COLOR)
+        result = preprocess(input_image)
 
         self.assertEqual(result.shape, (224, 224, 1))
 
