@@ -51,8 +51,7 @@ class PipelineTests(unittest.TestCase):
         # test: input a existing and right file, should return SUCCESS
         input_image = cv2.imread(self.input_image_path, cv2.IMREAD_COLOR)
         result = preprocess(input_image)
-
-        self.assertEqual(result.shape, (224, 224, 1))
+        self.assertEqual(result.shape, (224, 224))
 
     def test_step_colorize_image(self):
         """
