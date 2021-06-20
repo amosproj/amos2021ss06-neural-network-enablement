@@ -322,8 +322,8 @@ class ColorizeProcess:
 
         # load the result from the colorization
         inference_result = numpy.load(inference_output_path)
-        a_channel = inference_result[0,:,:]
-        b_channel = inference_result[1,:,:]
+        a_channel = inference_result[0, :, :]
+        b_channel = inference_result[1, :, :]
 
         # pull out L channel in original/source image
         mat = cv2.imread(input_image_path, cv2.IMREAD_COLOR)
