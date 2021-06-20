@@ -68,7 +68,7 @@ class PipelineTests(unittest.TestCase):
 
         # test the colorizing
         ret = inference(self.model_path, result)
-        self.assertEqual(ret.shape, (56, 56, 2))
+        self.assertEqual(ret.shape, (2, 56, 56))
 
     def test_step_postprocess_image(self):
         """
