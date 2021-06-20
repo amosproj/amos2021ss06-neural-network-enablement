@@ -97,8 +97,6 @@ class PipelineTests(unittest.TestCase):
         # check that the inference output npy file is available
         self.assertTrue(os.path.isfile(self.inference_output_path))
 
-        # TODO test the postprocessing
-
         proc = ColorizeProcess(self.model_path, self.kModelWidth,
                                self.kModelHeight)
         ret = proc.Init()
