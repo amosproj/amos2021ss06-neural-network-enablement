@@ -1,7 +1,5 @@
 from colorize_process import preprocess, inference, postprocess
-import numpy
 import os
-import tempfile
 import cv2
 
 # error codes
