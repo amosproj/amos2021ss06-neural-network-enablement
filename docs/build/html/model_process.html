@@ -1,0 +1,240 @@
+
+
+<!doctype html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>model_process module &#8212; Neural Network Enablement 2.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/bizstyle.css" />
+    
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/bizstyle.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="pipeline module" href="pipeline.html" />
+    <link rel="prev" title="colorize_process module" href="colorize_process.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <!--[if lt IE 9]>
+    <script src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="pipeline.html" title="pipeline module"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="colorize_process.html" title="colorize_process module"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Neural Network Enablement 2.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="modules.html" accesskey="U">src</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">model_process module</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-model_process">
+<span id="model-process-module"></span><h1>model_process module<a class="headerlink" href="#module-model_process" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li><p>Copyright 2020 Huawei Technologies Co., Ltd</p></li>
+<li></li>
+<li><p>Licensed under the Apache License, Version 2.0 (the “License”);</p></li>
+<li><p>you may not use this file except in compliance with the License.</p></li>
+<li><p>You may obtain a copy of the License at</p></li>
+<li><p><a class="reference external" href="http://www.apache.org/licenses/LICENSE-2.0">http://www.apache.org/licenses/LICENSE-2.0</a></p></li>
+<li><p>Unless required by applicable law or agreed to in writing, software</p></li>
+<li><p>distributed under the License is distributed on an “AS IS” BASIS,</p></li>
+<li><p>WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</p></li>
+<li><p>See the License for the specific language governing permissions and</p></li>
+<li><p>limitations under the License.</p></li>
+<li><p>File model_process.py</p></li>
+<li><p>Description: handle model process</p></li>
+</ul>
+<dl class="py class">
+<dt class="sig sig-object py" id="model_process.Modelprocess">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">model_process.</span></span><span class="sig-name descname"><span class="pre">Modelprocess</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">loadflag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">modelId</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">modelMemPtr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">modelMemSize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">modelWeightPtr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">modelWeightSize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">modelDesc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#model_process.Modelprocess" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="model_process.Modelprocess.CreateDesc">
+<span class="sig-name descname"><span class="pre">CreateDesc</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#model_process.Modelprocess.CreateDesc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function Usage: Creates data of the aclmdlDesc type.
+Input Args: NONE
+returns:  int, error code.</p>
+<blockquote>
+<div><p>0 indicates success.
+1 indicates failure.</p>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="model_process.Modelprocess.CreateInput">
+<span class="sig-name descname"><span class="pre">CreateInput</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inputDataBuffer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bufferSize</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#model_process.Modelprocess.CreateInput" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function Usage: Creates data of the aclmdlDataset type.
+Input Args: inputDataBuffer:</p>
+<blockquote>
+<div><p>bufferSize</p>
+</div></blockquote>
+<dl class="simple">
+<dt>returns: int, error code.</dt><dd><p>0 indicates success.
+1 indicates failure.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="model_process.Modelprocess.CreateOutput">
+<span class="sig-name descname"><span class="pre">CreateOutput</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#model_process.Modelprocess.CreateOutput" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function Usage:
+returns: int, error code.</p>
+<blockquote>
+<div><p>0 indicates success.
+1 indicates failure.</p>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="model_process.Modelprocess.DestroyDesc">
+<span class="sig-name descname"><span class="pre">DestroyDesc</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#model_process.Modelprocess.DestroyDesc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function Usage: Destroys data of the aclmdlDesc type.
+Input Args: None
+returns: int, error code.</p>
+<blockquote>
+<div><p>0 indicates success.
+1 indicates failure.</p>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="model_process.Modelprocess.DestroyInput">
+<span class="sig-name descname"><span class="pre">DestroyInput</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#model_process.Modelprocess.DestroyInput" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function Usage:
+Input Args: None
+returns: None</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="model_process.Modelprocess.DestroyOutput">
+<span class="sig-name descname"><span class="pre">DestroyOutput</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#model_process.Modelprocess.DestroyOutput" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function Usage:
+Input Args: None
+returns: None</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="model_process.Modelprocess.Execute">
+<span class="sig-name descname"><span class="pre">Execute</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#model_process.Modelprocess.Execute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function usage: Executes model inference until the result is returned.
+Input Args: None
+Returns: ret: int, error code.</p>
+<blockquote>
+<div><p>0 indicates success.
+Other values indicate failure.</p>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="model_process.Modelprocess.GetModelOutputData">
+<span class="sig-name descname"><span class="pre">GetModelOutputData</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#model_process.Modelprocess.GetModelOutputData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function Usage: Returns the output value
+Input Args: None
+returns: output</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="model_process.Modelprocess.LoadModelFromFileWithMem">
+<span class="sig-name descname"><span class="pre">LoadModelFromFileWithMem</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">modelPath</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#model_process.Modelprocess.LoadModelFromFileWithMem" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function usage: Loads offline model data (adapted to the Ascend AI processor)
+from a file.
+The offline model file is the <a href="#id1"><span class="problematic" id="id2">*</span></a>.om file that adapts to the Ascend AI processor
+Input Args: model_path: str, path for storing the offline model file. The file
+name is contained in the path.
+Returns: model_id: model ID generated after the model is loaded.</p>
+<blockquote>
+<div><p>ret: int, error code.
+0 indicates success.
+Other values indicate failure.</p>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="model_process.Modelprocess.Unload">
+<span class="sig-name descname"><span class="pre">Unload</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#model_process.Modelprocess.Unload" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function Usage: DestroyDesc
+Input Args: None
+returns: None</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="colorize_process.html"
+                        title="previous chapter">colorize_process module</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="pipeline.html"
+                        title="next chapter">pipeline module</a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="pipeline.html" title="pipeline module"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="colorize_process.html" title="colorize_process module"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Neural Network Enablement 2.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="modules.html" >src</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">model_process module</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2021, Huawei Technologies Co., Ltd.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.0.2.
+    </div>
+  </body>
+</html>
