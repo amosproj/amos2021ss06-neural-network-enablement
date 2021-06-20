@@ -69,6 +69,7 @@ def colorize_image(image_path_input, image_path_output):
     image_postprocessed = postprocess(image_path_input, inference_result)
     cv2.imwrite(image_path_output, image_postprocessed)
     print('Successfully saved')
+    return SUCCESS
 
 
 def colorize_video(video_path_input, video_path_output):
