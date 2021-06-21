@@ -166,7 +166,7 @@ def colorize():
         optfilename = name + "_color." + extension
         foutpath = os.path.join(app.config['UPLOAD_FOLDER'], name, optfilename)
 
-            # colorize_image
+        # colorize_image
         if extension.lower() in ALLOWED_EXTENSIONS['pic']:
             # temporarily use if True
             if pipeline.colorize_image(finpath, foutpath) == 0:
