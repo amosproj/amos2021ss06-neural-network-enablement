@@ -3,6 +3,7 @@ from werkzeug.utils import secure_filename
 import os
 import datetime
 import shutil
+import colorization.pipeline as pipeline
 
 # from colorization.src.pipeline import *
 
@@ -165,23 +166,17 @@ def colorize():
         optfilename = name + "_color." + extension
         foutpath = os.path.join(app.config['UPLOAD_FOLDER'], name, optfilename)
 
-        # copy the file for now
-        if not os.path.exists(foutpath):
-            shutil.copy(finpath, foutpath)
-            return jsonify(msg="Colorization successful."), 200
-
-        else:
             # colorize_image
-            if extension.lower() in ALLOWED_EXTENSIONS['pic']:
-                # temporarily use if True
-                # if colorize_image(finpath, foutpath) == 0:
-                if True:
-                    # return page need further discussion
-                    return jsonify(msg="Colorization successful."), 200
-                else:
-                    return jsonify(msg="Colorization failed."), 400
+        if extension.lower() in ALLOWED_EXTENSIONS['pic']:
+            # temporarily use if True
+            if pipeline.colorize_image(finpath, foutpath) == 0:
+                # return page need further discussion
+                return jsonify(msg="Colorization successful."), 200
             else:
-                return jsonify(msg="Videos are not supported yet."), 400
+                return jsonify(msg="Colorization failed."), 400
+        else:
+            return jsonify(msg="Videos are not supported yet."), 400
+
     else:
         return jsonify(msg="No input file"), 400
 

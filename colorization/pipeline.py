@@ -1,4 +1,4 @@
-from colorize_process import preprocess, inference, postprocess
+from .colorize_process import preprocess, inference, postprocess
 import os
 import cv2
 
