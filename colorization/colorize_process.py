@@ -1,7 +1,6 @@
 import numpy as np
 import cv2
 from .acl_resource import AclResource
-import os
 from .model_processor import ModelProcessor
 
 # constant variables
