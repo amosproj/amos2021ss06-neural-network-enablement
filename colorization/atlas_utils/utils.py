@@ -1,6 +1,6 @@
 import acl
-from atlas_utils.constants import *
-from atlas_utils.lib.atlasutil_so import libatlas
+from ../../atlas_utils.constants import *
+from ../../atlas_utils.lib.atlasutil_so import libatlas
 
 def check_ret(message, ret):
     if ret != ACL_ERROR_NONE:
