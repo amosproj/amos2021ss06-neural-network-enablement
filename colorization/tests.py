@@ -3,9 +3,9 @@ import os
 import cv2
 import numpy as np
 import shutil
-import videodata
-from colorize_process import preprocess, inference, postprocess
-from pipeline import colorize_image
+import colorization.videodata as videodata
+from colorization.colorize_process import preprocess, inference, postprocess
+from colorization.pipeline import colorize_image
 
 FAILED = 1
 SUCCESS = 0
