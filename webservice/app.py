@@ -102,7 +102,7 @@ def all():
         for filename in files:
             extension = get_extension(filename)
             name = get_name(filename)
-            if extension in ALLOWED_EXTENSIONS['pic'] or extension.lower() == 'jpg':
+            if extension.lower() in ALLOWED_EXTENSIONS['pic']:
                 # exclude the colored file
                 if name.rsplit("_", 1)[1] == "thumbnail":
                     name = name.rsplit("_", 1)[0]
