@@ -1,11 +1,6 @@
-from colorize_process import ColorizeProcess
-import numpy
+from colorize_process import preprocess, inference, postprocess
 import os
-import tempfile
-# import cv2
-# from Data.data import *
-# import splitVideo
-
+import cv2
 
 # error codes
 FAILED = 1
@@ -49,8 +44,7 @@ def colorize_image(image_path_input, image_path_output):
     The directories already exists, and the image can be directly
     written to the given output path.
     """
-    kModelWidth = numpy.uint32(224)
-    kModelHeight = numpy.uint32(224)
+
     KMODELPATH = os.path.join(os.path.abspath(os.path.dirname(__file__)),
                               "../model/colorization.om")
 
@@ -64,36 +58,17 @@ def colorize_image(image_path_input, image_path_output):
         print("model path is not a file.")
         return FAILED
 
-    #  call colorize process and start colorization
-    colorize = ColorizeProcess(KMODELPATH, kModelWidth, kModelHeight)
-    ret = colorize.Init()
-    if ret == FAILED:
-        print("init colorize process failed")
-        return FAILED
-
     #  load image located at <image_path_input> & preprocess, end image to device
-    if colorize.Preprocess(image_path_input) == FAILED:
-        print("Read file ", image_path_input, " failed, continue to read next")
-        return FAILED
+    img = cv2.imread(image_path_input, cv2.IMREAD_COLOR)
+    image_preprocessed = preprocess(img)
 
     #  inference & colorize
-    tmpdir = tempfile.TemporaryDirectory(suffix="_npy", prefix="tp_inference_",
-                                         dir="/tmp")
-    inference_output_path = os.path.join(tmpdir.name, 'inference_output.npy')
-    ret = colorize.inference(inference_output_path)
-    if ret == FAILED:
-        print("Inference model inference output data failed")
-        tmpdir.cleanup()
-        return FAILED
+    inference_result = inference(KMODELPATH, image_preprocessed)
 
     #  postprocess & save image
-    ret = colorize.postprocess(image_path_input, inference_output_path, image_path_output)
-    if ret == FAILED:
-        print("Process model inference output data failed")
-        tmpdir.cleanup()
-        return FAILED
-    #  return success code
-    tmpdir.cleanup()
+    image_postprocessed = postprocess(image_path_input, inference_result)
+    cv2.imwrite(image_path_output, image_postprocessed)
+    print('Successfully saved')
     return SUCCESS
 
 

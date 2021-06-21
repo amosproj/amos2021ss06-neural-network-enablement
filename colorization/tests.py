@@ -1,10 +1,10 @@
 import unittest
 import os
 import cv2
-import numpy
+import numpy as np
 import shutil
 import videodata
-from colorize_process import ColorizeProcess
+from colorize_process import preprocess, inference, postprocess
 from pipeline import colorize_image
 
 FAILED = 1
@@ -26,68 +26,49 @@ class PipelineTests(unittest.TestCase):
         self.model_path = os.path.join(cwd, '../model/colorization.om')
 
         # path of the gray input image to process in test
-        self.input_image_path = os.path.join(cwd, 'test_data/input_image_2.jpg')
-
-        # output of the inference will be written to this path on success
-        self.temp_inference_output_path = os.path.join(
-            cwd, 'test_data/inference_output_1.npy')
+        self.input_image_path = os.path.join(cwd, 'test_data/dog.jpg')
 
         # path of result of the inference to be used for testing postprocess
-        self.inference_output_path = os.path.join(cwd, 'test_data/inference_output_2.npy')
+        self.inference_output_path = os.path.join(cwd, 'test_data/dog.npy')
 
         # output image will be written to this path on success
-        self.output_image_path = os.path.join(cwd, 'test_data/output_image_2.jpg')
-        self.kModelWidth = numpy.uint32(224)
-        self.kModelHeight = numpy.uint32(224)
+        self.output_image_path = os.path.join(cwd, 'test_data/dog_colorized.jpg')
+        self.kModelWidth = np.uint32(224)
+        self.kModelHeight = np.uint32(224)
 
     def tearDown(self):
         print('tear down called')
         if os.path.isfile(self.output_image_path):
             os.remove(self.output_image_path)
-        if os.path.isfile(self.temp_inference_output_path):
-            os.remove(self.temp_inference_output_path)
 
     def test_step_preprocess_image(self):
         """
         Unit-Test to test the preprocessing of an image
         """
         # creat a new ColorizeProcess object name proc
-
-        proc = ColorizeProcess(self.model_path, self.kModelWidth,
-                               self.kModelHeight)
-        ret = proc.Init()
-        self.assertEqual(ret, SUCCESS)
-
         self.assertTrue(os.path.isfile(self.input_image_path))
 
         # test: input a existing and right file, should return SUCCESS
-        result = proc.Preprocess(self.input_image_path)
-
-        self.assertEqual(result, SUCCESS)
+        input_image = cv2.imread(self.input_image_path, cv2.IMREAD_COLOR)
+        result = preprocess(input_image)
+        self.assertEqual(result.shape, (224, 224))
 
     def test_step_colorize_image(self):
         """
         Unit-Test to test the colorizing of an image
         """
-        # creat a new ColorizeProcess object name proc
-
-        proc = ColorizeProcess(self.model_path, self.kModelWidth,
-                               self.kModelHeight)
-        ret = proc.Init()
-        self.assertEqual(ret, SUCCESS)
+        # create a new ColorizeProcess object name proc
 
         self.assertTrue(os.path.isfile(self.input_image_path))
 
         # test: input a existing and right file, should return SUCCESS
-        result = proc.Preprocess(self.input_image_path)
-
-        self.assertEqual(result, SUCCESS)
+        input_image = cv2.imread(self.input_image_path, cv2.IMREAD_COLOR)
+        result = preprocess(input_image)
+        self.assertEqual(result.shape, (224, 224))
 
         # test the colorizing
-        ret = proc.inference(self.temp_inference_output_path)
-        self.assertEqual(ret, SUCCESS)
-        # check that the inference output npy file is saved
-        self.assertTrue(os.path.isfile(self.temp_inference_output_path))
+        model_output = inference(self.model_path, result)
+        self.assertEqual(model_output.shape, (2, 56, 56))
 
     def test_step_postprocess_image(self):
         """
@@ -96,21 +77,14 @@ class PipelineTests(unittest.TestCase):
 
         # check that the inference output npy file is available
         self.assertTrue(os.path.isfile(self.inference_output_path))
-
-        # TODO test the postprocessing
-
-        proc = ColorizeProcess(self.model_path, self.kModelWidth,
-                               self.kModelHeight)
-        ret = proc.Init()
-        self.assertEqual(ret, SUCCESS)
-
         self.assertTrue(os.path.isfile(self.input_image_path))
-        self.assertTrue(os.path.isfile(self.inference_output_path))
+
         # test: input a existing and right file, should return SUCCESS
-        result = proc.postprocess(self.input_image_path,
-                                  self.inference_output_path,
-                                  self.output_image_path)
-        self.assertEqual(result, SUCCESS)
+        inference_output = np.load(self.inference_output_path)
+        result = postprocess(self.input_image_path, inference_output)
+
+        input_image = cv2.imread(self.input_image_path, cv2.IMREAD_COLOR)
+        self.assertEqual(result.shape, input_image.shape)
 
 
 class SplitAndMergeTestsForVideo(unittest.TestCase):
@@ -135,7 +109,7 @@ class SplitAndMergeTestsForVideo(unittest.TestCase):
         self.assertEqual(ret, SUCCESS)
 
         # Test2: for wrong path (as a picture)
-        video_input_path2 = os.path.join(cwd, 'test_data/input_image_2.jpg')
+        video_input_path2 = os.path.join(cwd, 'test_data/dog.jpg')
         # split the video
         ret = videodata.video2frames(video_input_path2,
                                      image_output_folder_path)
@@ -176,9 +150,9 @@ class FunctionalTest(unittest.TestCase):
     def setUp(self):
         # init path variables
         self.input_image_path = os.path.join(os.path.abspath(
-            os.path.dirname(__file__)), 'test_data/input_image_1.png')
+            os.path.dirname(__file__)), 'test_data/lena.png')
         self.output_image_path = os.path.join(os.path.abspath(
-            os.path.dirname(__file__)), 'test_data/output_image_1.png')
+            os.path.dirname(__file__)), 'test_data/lena_colorized.png')
         self.fake_input_image_path = os.path.join(os.path.abspath(
             os.path.dirname(__file__)), '../../Data/notexist.png')
 
@@ -195,12 +169,15 @@ class FunctionalTest(unittest.TestCase):
         """
         ret = colorize_image(self.input_image_path, self.output_image_path)
         self.assertEqual(ret, SUCCESS)
+
         # if the input path does not exist, expect FAILED:
         ret = colorize_image(self.fake_input_image_path, self.output_image_path)
         self.assertEqual(ret, FAILED)
+
         # check if the colorized image and the path exist
         ret = os.path.isfile(self.output_image_path)
         self.assertTrue(ret)
+
         # check if the image in output path is colorized
         img = cv2.imread(self.output_image_path)
         ret = len(img.shape)
