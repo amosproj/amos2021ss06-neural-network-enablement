@@ -133,6 +133,3 @@ def postprocess(input_image_path, inference_result):
     # convert back to rgb
     output_image = cv2.cvtColor(result_image, cv2.COLOR_Lab2BGR)
     return output_image * 255
-
-
-
