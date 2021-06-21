@@ -1,7 +1,7 @@
 import os
 import sys
 sys.path.append('../')
-from acl_model import Model
+from .acl_model import Model
 
 
 class ModelProcessor:

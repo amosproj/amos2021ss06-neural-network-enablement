@@ -1,6 +1,6 @@
 import acl
 
-from atlas_utils.utils import *
+from .atlas_utils.utils import *
 
 class AclResource(object):
     def __init__(self, device_id=0):
