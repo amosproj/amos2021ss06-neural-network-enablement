@@ -1,7 +1,8 @@
-from .colorize_process import preprocess, inference, postprocess
+from colorize_process import preprocess, inference, postprocess
 import os
 import cv2
-
+import sys
+sys.path.append('../colorization')
 # error codes
 FAILED = 1
 SUCCESS = 0
