@@ -26,13 +26,13 @@ class PipelineTests(unittest.TestCase):
         self.model_path = os.path.join(cwd, '../model/colorization.om')
 
         # path of the gray input image to process in test
-        self.input_image_path = os.path.join(cwd, 'test_data/input_image_2.jpg')
+        self.input_image_path = os.path.join(cwd, 'test_data/dog.jpg')
 
         # path of result of the inference to be used for testing postprocess
-        self.inference_output_path = os.path.join(cwd, 'test_data/inference_output_2.npy')
+        self.inference_output_path = os.path.join(cwd, 'test_data/dog_inference_out.npy')
 
         # output image will be written to this path on success
-        self.output_image_path = os.path.join(cwd, 'test_data/output_image_2.jpg')
+        self.output_image_path = os.path.join(cwd, 'test_data/dog_colorized.jpg')
         self.kModelWidth = np.uint32(224)
         self.kModelHeight = np.uint32(224)
 
@@ -107,7 +107,7 @@ class SplitAndMergeTestsForVideo(unittest.TestCase):
         self.assertEqual(ret, SUCCESS)
 
         # Test2: for wrong path (as a picture)
-        video_input_path2 = os.path.join(cwd, 'test_data/input_image_2.jpg')
+        video_input_path2 = os.path.join(cwd, 'test_data/dog.jpg')
         # split the video
         ret = videodata.video2frames(video_input_path2,
                                      image_output_folder_path)
@@ -148,9 +148,9 @@ class FunctionalTest(unittest.TestCase):
     def setUp(self):
         # init path variables
         self.input_image_path = os.path.join(os.path.abspath(
-            os.path.dirname(__file__)), 'test_data/input_image_1.png')
+            os.path.dirname(__file__)), 'test_data/lena.png')
         self.output_image_path = os.path.join(os.path.abspath(
-            os.path.dirname(__file__)), 'test_data/output_image_1.png')
+            os.path.dirname(__file__)), 'test_data/lena_colorized.png')
         self.fake_input_image_path = os.path.join(os.path.abspath(
             os.path.dirname(__file__)), '../../Data/notexist.png')
 

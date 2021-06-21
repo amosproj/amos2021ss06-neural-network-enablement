@@ -1,7 +1,6 @@
 import numpy as np
 import cv2
 from acl_resource import AclResource
-import os
 from model_processor import ModelProcessor
 
 # constant variables
@@ -132,7 +131,4 @@ def postprocess(input_image_path, inference_result):
 
     # convert back to rgb
     output_image = cv2.cvtColor(result_image, cv2.COLOR_Lab2BGR)
-    return output_image
-
-
-
+    return output_image * 255
