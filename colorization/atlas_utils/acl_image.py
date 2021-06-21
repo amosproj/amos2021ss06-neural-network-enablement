@@ -4,7 +4,7 @@ import copy
 
 import acl
 #from utils import *
-from atlas_utils.constants import *
+from .atlas_utils.constants import *
 
 
 class AclImage():

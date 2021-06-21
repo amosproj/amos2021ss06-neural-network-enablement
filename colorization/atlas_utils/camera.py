@@ -8,9 +8,9 @@ import sys
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(BASE_DIR)
 
-from lib.atlasutil_so import libatlas
-from constants import *
-from acl_image import AclImage
+from .lib.atlasutil_so import libatlas
+from .constants import *
+from .acl_image import AclImage
 
 CAMERA_OK = 0
 CAMERA_ERROR = 1
