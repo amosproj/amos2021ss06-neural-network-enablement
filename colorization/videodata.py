@@ -1,6 +1,6 @@
 import cv2
 import os
-from atlas_utils import constants as acl_constants
+from .atlas_utils import constants as acl_constants
 import numpy
 import shutil
 from moviepy.editor import AudioFileClip

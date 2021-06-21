@@ -1,8 +1,8 @@
 import acl
 import numpy as np
 import datetime
-from atlas_utils.utils import *
-from atlas_utils.acl_image import AclImage
+from .atlas_utils.utils import *
+from .atlas_utils.acl_image import AclImage
 
 
 class Model(object):

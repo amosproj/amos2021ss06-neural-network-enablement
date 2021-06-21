@@ -1,10 +1,11 @@
-from colorize_process import preprocess, inference, postprocess
+from .colorize_process import preprocess, inference, postprocess
 import os
 import cv2
 
 # error codes
 FAILED = 1
 SUCCESS = 0
+
 
 # This file combines all of the single tasks to a complete working pipeline
 # It does NOT contain the code of each task!
