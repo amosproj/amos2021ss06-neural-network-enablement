@@ -1,20 +1,23 @@
 import os
 import sys
 sys.path.append('../')
-from acl_model import Model
+from acl_model import Model # noqa
 
 
 class ModelProcessor:
-    
+
     def __init__(self, acl_resource, params):
         self._acl_resource = acl_resource
         self.params = params
         self._model_width = params['width']
         self._model_height = params['height']
 
-        assert 'model_dir' in params and params['model_dir'] is not None, 'Review your param: model_dir'
-        assert os.path.exists(params['model_dir']), "Model directory doesn't exist {}".format(params['model_dir'])
-            
+        if 'model_dir' not in params or params['model_dir'] is None:
+            raise AssertionError('Param: "model_dir" not provided')
+
+        if not os.path.exists(params['model_dir']):
+            raise AssertionError(f"Model not found at {params['model_dir']}")
+
         # load model from path, and get model ready for inference
         self.model = Model(acl_resource, params['model_dir'])
 
@@ -25,5 +28,3 @@ class ModelProcessor:
         print(result[0].shape)
         print(result.dtype)
         return canvas
-
-
