@@ -1,7 +1,8 @@
 import os
 import sys
+from .acl_model import Model
+
 sys.path.append('../')
-from acl_model import Model # noqa
 
 
 class ModelProcessor:
