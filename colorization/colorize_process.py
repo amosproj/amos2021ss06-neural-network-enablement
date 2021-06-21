@@ -68,7 +68,6 @@ def inference(model_path, input_image):
         on failure this function returns 1
     """
     # initialize acl runtime
-    global acl_resource
     acl_resource = AclResource()
     acl_resource.init()
 
@@ -133,7 +132,6 @@ def postprocess(input_image_path, inference_result):
 
     # convert back to rgb
     output_image = cv2.cvtColor(result_image, cv2.COLOR_Lab2BGR)
-    acl_resource.__del__()
     return output_image * 255
 
 
