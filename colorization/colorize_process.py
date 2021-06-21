@@ -10,7 +10,6 @@ SUCCESS = 0
 
 
 def preprocess(image_file):
-
     """
     This function reads the imageFile as a float-Matrix;
     downsize to modelWidth*modelHeight;
@@ -83,7 +82,6 @@ def inference(model_path, input_image):
 
 
 def postprocess(input_image_path, inference_result):
-
     """This function converts LAB image to BGR image (colorization)
     and save it.
      It combines L channel obtained from source image and ab channels
