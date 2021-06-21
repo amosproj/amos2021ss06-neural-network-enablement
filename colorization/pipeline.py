@@ -1,7 +1,6 @@
 from .colorize_process import preprocess, inference, postprocess
 import os
 import cv2
-import sys
 
 # error codes
 FAILED = 1
