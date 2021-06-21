@@ -29,7 +29,7 @@ class PipelineTests(unittest.TestCase):
         self.input_image_path = os.path.join(cwd, 'test_data/dog.jpg')
 
         # path of result of the inference to be used for testing postprocess
-        self.inference_output_path = os.path.join(cwd, 'test_data/dog_inference_output.npy')
+        self.inference_output_path = os.path.join(cwd, 'test_data/dog_inference_out.npy')
 
         # output image will be written to this path on success
         self.output_image_path = os.path.join(cwd, 'test_data/dog_colorized.jpg')
