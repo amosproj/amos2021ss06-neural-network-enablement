@@ -11,21 +11,19 @@ SUCCESS = 0
 def preprocess(image_file):
     """
     This function reads the imageFile as a float-Matrix;
-    downsize to modelWidth*modelHeight;
-    if the process run in Atlas, copys the picture data to the device;
-    copys the L channel into the malloc memory location.
+    downsize to modelWidth*modelHeight.
 
     Parameters:
     -----------
     input:
-    imageFile : str
+    image_file : str
         the path of the picture
 
-    return value : int
-        on success this function returns 0
-        on failure this function returns 1
+    return value : numpy array
+        L channel of the image subtracted by the 50 for mean-centering.
     """
     # read image using OPENCV
+    print(type(image_file))
     mat = image_file
 
     if np.any(mat) is None:  # if matrix is empty, every term is none
@@ -52,18 +50,14 @@ def inference(model_path, input_image):
     """
     This function activate the model process after preprocess,
     and get result back.
-
-
     Parameters:
     -----------
-    input:
+    model_path:
 
-    inference_output_path:
+    input-image:
         file path where the result is saved after colorization
 
     result : int
-        on success this function returns 0
-        on failure this function returns 1
     """
     # initialize acl runtime
     acl_resource = AclResource()
@@ -82,7 +76,7 @@ def inference(model_path, input_image):
 
 def postprocess(input_image_path, inference_result):
     """This function converts LAB image to BGR image (colorization)
-    and save it.
+     and save it.
      It combines L channel obtained from source image and ab channels
      from Inference result.
 
@@ -91,16 +85,12 @@ def postprocess(input_image_path, inference_result):
     input_image_path : str
         the path of the (gray) image to obtain L channel
 
-    inference_output_path : str
+    inference_result : str
         Path to the .npy file containing the output of the inference function.
         (Consisting of ab channels)
 
-    output_image_path : str
-        the path of the (colorized) image to save after processing
-
-    return value :
-        on success this function returns 0
-        on failure this function returns 1
+    return value : numpy array
+        Colorized image.
     """
 
     # load the result from the colorization
