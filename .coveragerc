@@ -21,7 +21,11 @@ exclude_lines =
 
 omit =
     */venv/*
-	colorization/src/tests.py
-    Webservice/test_web.py
+    colorization/atlas_utils/*
+    colorization/tests.py
+    colorization/acl_model.py
+    colorization/acl_resource.py
+    webservice/test_web.py
+
 
 show_missing = True
