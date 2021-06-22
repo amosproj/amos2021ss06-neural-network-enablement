@@ -138,7 +138,7 @@ class SplitAndMergeTestsForVideo(unittest.TestCase):
         ret = videodata.splitVoicefromVideo(video_input_path, voice_output_path)
         self.assertEqual(ret, SUCCESS)
         # destroy the voice file path
-        shutil.rmtree(voice_output_path)
+        os.remove(voice_output_path)
 
 
 class FunctionalTest(unittest.TestCase):
