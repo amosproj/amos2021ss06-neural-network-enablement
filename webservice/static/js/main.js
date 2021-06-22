@@ -213,10 +213,15 @@ $.get('/all/', null, function (data) {
                 let res = colorizeImage(imgName);
                 console.log(res)
 
-                // success
-                if (res == 0) {
-                    showResult(imgName);
+                function callShowResult() {
+                    // success
+                    if (res == 0) {
+                        showResult(imgName);
+                    }
                 }
+
+              // wait a bit before showing result, this is hack TODO
+              setTimeout(callShowResult, 1000)
             }
 
             document.getElementById("drpzn").appendChild(div)
