@@ -221,7 +221,7 @@ $.get('/all/', null, function (data) {
                 }
 
               // wait a bit before showing result, this is hack TODO
-              setTimeout(callShowResult, 1000)
+              setTimeout(callShowResult, 3000)
             }
 
             document.getElementById("drpzn").appendChild(div)
