@@ -19,8 +19,12 @@ STEPS_RET=$?
 venv/bin/pytest colorization/tests.py -k 'FunctionalTest' --cov=. --cov-config=.coveragerc --cov-append --capture=tee-sys
 PIPELINE_RET=$?
 
+# for the video merge and splite functional tests
+venv/bin/pytest colorization/tests.py -k 'SplitAndMergeTestsForVideo' --cov=. --cov-config=.coveragerc --cov-append --capture=tee-sys
+VIDEO_RET=$?
 
-if [ $WEB_RET -ne 0 ] || [ $STEPS_RET -ne 0 ] || [ $PIPELINE_RET -ne 0 ]; then
+
+if [ $WEB_RET -ne 0 ] || [ $STEPS_RET -ne 0 ] || [ $PIPELINE_RET -ne 0 ] || [ $VIDEO_RET -ne 0 ]; then
     # exit failure if any of the tests failed
     exit 1
 fi
