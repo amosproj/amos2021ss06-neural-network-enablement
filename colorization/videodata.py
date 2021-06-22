@@ -28,16 +28,16 @@ def video2frames(video_input_path, image_output_folder_path):
         if ret is True:
             folder_name = os.path.join(image_output_folder_path,
                                        str(currentFrame) + '.png')
-            print('Creating...' + folder_name)
-            cv2.imshow('Frame', frame)
+            # print('Creating...' + folder_name)
+            # cv2.imshow('Frame', frame)
             cv2.imwrite(folder_name, frame)
             currentFrame += 1
-            if cv2.waitKey(25) & 0xFF == ord('q'):
-                break
+            # if cv2.waitKey(25) & 0xFF == ord('q'):
+            # break
         else:
             break
     video.release()
-    cv2.destroyAllWindows()
+    # cv2.destroyAllWindows()
     return acl_constants.SUCCESS
 
 
@@ -53,7 +53,7 @@ def frames2video(image_input_folder_path, video_output_path):
     '''
     mat = cv2.imread(os.path.join(image_input_folder_path + '/0.png'),
                      cv2.IMREAD_COLOR)
-    print(os.path.join(image_input_folder_path + '/0.png'))
+    # print(os.path.join(image_input_folder_path + '/0.png'))
     if numpy.any(mat) is None:
         return acl_constants.FAILED
     size = mat.shape[:2]
@@ -66,7 +66,7 @@ def frames2video(image_input_folder_path, video_output_path):
     for i in range(0, length):
         index = str(i)
         item = image_input_folder_path + '/' + index + '.png'
-        print(item)
+        # print(item)
         img = cv2.imread(item)
         video.write(img)
     video.release()
