@@ -33,7 +33,7 @@ def video2frames(video_input_path, image_output_folder_path):
             cv2.imwrite(folder_name, frame)
             currentFrame += 1
             # if cv2.waitKey(25) & 0xFF == ord('q'):
-                # break
+            # break
         else:
             break
     video.release()
