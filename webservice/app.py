@@ -159,6 +159,7 @@ def delete():
     print(filename)
     if filename:
         name = get_name(filename)
+
         if name.rsplit('_', 1)[1] == 'thumbnail':
             name = name.rsplit('_', 1)[0]
         print(name)
