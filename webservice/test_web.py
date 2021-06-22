@@ -101,7 +101,7 @@ class BasicTests(unittest.TestCase):
         Unit Test of the fail situation of deleting pictures
         """
         # delete a picture which not on the server
-        response1 = self.client.post('/delete/', json={'name': 'nonfile.png'})
+        response1 = self.client.post('/delete/', json={'name': '2020_nonfile.png'})
         self.assertEqual(response1.status_code, 404)
         self.assertIn(b'Pictures not found!', response1.data)
 
