@@ -10,7 +10,8 @@ SUCCESS = 0
 
 def preprocess(image_file):
     """
-    This function downsizes the input image to modelWidth*modelHeight and extracts L_channel from the image.
+    This function downsizes the input image to modelWidth*modelHeight
+    and extracts L_channel from the image.
 
     Parameters:
     -----------
