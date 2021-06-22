@@ -166,6 +166,9 @@ def colorize():
         optfilename = name + "_color." + extension
         foutpath = os.path.join(app.config['UPLOAD_FOLDER'], name, optfilename)
 
+        if os.path.isfile(foutpath):
+            return jsonify(msg="Already colorized"), 200
+
         # colorize_image
         if extension.lower() in ALLOWED_EXTENSIONS['pic']:
             # temporarily use if True
