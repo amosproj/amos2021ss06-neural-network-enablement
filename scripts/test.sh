@@ -12,7 +12,7 @@ venv/bin/pytest webservice/test_web.py --cov=. --cov-config=.coveragerc --cov-re
 WEB_RET=$?
 
 # for the video merge and splite functional tests
-venv/bin/pytest colorization/tests.py -k 'SplitAndMergeTestsForVideo' --cov=. --cov-config=.coveragerc --cov-report --capture=tee-sys
+venv/bin/pytest colorization/tests.py -k 'SplitAndMergeTestsForVideo' --cov=. --cov-config=.coveragerc --cov-append --cov-report='' --capture=tee-sys
 VIDEO_RET=$?
 
 # for each pipeline unittest
