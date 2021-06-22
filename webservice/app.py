@@ -156,13 +156,10 @@ def delete():
     Return type: json
     '''
     filename = request.get_json()['name'] if 'name' in request.get_json() else None
-    print(filename)
     if filename:
         name = get_name(filename)
-
         if name.rsplit('_', 1)[1] == 'thumbnail':
             name = name.rsplit('_', 1)[0]
-        print(name)
         deletepath = os.path.join(app.config['UPLOAD_FOLDER'], name)
         if os.path.exists(deletepath):
             shutil.rmtree(deletepath)
