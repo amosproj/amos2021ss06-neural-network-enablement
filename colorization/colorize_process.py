@@ -10,8 +10,7 @@ SUCCESS = 0
 
 def preprocess(image_file):
     """
-    This function reads the imageFile as a float-Matrix;
-    downsize to modelWidth*modelHeight.
+    This function downsizes the input image to modelWidth*modelHeight and extracts L_channel from the image.
 
     Parameters:
     -----------
@@ -22,8 +21,6 @@ def preprocess(image_file):
     return value : numpy array
         L channel of the image subtracted by the 50 for mean-centering.
     """
-    # read image using OPENCV
-    print(type(image_file))
     mat = image_file
 
     if np.any(mat) is None:  # if matrix is empty, every term is none
@@ -52,12 +49,13 @@ def inference(model_path, input_image):
     and get result back.
     Parameters:
     -----------
-    model_path:
+    model_path: str
+        the path of offline model(*.om file)
+    input_image: numpy array
+        resized image with L_channel obtained from preprocess.
 
-    input-image:
-        file path where the result is saved after colorization
-
-    result : int
+    result : numpy array
+        ab channels of the preprocessed image.
     """
     # initialize acl runtime
     acl_resource = AclResource()
@@ -75,8 +73,7 @@ def inference(model_path, input_image):
 
 
 def postprocess(input_image_path, inference_result):
-    """This function converts LAB image to BGR image (colorization)
-     and save it.
+    """This function converts LAB image to BGR image (colorization).
      It combines L channel obtained from source image and ab channels
      from Inference result.
 
