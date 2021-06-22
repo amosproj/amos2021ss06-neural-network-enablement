@@ -156,7 +156,7 @@ def delete():
     Return type: json
     '''
     filename = request.get_json()['name'] if 'name' in request.get_json() else None
-
+    print(filename)
     if filename:
         name = get_name(filename)
         if name.rsplit('_', 1)[1] == 'thumbnail':
