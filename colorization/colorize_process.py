@@ -16,8 +16,8 @@ def preprocess(image_file):
     Parameters:
     -----------
     input:
-    image_file : str
-        the path of the picture
+    image_file : numpy array
+        An image that is loaded from the specified file.
 
     return value : numpy array
         L channel of the image subtracted by the 50 for mean-centering.
