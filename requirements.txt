@@ -1,6 +1,6 @@
 flask==2.0.1
 numpy==1.20.3
-opencv-python==4.3.0.38
+opencv-python==4.5.2.54
 moviepy==1.0.3
 
 # syntax test
