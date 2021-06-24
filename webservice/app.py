@@ -200,17 +200,19 @@ def colorize():
         optfilename = name + "_color." + extension
         foutpath = os.path.join(app.config['UPLOAD_FOLDER'], name, optfilename)
 
-        # colorize_image
-        if extension.lower() in ALLOWED_EXTENSIONS['pic']:
-            # temporarily use if True
-            if pipeline.colorize_image(finpath, foutpath) == 0:
-                # return page need further discussion
-                return jsonify(msg="Colorization successful."), 200
+        if not os.path.exists(foutpath):
+            # colorize_image
+            if extension.lower() in ALLOWED_EXTENSIONS['pic']:
+                # temporarily use if True
+                if pipeline.colorize_image(finpath, foutpath) == 0:
+                    # return page need further discussion
+                    return jsonify(msg="Colorization successful."), 200
+                else:
+                    return jsonify(msg="Colorization failed."), 400
             else:
-                return jsonify(msg="Colorization failed."), 400
+                return jsonify(msg="Videos are not supported yet."), 400
         else:
-            return jsonify(msg="Videos are not supported yet."), 400
-
+            return jsonify(msg='Colorization file exists. Colorization successful.'), 200
     else:
         return jsonify(msg="No input file"), 400
 
