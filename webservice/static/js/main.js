@@ -180,7 +180,7 @@ function showResult(imgName) {
 function waitAndShowResult(imgName) {
     console.log('waitAndShowResult', imgName)
     $.ajax({
-        type: "GET",
+        type: "POST",
         url: "/result/",
         data: JSON.stringify({
             'name': imgName
