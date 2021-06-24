@@ -132,14 +132,24 @@ def result():
         thumbnailname = name
         name = get_name(filename).rsplit('_', 1)[0]
         thumbnail_url = url_for("uploaded_file", fpath=name, filename=thumbnailname)
+        type = 'video'
+    else:
+        type = 'image'
 
     colorname = name + "_color." + extension
+    # check whether the colorize process is finished
+    if os.path.exists(os.path.join(app.config['UPLOAD_FOLDER'], name, colorname)):
+        status = 'finished'
+    else:
+        status = 'unfinished'
 
     # generate all urls
     origin_url = url_for("uploaded_file", fpath=name, filename=filename)
     colorized_url = url_for("uploaded_file", fpath=name, filename=colorname)
 
     result = {
+        'type': type,
+        'status': status,
         'origin': origin_url,
         'colorized': colorized_url,
         'thumbnail': thumbnail_url
