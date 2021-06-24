@@ -196,7 +196,8 @@ function waitAndShowResult(imgName) {
         },
         error: function (error) {
             console.log(error);
-            showWarningToast("Loading the result failed.", "Couldn't connect to server. Is the service running?");
+            showWarningToast("Times out.", "Couldn't connect to server. Is the service" +
+                " running?");
             return 1;
         },
         dataType: 'json',
