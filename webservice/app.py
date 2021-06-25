@@ -1,12 +1,21 @@
 from flask import Flask, jsonify, render_template, request, url_for, send_from_directory
 from werkzeug.utils import secure_filename
 import os
+import sys
 import datetime
 import shutil
-import colorization.pipeline as pipeline
 import cv2
 
-# from colorization.src.pipeline import *
+try:
+    import acl  # noqa
+except ImportError:
+    print('''
+Could not import the acl library. Please make sure, it is available.
+You can use the script scripts/check_acl_library.sh to check.
+        ''')
+    sys.exit(1)
+
+import colorization.pipeline as pipeline
 
 # set path to store uploaded pics and videos
 UPLOAD_FOLDER = os.path.abspath(os.path.dirname(__file__)) + "/uploaded/"

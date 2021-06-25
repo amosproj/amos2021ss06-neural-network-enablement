@@ -3,7 +3,9 @@
 # This script checks, if the acl library can be imported in python.
 # It will only work on the ATLAS device
 
-python3 -c "import acl"
+cd `dirname "$0"`/..
+
+venv/bin/python3 -c "import acl"
 
 if [ $? -eq 0 ]; then
     echo "Success. Acl was successfully imported"
@@ -16,7 +18,7 @@ export PYTHONPATH=$PYTHONPATH:$HOME/Ascend/ascend-toolkit/latest/pyACL/python/si
 echo
 echo "Trying again"
 
-python3 -c "import acl"
+venv/bin/python3 -c "import acl"
 
 if [ $? -eq 0 ]; then
     echo
