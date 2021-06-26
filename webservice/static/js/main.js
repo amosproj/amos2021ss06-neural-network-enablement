@@ -185,7 +185,12 @@ function showResult(imgName) {
 $.get('/all/', null, function (data) {
     if (data.length > 0) {
         document.getElementById('drpzn').classList.remove('invisible');
-        data.sort().forEach(function (data) {
+
+        data.sort(function (a, b) {
+          return a.thumbnail.localeCompare(b.thumbnail);
+        });
+
+        data.forEach(function (data) {
             let url = data.thumbnail
             let type = data.type
 
