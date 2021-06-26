@@ -102,6 +102,7 @@ def all():
     folders = filter(lambda x: x != '.keep', os.listdir(app.config['UPLOAD_FOLDER']))
 
     for folder in folders:
+        print(folder)
         files = os.listdir(os.path.join(app.config['UPLOAD_FOLDER'], folder))
         extensions = map(lambda f: get_extension(f).lower(), files)
 
