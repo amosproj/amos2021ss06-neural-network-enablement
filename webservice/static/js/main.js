@@ -194,6 +194,8 @@ $.get('/all/', null, function (data) {
 
             div.querySelector('#gallery-image').setAttribute('src', url);
 
+            div.querySelector('#video-icon').classList.remove('invisible');
+
             let imgNameParts = url.split('/')
             let imgName = imgNameParts[imgNameParts.length - 1]
 
