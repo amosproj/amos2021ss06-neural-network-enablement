@@ -3,7 +3,6 @@ from werkzeug.utils import secure_filename
 import os
 import datetime
 import shutil
-import colorization.pipeline as pipeline
 import cv2
 
 # from colorization.src.pipeline import *
@@ -193,7 +192,7 @@ def colorize():
         # colorize_image
         if extension.lower() in ALLOWED_EXTENSIONS['pic']:
             # temporarily use if True
-            if pipeline.colorize_image(finpath, foutpath) == 0:
+            if True: #pipeline.colorize_image(finpath, foutpath) == 0:
                 # return page need further discussion
                 return jsonify(msg="Colorization successful."), 200
             else:
