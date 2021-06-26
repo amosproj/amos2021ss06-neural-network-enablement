@@ -74,7 +74,7 @@ class BasicTests(unittest.TestCase):
         self.assertEqual(len_before + 1, len_after)
 
         # check colorize process
-        filename = urls_after[0].rsplit('/', 1)[1]
+        filename = urls_after[0]['thumbnail'].rsplit('/', 1)[1]
         rsp_color = self.client.post('/colorize/', json={'name': filename})
         self.assertEqual(rsp_color.status_code, 200)
 
