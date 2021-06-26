@@ -120,6 +120,8 @@ def all():
                 if 'color' not in f:
                     thumbnail = url_for("uploaded_file", fpath=folder, filename=f)
 
+        assert 'thumbnail' in locals(), f'thumbnail for {folder} not found'
+
         result.append({
             'type': type,
             'thumbnail': thumbnail
