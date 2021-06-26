@@ -185,8 +185,9 @@ function showResult(imgName) {
 $.get('/all/', null, function (data) {
     if (data.length > 0) {
         document.getElementById('drpzn').classList.remove('invisible');
-        data.sort().forEach(function (url) {
-            console.log(url);
+        data.sort().forEach(function (data) {
+            let url = data.thumbnail
+            let type = data.type
 
             let div = document.createElement('div');
             div.innerHTML = document.querySelector('#template-gallery-image').innerHTML
@@ -194,7 +195,9 @@ $.get('/all/', null, function (data) {
 
             div.querySelector('#gallery-image').setAttribute('src', url);
 
-            div.querySelector('#video-icon').classList.remove('invisible');
+            if (type === 'video') {
+              div.querySelector('#video-icon').classList.remove('invisible');
+            }
 
             let imgNameParts = url.split('/')
             let imgName = imgNameParts[imgNameParts.length - 1]
