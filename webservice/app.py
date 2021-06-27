@@ -97,19 +97,37 @@ def all():
 
     Return type: json
     '''
-    urls = []
-    for root, dirs, files in os.walk(app.config['UPLOAD_FOLDER']):
-        for filename in files:
-            extension = get_extension(filename)
-            name = get_name(filename)
-            if extension.lower() in ALLOWED_EXTENSIONS['pic']:
-                # exclude the colored file
-                if name.rsplit("_", 1)[1] == "thumbnail":
-                    name = name.rsplit("_", 1)[0]
-                    urls.append(url_for("uploaded_file", fpath=name, filename=filename))
-                elif name.rsplit("_", 1)[1] != "color":
-                    urls.append(url_for("uploaded_file", fpath=name, filename=filename))
-    return jsonify(urls)
+    result = []
+
+    folders = filter(lambda x: x != '.keep', os.listdir(app.config['UPLOAD_FOLDER']))
+
+    for folder in folders:
+        print(folder)
+        files = os.listdir(os.path.join(app.config['UPLOAD_FOLDER'], folder))
+        extensions = map(lambda f: get_extension(f).lower(), files)
+
+        if any(map(lambda e: e in ALLOWED_EXTENSIONS['video'], extensions)):
+            type = 'video'
+
+            for f in files:
+                if 'thumbnail' in f:
+                    thumbnail = url_for('uploaded_file', fpath=folder, filename=f)
+
+        else:
+            type = 'image'
+
+            for f in files:
+                if 'color' not in f:
+                    thumbnail = url_for("uploaded_file", fpath=folder, filename=f)
+
+        assert 'thumbnail' in locals(), f'thumbnail for {folder} not found'
+
+        result.append({
+            'type': type,
+            'thumbnail': thumbnail
+        })
+
+    return jsonify(result)
 
 
 # TODO: This should be a GET request
