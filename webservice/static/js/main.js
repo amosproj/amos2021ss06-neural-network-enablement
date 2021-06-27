@@ -191,7 +191,7 @@ function waitAndShowResult(imgName) {
             if (status == 'finished') {
                 showResult(imgName);
             } else {
-                setTimeout(waitAndShowResult(imgName), 1000);
+                setTimeout(waitAndShowResult(imgName), 3000);
             }
         },
         error: function (error) {
