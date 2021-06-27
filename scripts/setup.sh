@@ -6,7 +6,6 @@
 # ===============================================================
 
 
-# TODO: try to detect that the Atlas Board is running on Ubuntu
 # TODO: python3.7.5 is also hardcoded below -> make general
 
 # config
