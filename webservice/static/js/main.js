@@ -188,8 +188,14 @@ function waitAndShowResult(imgName) {
             'name': imgName
         }),
         success: function (response) {
-            console.log('waitandshowresultsuccess');
             let status = response['status'];
+
+          if (status == 500) {
+            console.log('ERROR')
+            return
+          }
+
+            console.log(status)
             if (status == 'finished') {
                 showResult(imgName);
             }
@@ -197,14 +203,8 @@ function waitAndShowResult(imgName) {
                 function helper(){
                     waitAndShowResult(imgName);
                 }
-                setTimeout(helper, 1000);
+                setTimeout(helper, 5000);
             }
-        },
-        error: function (error) {
-            console.log(error);
-            showWarningToast("Times out.", "Couldn't connect to server. Is the service" +
-                " running?");
-            return 1;
         },
         dataType: 'json',
         contentType: 'application/json',

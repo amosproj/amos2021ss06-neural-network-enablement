@@ -171,6 +171,7 @@ def result():
         'colorized': colorized_url,
         'thumbnail': thumbnail_url
     }
+    print(result)
     # print(result[status])
     return jsonify(result), 200
 
@@ -221,12 +222,10 @@ def colorize():
             # colorize_image
             if extension.lower() in ALLOWED_EXTENSIONS['pic']:
 
-                import random
-                if random.choice([True, False]):
-                    return jsonify(msg='Colorization failed'), 500
-
                 import time
-                time.sleep(5000)
+                time.sleep(5)
+
+                return jsonify(msg='Colorization failed'), 500
 
                 shutil.copyfile(finpath, foutpath)
 
@@ -257,6 +256,9 @@ def get_name(filename):
 
 @app.errorhandler(Exception)
 def handle_error(e):
+    print('------------------')
+    print('ERROR HANDLER CALLED')
+    print('------------------')
     return jsonify(msg=f'An error occured: {str(e)}'), 500
 
 
