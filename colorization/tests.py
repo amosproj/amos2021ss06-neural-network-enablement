@@ -99,6 +99,12 @@ class SplitAndMergeTestsForVideo(unittest.TestCase):
         self.audio_output_path = os.path.join(os.path.abspath(
             os.path.dirname(__file__)), 'test_data/voice_from_video.wav')
 
+    def tearDown(self):
+        # cleanup files, that were created in the
+        # test_complete_colorize_image test run
+        print('tear down called')
+        if os.path.isfile(self.audio_output_path):
+            os.remove(self.audio_output_path)
 
     def test_step_video2frames_frames2video(self):
         """
