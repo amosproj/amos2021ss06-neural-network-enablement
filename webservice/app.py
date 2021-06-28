@@ -250,6 +250,11 @@ def get_name(filename):
     return filename.rsplit('.', 1)[0]
 
 
+@app.errorhandler(Exception)
+def handle_error(e):
+    return jsonify(msg=f'An error occured: {str(e)}'), 500
+
+
 if __name__ == '__main__':
     os.environ['FLASK_ENV'] = "development"
     app.run(host='0.0.0.0')
