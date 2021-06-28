@@ -3,7 +3,6 @@ from werkzeug.utils import secure_filename
 import os
 import datetime
 import shutil
-import colorization.pipeline as pipeline
 import cv2
 
 # from colorization.src.pipeline import *
@@ -221,12 +220,18 @@ def colorize():
         if not os.path.exists(foutpath):
             # colorize_image
             if extension.lower() in ALLOWED_EXTENSIONS['pic']:
-                # temporarily use if True
-                if pipeline.colorize_image(finpath, foutpath) == 0:
-                    # return page need further discussion
-                    return jsonify(msg="Colorization successful."), 200
-                else:
-                    return jsonify(msg="Colorization failed."), 400
+
+                import random
+                if random.choice([True, False]):
+                    return jsonify(msg='Colorization failed'), 500
+
+                import time
+                time.sleep(5000)
+
+                shutil.copyfile(finpath, foutpath)
+
+                # return page need further discussion
+                return jsonify(msg="Colorization successful."), 200
             else:
                 return jsonify(msg="Videos are not supported yet."), 400
         else:
