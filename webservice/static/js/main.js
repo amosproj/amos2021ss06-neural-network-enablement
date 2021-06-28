@@ -252,7 +252,6 @@ $.get('/all/', null, function (data) {
             colorizeButton.onclick = function () {
 
                 let res = colorizeImage(imgName);
-                console.log("res:",res);
                 // success
                 if (res == 0) {
                     waitAndShowResult(imgName);
