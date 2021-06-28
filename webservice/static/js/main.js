@@ -192,7 +192,10 @@ function waitAndShowResult(imgName) {
                 showResult(imgName);
             }
             else{
-                setTimeout(waitAndShowResult(imgName), 1000);
+                function helper(){
+                    waitAndShowResult(imgName);
+                }
+                setTimeout(helper, 1000);
             }
         },
         error: function (error) {
