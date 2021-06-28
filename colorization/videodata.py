@@ -82,7 +82,7 @@ def split_audio_from_video(video_input_path, audio_output_path):
     """This function is used to extract voice from a video.
     Args:
         video_input_path: path of the origin video
-        voice_output_path: path to the voice file
+        audio_output_path: path to the voice file
     Returns: int
         on success this function returns 0
         on failure this function returns 1
