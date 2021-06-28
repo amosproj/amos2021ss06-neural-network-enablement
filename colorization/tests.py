@@ -127,18 +127,31 @@ class SplitAndMergeTestsForVideo(unittest.TestCase):
         # destroy the frames folder and video folder after test
         shutil.rmtree(video_output_path)
 
-    def test_step_splitVoicefromVideo(self):
+    def test_step_split_audio_from_video(self):
         """
         Unit-Test to test the splitVoicefromVideo function
         """
         video_input_path = os.path.join(os.path.abspath(
             os.path.dirname(__file__)), 'test_data/test_video_with_voice.mp4')
-        voice_output_path = os.path.join(os.path.abspath(
+        audio_output_path = os.path.join(os.path.abspath(
             os.path.dirname(__file__)), 'test_data/voice_from_video.wav')
-        ret = videodata.splitVoicefromVideo(video_input_path, voice_output_path)
+        ret = videodata.split_audio_from_video(video_input_path, audio_output_path)
         self.assertEqual(ret, SUCCESS)
-        # destroy the voice file path
-        os.remove(voice_output_path)
+        self.assertTrue(os.path.isfile(audio_output_path))
+
+    def test_step_merge_audio_and_video(self):
+        """
+        Unit-Test to test the merge_audio_and_video function
+        """
+        video_input_path = os.path.join(os.path.abspath(
+            os.path.dirname(__file__)), 'test_data/greyscaleVideo.mp4')
+        audio_input_path = os.path.join(os.path.abspath(
+            os.path.dirname(__file__)), 'test_data/voice_from_video.wav')
+        video_output_path = os.path.join(os.path.abspath(
+            os.path.dirname(__file__)), 'test_data/merged video with audio.mp4')
+        ret = videodata.merge_audio_and_video(video_input_path, audio_input_path, video_output_path)
+        self.assertEqual(ret, SUCCESS)
+        self.assertTrue(os.path.isfile(video_output_path))
 
 
 class FunctionalTest(unittest.TestCase):

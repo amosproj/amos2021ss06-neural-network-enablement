@@ -1,9 +1,12 @@
 import cv2
 import os
-from .atlas_utils import constants as acl_constants
 import numpy
 import shutil
 from moviepy.editor import AudioFileClip
+from moviepy.editor import VideoFileClip
+
+SUCCESS = 0
+FAILED = 1
 
 
 def video2frames(video_input_path, image_output_folder_path):
@@ -19,7 +22,7 @@ def video2frames(video_input_path, image_output_folder_path):
     type = os.path.splitext(video_input_path)[-1]
     if (video.isOpened() is False) or (not (type == '.mp4')):
         print("Error opening video")
-        return acl_constants.FAILED
+        return FAILED
     FPS = 60  # frames per second
     video.set(cv2.CAP_PROP_FPS, FPS)
     currentFrame = 0
@@ -38,11 +41,11 @@ def video2frames(video_input_path, image_output_folder_path):
             break
     video.release()
     # cv2.destroyAllWindows()
-    return acl_constants.SUCCESS
+    return SUCCESS
 
 
 def frames2video(image_input_folder_path, video_output_path):
-    '''This function is used to convert images into a video.
+    """This function is used to convert images into a video.
     Args:
         image_input_folder_path: path to the split images.
         video_output_path: path to the merged video
@@ -50,12 +53,12 @@ def frames2video(image_input_folder_path, video_output_path):
         0 for SUCCESS.
         1 for FAILED.
 
-    '''
+    """
     mat = cv2.imread(os.path.join(image_input_folder_path + '/0.png'),
                      cv2.IMREAD_COLOR)
     # print(os.path.join(image_input_folder_path + '/0.png'))
     if numpy.any(mat) is None:
-        return acl_constants.FAILED
+        return FAILED
     size = mat.shape[:2]
     FPS = 60
     fourcc = cv2.VideoWriter_fourcc('M', 'J', 'P', 'G')
@@ -72,24 +75,47 @@ def frames2video(image_input_folder_path, video_output_path):
     video.release()
     # after merged video delate the image_input_folder_path folder
     shutil.rmtree(image_input_folder_path)
-    return acl_constants.SUCCESS
+    return SUCCESS
 
 
-def splitVoicefromVideo(video_input_path, voice_output_path):
-    '''This function is used to extract voice from a video.
+def split_audio_from_video(video_input_path, audio_output_path):
+    """This function is used to extract voice from a video.
     Args:
         video_input_path: path of the origin video
         voice_output_path: path to the voice file
     Returns: int
         on success this function returns 0
         on failure this function returns 1
-    '''
+    """
     if not os.path.isfile(video_input_path):
         print("invalid video path")
-        return acl_constants.FAILED
+        return FAILED
     my_audio_clip = AudioFileClip(video_input_path)
-    my_audio_clip.write_audiofile(voice_output_path)
-    if not os.path.isfile(voice_output_path):
+    my_audio_clip.write_audiofile(audio_output_path)
+    if not os.path.isfile(audio_output_path):
         print("invalid output path")
-        return acl_constants.FAILED
-    return acl_constants.SUCCESS
+        return FAILED
+    return SUCCESS
+
+
+def merge_audio_and_video(video_input_path, audio_input_path,video_output_path):
+    """This function is used to mge voice with a video merged from images.
+    Args:
+        video_input_path: path of the origin video
+        audio_input_path: path of the voice file
+        video_output_path: path to the result video
+    Returns: int
+        on success this function returns 0
+        on failure this function returns 1
+    """
+    if not os.path.isfile(video_input_path) or not os.path.isfile((audio_input_path)):
+        print("invalid video path")
+        return FAILED
+    my_video_clip = VideoFileClip(video_input_path)
+    my_audio_clip = AudioFileClip(audio_input_path)
+    video = my_video_clip.set_audio(my_audio_clip)
+    video.write_videofile(video_output_path)
+    if not os.path.isfile(video_output_path):
+        print("invalid output path")
+        return FAILED
+    return SUCCESS
