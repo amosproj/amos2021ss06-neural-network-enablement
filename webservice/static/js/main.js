@@ -213,14 +213,24 @@ function waitAndShowResult(imgName) {
 $.get('/all/', null, function (data) {
     if (data.length > 0) {
         document.getElementById('drpzn').classList.remove('invisible');
-        data.sort().forEach(function (url) {
-            console.log(url);
+
+        data.sort(function (a, b) {
+          return a.thumbnail.localeCompare(b.thumbnail);
+        });
+
+        data.forEach(function (data) {
+            let url = data.thumbnail
+            let type = data.type
 
             let div = document.createElement('div');
             div.innerHTML = document.querySelector('#template-gallery-image').innerHTML
             console.log(div)
 
             div.querySelector('#gallery-image').setAttribute('src', url);
+
+            if (type === 'video') {
+              div.querySelector('#video-icon').classList.remove('invisible');
+            }
 
             let imgNameParts = url.split('/')
             let imgName = imgNameParts[imgNameParts.length - 1]
