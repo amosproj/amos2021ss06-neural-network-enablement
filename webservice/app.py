@@ -172,7 +172,7 @@ def result():
         'colorized': colorized_url,
         'thumbnail': thumbnail_url
     }
-    #print(result[status])
+    # print(result[status])
     return jsonify(result), 200
 
 
