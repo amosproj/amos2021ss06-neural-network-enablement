@@ -177,7 +177,7 @@ function showResult(imgName) {
     });
 }
 
-function waitAndShowResult(imgName,times) {
+function waitAndShowResult(imgName) {
     console.log('waitAndShowResult', imgName)
     $.ajax({
         type: "POST",
@@ -191,9 +191,8 @@ function waitAndShowResult(imgName,times) {
             if (status == 'finished') {
                 showResult(imgName);
             }
-            else if (times <= 10) {
+            else{
                 setTimeout(waitAndShowResult(imgName), 1000);
-                times += 1;
             }
         },
         error: function (error) {
@@ -250,10 +249,9 @@ $.get('/all/', null, function (data) {
             colorizeButton.onclick = function () {
 
                 let res = colorizeImage(imgName);
-                let times = 0;
                 // success
                 if (res == 0) {
-                    waitAndShowResult(imgName,times);
+                    waitAndShowResult(imgName);
                 }
             }
 
