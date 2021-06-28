@@ -98,7 +98,7 @@ def split_audio_from_video(video_input_path, audio_output_path):
     return SUCCESS
 
 
-def merge_audio_and_video(video_input_path, audio_input_path,video_output_path):
+def merge_audio_and_video(video_input_path, audio_input_path, video_output_path):
     """This function is used to mge voice with a video merged from images.
     Args:
         video_input_path: path of the origin video
@@ -108,8 +108,11 @@ def merge_audio_and_video(video_input_path, audio_input_path,video_output_path):
         on success this function returns 0
         on failure this function returns 1
     """
-    if not os.path.isfile(video_input_path) or not os.path.isfile((audio_input_path)):
+    if not os.path.isfile(video_input_path):
         print("invalid video path")
+        return FAILED
+    if not os.path.isfile((audio_input_path)):
+        print("invalid audio path")
         return FAILED
     my_video_clip = VideoFileClip(video_input_path)
     my_audio_clip = AudioFileClip(audio_input_path)
