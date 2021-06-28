@@ -177,6 +177,33 @@ function showResult(imgName) {
     });
 }
 
+function waitAndShowResult(imgName) {
+    console.log('waitAndShowResult', imgName)
+    $.ajax({
+        type: "POST",
+        url: "/result/",
+        data: JSON.stringify({
+            'name': imgName
+        }),
+        success: function (response) {
+            console.log('waitandshowresultsuccess');
+            let status = response['status'];
+            if (status == 'finished') {
+                showResult(imgName);
+            } else {
+                setTimeout("waitAndShowResult(imgName)", 100);
+            }
+        },
+        error: function (error) {
+            console.log(error);
+            showWarningToast("Times out.", "Couldn't connect to server. Is the service" +
+                " running?");
+            return 1;
+        },
+        dataType: 'json',
+        contentType: 'application/json',
+    });
+}
 
 // ---------------------------------------------------------------------------------------
 // This is called on every page load.
@@ -224,7 +251,7 @@ $.get('/all/', null, function (data) {
 
                 // success
                 if (res == 0) {
-                    showResult(imgName);
+                    waitAndShowResult(imgName);
                 }
             }
 

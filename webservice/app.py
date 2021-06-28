@@ -150,19 +150,29 @@ def result():
         thumbnailname = name
         name = get_name(filename).rsplit('_', 1)[0]
         thumbnail_url = url_for("uploaded_file", fpath=name, filename=thumbnailname)
+        type = 'video'
+    else:
+        type = 'image'
 
     colorname = name + "_color." + extension
+    # check whether the colorize process is finished
+    if os.path.exists(os.path.join(app.config['UPLOAD_FOLDER'], name, colorname)):
+        status = 'finished'
+    else:
+        status = 'unfinished'
 
     # generate all urls
     origin_url = url_for("uploaded_file", fpath=name, filename=filename)
     colorized_url = url_for("uploaded_file", fpath=name, filename=colorname)
 
     result = {
+        'type': type,
+        'status': status,
         'origin': origin_url,
         'colorized': colorized_url,
         'thumbnail': thumbnail_url
     }
-
+    print(result)
     return jsonify(result), 200
 
 
@@ -208,17 +218,19 @@ def colorize():
         optfilename = name + "_color." + extension
         foutpath = os.path.join(app.config['UPLOAD_FOLDER'], name, optfilename)
 
-        # colorize_image
-        if extension.lower() in ALLOWED_EXTENSIONS['pic']:
-            # temporarily use if True
-            if pipeline.colorize_image(finpath, foutpath) == 0:
-                # return page need further discussion
-                return jsonify(msg="Colorization successful."), 200
+        if not os.path.exists(foutpath):
+            # colorize_image
+            if extension.lower() in ALLOWED_EXTENSIONS['pic']:
+                # temporarily use if True
+                if pipeline.colorize_image(finpath, foutpath) == 0:
+                    # return page need further discussion
+                    return jsonify(msg="Colorization successful."), 200
+                else:
+                    return jsonify(msg="Colorization failed."), 400
             else:
-                return jsonify(msg="Colorization failed."), 400
+                return jsonify(msg="Videos are not supported yet."), 400
         else:
-            return jsonify(msg="Videos are not supported yet."), 400
-
+            return jsonify(msg='Colorization file exists. Colorization successful.'), 200
     else:
         return jsonify(msg="No input file"), 400
 
