@@ -111,7 +111,7 @@ def merge_audio_and_video(video_input_path, audio_input_path, video_output_path)
     if not os.path.isfile(video_input_path):
         print("invalid video path")
         return FAILED
-    if not os.path.isfile((audio_input_path)):
+    if not os.path.isfile(audio_input_path):
         print("invalid audio path")
         return FAILED
     my_video_clip = VideoFileClip(video_input_path)
