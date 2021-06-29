@@ -173,7 +173,6 @@ def result():
         'thumbnail': thumbnail_url
     }
     print(result)
-    # print(result[status])
     return jsonify(result), 200
 
 
@@ -194,7 +193,7 @@ def delete():
             shutil.rmtree(deletepath)
             return jsonify(msg="Deleted!"), 200
         else:
-            return jsonify(msg="Pictures not found!"), 404
+            return jsonify(msg="Pictures not found!"), 400
     else:
         return jsonify(msg="request is empty"), 400
 
@@ -215,6 +214,15 @@ def colorize():
         name = get_name(filename)
         extension = get_extension(filename)
 
+        # find the video path according to the given thumbnail path
+        # a sample filename for a video: 20210622234327_greyscaleVideo_thumbnail.jpg
+        if name.rsplit('_', 1)[1] == 'thumbnail':
+            name = name.rsplit('_', 1)[0]
+            files = os.listdir(os.path.join(app.config['UPLOAD_FOLDER']), name)
+            for f in files:
+                if get_extension(f).lower() in ALLOWED_EXTENSIONS['video']:
+                    extension = get_extension(f)
+
         finpath = os.path.join(app.config['UPLOAD_FOLDER'], name, filename)
         optfilename = name + "_color." + extension
         foutpath = os.path.join(app.config['UPLOAD_FOLDER'], name, optfilename)
@@ -223,19 +231,8 @@ def colorize():
             # colorize_image
             if extension.lower() in ALLOWED_EXTENSIONS['pic']:
 
-                # test for the real colorization
                 if pipeline.colorize_image(finpath, foutpath) == 0:
 
-                    #                 import time
-                    #
-                    #                 # simulate colorization time
-                    #                 time.sleep(3)
-                    #
-                    # #                raise RuntimeError('Device already initialized')
-                    #
-                    #                 shutil.copyfile(finpath, foutpath)
-
-                    # return page need further discussion
                     return jsonify(msg="Colorization successful."), 200
                 else:
                     return jsonify(msg="Colorization failed."), 400
