@@ -223,7 +223,9 @@ def colorize():
             if extension.lower() in ALLOWED_EXTENSIONS['pic']:
 
                 import time
-                time.sleep(5)
+
+                # simulate colorization time
+                time.sleep(3)
 
 #                raise RuntimeError('Device already initialized')
 
