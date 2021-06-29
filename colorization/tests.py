@@ -104,8 +104,7 @@ class SplitAndMergeTestsForVideo(unittest.TestCase):
             os.path.dirname(__file__)), 'test_data/merged video with audio.mp4')
 
     def tearDown(self):
-        # cleanup files, that were created in the
-        # test_complete_colorize_image test run
+        # cleanup files, that were created in this class
         print('tear down called')
         if os.path.isfile(self.audio_output_path):
             os.remove(self.audio_output_path)
@@ -148,7 +147,7 @@ class SplitAndMergeTestsForVideo(unittest.TestCase):
 
     def test_step_split_audio_from_video(self):
         """
-        Unit-Test to test the splitVoicefromVideo function
+        Unit-Test to test the split_audio_from_video function
         """
         my_video_input_path = os.path.join(os.path.abspath(
             os.path.dirname(__file__)), 'test_data/test_video_with_voice.mp4')
