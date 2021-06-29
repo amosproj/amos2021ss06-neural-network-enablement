@@ -4,6 +4,7 @@ import os
 import datetime
 import shutil
 import cv2
+import colorization.pipeline as pipeline
 
 # from colorization.src.pipeline import *
 
@@ -210,7 +211,7 @@ def colorize():
     filename = request.get_json()['name'] if 'name' in request.get_json() else None
 
     if filename:
-        # 05/20 use newly added functions : get_name , get_extension
+
         name = get_name(filename)
         extension = get_extension(filename)
 
@@ -222,17 +223,22 @@ def colorize():
             # colorize_image
             if extension.lower() in ALLOWED_EXTENSIONS['pic']:
 
-                import time
+                # test for the real colorization
+                if pipeline.colorize_image(finpath, foutpath) == 0:
 
-                # simulate colorization time
-                time.sleep(3)
+                    #                 import time
+                    #
+                    #                 # simulate colorization time
+                    #                 time.sleep(3)
+                    #
+                    # #                raise RuntimeError('Device already initialized')
+                    #
+                    #                 shutil.copyfile(finpath, foutpath)
 
-#                raise RuntimeError('Device already initialized')
-
-                shutil.copyfile(finpath, foutpath)
-
-                # return page need further discussion
-                return jsonify(msg="Colorization successful."), 200
+                    # return page need further discussion
+                    return jsonify(msg="Colorization successful."), 200
+                else:
+                    return jsonify(msg="Colorization failed."), 400
             else:
                 return jsonify(msg="Videos are not supported yet."), 400
         else:
