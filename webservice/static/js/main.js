@@ -125,7 +125,7 @@ function colorizeImageAndShowResult(imgName) {
       showResult(imgName);
     },
     error: function(error) {
-      if (error.status in [500,400]) {
+      if (error.status === 500 || error.status === 400) {
         let msg = error['responseJSON']['msg'];
         showWarningToast("Colorizing image failed.", msg);
         console.log(msg)
