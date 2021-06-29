@@ -102,7 +102,7 @@ class BasicTests(unittest.TestCase):
         """
         # delete a picture which not on the server
         response1 = self.client.post('/delete/', json={'name': '2020_nonfile.png'})
-        self.assertEqual(response1.status_code, 404)
+        self.assertEqual(response1.status_code, 400)
         self.assertIn(b'Pictures not found!', response1.data)
 
         # no filename as the input parameter in POST request
