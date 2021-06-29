@@ -97,7 +97,11 @@ class SplitAndMergeTestsForVideo(unittest.TestCase):
         self.video_input_path = os.path.join(os.path.abspath(
             os.path.dirname(__file__)), 'test_data/greyscaleVideo.mp4')
         self.audio_output_path = os.path.join(os.path.abspath(
-            os.path.dirname(__file__)), 'test_data/voice_from_video.wav')
+            os.path.dirname(__file__)), 'test_data/voice_from_video.mp3')
+        self.audio_input_path = os.path.join(os.path.abspath(
+            os.path.dirname(__file__)), 'test_data/audio_for_video.wav')
+        self.video_with_audio_output_path = os.path.join(os.path.abspath(
+            os.path.dirname(__file__)), 'test_data/merged video with audio.mp4')
 
     def tearDown(self):
         # cleanup files, that were created in the
@@ -105,6 +109,8 @@ class SplitAndMergeTestsForVideo(unittest.TestCase):
         print('tear down called')
         if os.path.isfile(self.audio_output_path):
             os.remove(self.audio_output_path)
+        if os.path.isfile(self.video_with_audio_output_path):
+            os.remove(self.video_with_audio_output_path)
 
     def test_step_video2frames_frames2video(self):
         """
@@ -157,16 +163,11 @@ class SplitAndMergeTestsForVideo(unittest.TestCase):
         """
         Unit-Test to test the merge_audio_and_video function
         """
-        video_input_path = os.path.join(os.path.abspath(
-            os.path.dirname(__file__)), 'test_data/greyscaleVideo.mp4')
-        audio_input_path = self.audio_output_path
-        self.assertTrue(os.path.isfile(audio_input_path))
-        video_output_path = os.path.join(os.path.abspath(
-            os.path.dirname(__file__)), 'test_data/merged video with audio.mp4')
         ret = videodata.merge_audio_and_video(
-            video_input_path, audio_input_path, video_output_path)
+            self.video_input_path, self.audio_input_path,
+            self.video_with_audio_output_path)
         self.assertEqual(ret, SUCCESS)
-        self.assertTrue(os.path.isfile(video_output_path))
+        self.assertTrue(os.path.isfile(self.video_with_audio_output_path))
 
 
 class FunctionalTest(unittest.TestCase):
