@@ -225,7 +225,7 @@ def colorize():
                 import time
                 time.sleep(5)
 
-                return jsonify(msg='Colorization failed'), 500
+#                raise RuntimeError('Device already initialized')
 
                 shutil.copyfile(finpath, foutpath)
 

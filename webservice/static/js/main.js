@@ -108,8 +108,9 @@ function deleteImage(imgName) {
 
 
 // sends the service a request to colorize the image
-// after the user clicked on the 'colorize icon'
-function colorizeImage(imgName) {
+// after the user clicked on the 'colorize icon',
+// if successful it calls the showResult function
+function colorizeImageAndShowResult(imgName) {
   console.log(imgName, 'colorize')
 
   // call colorize function
@@ -119,19 +120,23 @@ function colorizeImage(imgName) {
     data: JSON.stringify({
       'name': imgName
     }),
-    success: function() {
-      console.log('colorization success');
+    success: function(response) {
+      console.log(response['msg']);
+      showResult(imgName);
     },
     error: function(error) {
-      console.log(error);
-      showWarningToast("Colorizing image failed.", "Couldn't connect to server. Is the service running?");
-      return 1;
+      if (error.status === 500) {
+        let msg = error['responseJSON']['msg'];
+        showWarningToast("Colorizing image failed.", msg);
+        console.log(msg)
+      } else {
+        showWarningToast("Colorizing image failed.", "The error was logged to the console.")
+        console.log('Colorizing image failed.', error)
+      }
     },
     dataType: 'json',
     contentType: 'application/json',
   });
-
-  return 0;
 }
 
 
@@ -148,9 +153,6 @@ function showResult(imgName) {
       'name': imgName
     }),
     success: function(response) {
-      console.log('colorization success');
-      // console.log(response);
-
       let original = response['origin'];
       let colorized = response['colorized'];
 
@@ -158,8 +160,6 @@ function showResult(imgName) {
         console.log(colorized);
 
         // show result page popup
-
-
         document.querySelector('#result-image-original').setAttribute('src', original);
         document.querySelector('#result-image-colorized').setAttribute('src', colorized);
 
@@ -171,44 +171,12 @@ function showResult(imgName) {
     error: function(error) {
       console.log(error);
       showWarningToast("Loading the result failed.", "Couldn't connect to server. Is the service running?");
-      return 1;
     },
     dataType: 'json',
     contentType: 'application/json',
   });
 }
 
-function waitAndShowResult(imgName) {
-  console.log('waitAndShowResult', imgName)
-  $.ajax({
-    type: "POST",
-    url: "/result/",
-    async: false,
-    data: JSON.stringify({
-      'name': imgName
-    }),
-    success: function(response) {
-      let status = response['status'];
-
-      if (status == 500) {
-        console.log('ERROR')
-        return
-      }
-
-      console.log(status)
-      if (status == 'finished') {
-        showResult(imgName);
-      } else {
-        function helper() {
-          waitAndShowResult(imgName);
-        }
-        setTimeout(helper, 5000);
-      }
-    },
-    dataType: 'json',
-    contentType: 'application/json',
-  });
-}
 
 // ---------------------------------------------------------------------------------------
 // This is called on every page load.
@@ -250,12 +218,7 @@ $.get('/all/', null, function(data) {
 
       let colorizeButton = div.querySelector('#colorize-image-button');
       colorizeButton.onclick = function() {
-
-        let res = colorizeImage(imgName);
-        // success
-        if (res == 0) {
-          waitAndShowResult(imgName);
-        }
+        colorizeImageAndShowResult(imgName);
       }
 
       document.getElementById("drpzn").appendChild(div)
