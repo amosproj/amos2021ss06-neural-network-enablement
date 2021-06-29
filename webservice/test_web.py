@@ -96,6 +96,8 @@ class BasicTests(unittest.TestCase):
         d_path = os.path.join(app.config['UPLOAD_FOLDER'], filename.rsplit('.', 1)[0])
         self.assertEqual(os.path.exists(d_path), False)
 
+    # TODO : def test_integration_video(self):
+
     def test_delete(self):
         """
         Unit Test of the fail situation of deleting pictures
