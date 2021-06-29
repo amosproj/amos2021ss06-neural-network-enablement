@@ -97,9 +97,9 @@ class SplitAndMergeTestsForVideo(unittest.TestCase):
         self.video_input_path = os.path.join(os.path.abspath(
             os.path.dirname(__file__)), 'test_data/greyscaleVideo.mp4')
         self.audio_output_path = os.path.join(os.path.abspath(
-            os.path.dirname(__file__)), 'test_data/voice_from_video.mp3')
+            os.path.dirname(__file__)), 'test_data/audio_from_video.mp3')
         self.audio_input_path = os.path.join(os.path.abspath(
-            os.path.dirname(__file__)), 'test_data/audio_for_video.wav')
+            os.path.dirname(__file__)), 'test_data/audio_for_video.mp3')
         self.video_with_audio_output_path = os.path.join(os.path.abspath(
             os.path.dirname(__file__)), 'test_data/merged video with audio.mp4')
 
@@ -152,8 +152,6 @@ class SplitAndMergeTestsForVideo(unittest.TestCase):
         """
         my_video_input_path = os.path.join(os.path.abspath(
             os.path.dirname(__file__)), 'test_data/test_video_with_voice.mp4')
-        self.audio_output_path = os.path.join(os.path.abspath(
-            os.path.dirname(__file__)), 'test_data/voice_from_video.wav')
         ret = videodata.split_audio_from_video(
             my_video_input_path, self.audio_output_path)
         self.assertEqual(ret, SUCCESS)
