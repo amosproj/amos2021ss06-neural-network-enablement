@@ -152,6 +152,7 @@ class SplitAndMergeTestsForVideo(unittest.TestCase):
         """
         my_video_input_path = os.path.join(os.path.abspath(
             os.path.dirname(__file__)), 'test_data/test_video_with_voice.mp4')
+        self.assertTrue(os.path.isfile(my_video_input_path))
         ret = videodata.split_audio_from_video(
             my_video_input_path, self.audio_output_path)
         self.assertEqual(ret, SUCCESS)
@@ -161,6 +162,8 @@ class SplitAndMergeTestsForVideo(unittest.TestCase):
         """
         Unit-Test to test the merge_audio_and_video function
         """
+        self.assertTrue(os.path.isfile(self.video_input_path))
+        self.assertTrue(os.path.isfile(self.audio_input_path))
         ret = videodata.merge_audio_and_video(
             self.video_input_path, self.audio_input_path,
             self.video_with_audio_output_path)
