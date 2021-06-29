@@ -218,7 +218,7 @@ def colorize():
         # a sample filename for a video: 20210622234327_greyscaleVideo_thumbnail.jpg
         if name.rsplit('_', 1)[1] == 'thumbnail':
             name = name.rsplit('_', 1)[0]
-            files = os.listdir(os.path.join(app.config['UPLOAD_FOLDER']), name)
+            files = os.listdir(os.path.join(app.config['UPLOAD_FOLDER'],name))
             for f in files:
                 if get_extension(f).lower() in ALLOWED_EXTENSIONS['video']:
                     extension = get_extension(f)
