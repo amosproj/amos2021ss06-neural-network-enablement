@@ -148,7 +148,6 @@ function showResult(imgName) {
   $.ajax({
     type: "POST",
     url: "/result/",
-    async: false,
     data: JSON.stringify({
       'name': imgName
     }),
