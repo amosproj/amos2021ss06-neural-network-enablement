@@ -61,7 +61,7 @@ function errorHandler(file, error, xhr) {
 
     if (error === 'Server responded with 0 code.') {
       // Improve default error message by dropzone
-      message = "Couldn't connect to localhost, is the webservice still running?"
+      message = "Couldn't connect to server. Is the service running?"
     } else {
       message = error;
     }
@@ -70,8 +70,9 @@ function errorHandler(file, error, xhr) {
     // print response by api
     message = error['msg']
 
-    showWarningToast('File upload failed', message);
   }
+
+  showWarningToast('File upload failed', message);
 }
 
 // end dropzone stuff
