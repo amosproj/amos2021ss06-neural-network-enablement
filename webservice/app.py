@@ -3,8 +3,8 @@ from werkzeug.utils import secure_filename
 import os
 import datetime
 import shutil
-import colorization.pipeline as pipeline
 import cv2
+import colorization.pipeline as pipeline
 
 # from colorization.src.pipeline import *
 
@@ -150,19 +150,29 @@ def result():
         thumbnailname = name
         name = get_name(filename).rsplit('_', 1)[0]
         thumbnail_url = url_for("uploaded_file", fpath=name, filename=thumbnailname)
+        type = 'video'
+    else:
+        type = 'image'
 
     colorname = name + "_color." + extension
+    # check whether the colorize process is finished
+    if os.path.exists(os.path.join(app.config['UPLOAD_FOLDER'], name, colorname)):
+        status = 'finished'
+    else:
+        status = 'unfinished'
 
     # generate all urls
     origin_url = url_for("uploaded_file", fpath=name, filename=filename)
     colorized_url = url_for("uploaded_file", fpath=name, filename=colorname)
 
     result = {
+        'type': type,
+        'status': status,
         'origin': origin_url,
         'colorized': colorized_url,
         'thumbnail': thumbnail_url
     }
-
+    print(result)
     return jsonify(result), 200
 
 
@@ -183,7 +193,7 @@ def delete():
             shutil.rmtree(deletepath)
             return jsonify(msg="Deleted!"), 200
         else:
-            return jsonify(msg="Pictures not found!"), 404
+            return jsonify(msg="Pictures not found!"), 400
     else:
         return jsonify(msg="request is empty"), 400
 
@@ -200,25 +210,36 @@ def colorize():
     filename = request.get_json()['name'] if 'name' in request.get_json() else None
 
     if filename:
-        # 05/20 use newly added functions : get_name , get_extension
+
         name = get_name(filename)
         extension = get_extension(filename)
+
+        # find the video path according to the given thumbnail path
+        # a sample filename for a video: 20210622234327_greyscaleVideo_thumbnail.jpg
+        if name.rsplit('_', 1)[1] == 'thumbnail':
+            name = name.rsplit('_', 1)[0]
+            files = os.listdir(os.path.join(app.config['UPLOAD_FOLDER'], name))
+            for f in files:
+                if get_extension(f).lower() in ALLOWED_EXTENSIONS['video']:
+                    extension = get_extension(f)
 
         finpath = os.path.join(app.config['UPLOAD_FOLDER'], name, filename)
         optfilename = name + "_color." + extension
         foutpath = os.path.join(app.config['UPLOAD_FOLDER'], name, optfilename)
 
-        # colorize_image
-        if extension.lower() in ALLOWED_EXTENSIONS['pic']:
-            # temporarily use if True
-            if pipeline.colorize_image(finpath, foutpath) == 0:
-                # return page need further discussion
-                return jsonify(msg="Colorization successful."), 200
-            else:
-                return jsonify(msg="Colorization failed."), 400
-        else:
-            return jsonify(msg="Videos are not supported yet."), 400
+        if not os.path.exists(foutpath):
+            # colorize_image
+            if extension.lower() in ALLOWED_EXTENSIONS['pic']:
 
+                if pipeline.colorize_image(finpath, foutpath) == 0:
+
+                    return jsonify(msg="Colorization successful."), 200
+                else:
+                    return jsonify(msg="Colorization failed."), 400
+            else:
+                return jsonify(msg="Videos are not supported yet."), 400
+        else:
+            return jsonify(msg='Colorization file exists. Colorization successful.'), 200
     else:
         return jsonify(msg="No input file"), 400
 
@@ -236,6 +257,15 @@ def get_extension(filename):
 
 def get_name(filename):
     return filename.rsplit('.', 1)[0]
+
+
+@app.errorhandler(Exception)
+def handle_error(e):
+    print('------------------')
+    print('ERROR HANDLER CALLED')
+    print(f'{e.__class__}: {str(e)}')
+    print('------------------')
+    return jsonify(msg=f'An error occured: {str(e)}'), 500
 
 
 if __name__ == '__main__':

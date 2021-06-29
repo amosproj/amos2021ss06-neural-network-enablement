@@ -96,13 +96,15 @@ class BasicTests(unittest.TestCase):
         d_path = os.path.join(app.config['UPLOAD_FOLDER'], filename.rsplit('.', 1)[0])
         self.assertEqual(os.path.exists(d_path), False)
 
+    # TODO : def test_integration_video(self):
+
     def test_delete(self):
         """
         Unit Test of the fail situation of deleting pictures
         """
         # delete a picture which not on the server
         response1 = self.client.post('/delete/', json={'name': '2020_nonfile.png'})
-        self.assertEqual(response1.status_code, 404)
+        self.assertEqual(response1.status_code, 400)
         self.assertIn(b'Pictures not found!', response1.data)
 
         # no filename as the input parameter in POST request
