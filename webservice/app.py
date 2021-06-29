@@ -263,6 +263,7 @@ def get_name(filename):
 def handle_error(e):
     print('------------------')
     print('ERROR HANDLER CALLED')
+    print(f'{e.__class__}: {str(e)}')
     print('------------------')
     return jsonify(msg=f'An error occured: {str(e)}'), 500
 
