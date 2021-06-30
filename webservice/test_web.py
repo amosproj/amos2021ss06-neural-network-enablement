@@ -79,7 +79,7 @@ class BasicTests(unittest.TestCase):
         self.assertEqual(rsp_color.status_code, 200)
 
         # check the colorized pic exists
-        rsp_result = self.client.post('/result/', json={'name': filename})
+        rsp_result = self.client.get('/result/', json={'name': filename})
         self.assertEqual(rsp_result.status_code, 200)
 
         urls_result = json.loads(rsp_result.data)
@@ -89,7 +89,7 @@ class BasicTests(unittest.TestCase):
         self.assertIsNotNone(urls_result['origin'])
 
         # check delete images
-        rsp_delete = self.client.post('/delete/', json={'name': filename})
+        rsp_delete = self.client.delete('/delete/', json={'name': filename})
         self.assertEqual(rsp_delete.status_code, 200)
 
         # check files&folders is not there anymore
@@ -103,12 +103,12 @@ class BasicTests(unittest.TestCase):
         Unit Test of the fail situation of deleting pictures
         """
         # delete a picture which not on the server
-        response1 = self.client.post('/delete/', json={'name': '2020_nonfile.png'})
+        response1 = self.client.delete('/delete/', json={'name': '2020_nonfile.png'})
         self.assertEqual(response1.status_code, 400)
         self.assertIn(b'Pictures not found!', response1.data)
 
         # no filename as the input parameter in POST request
-        response2 = self.client.post('/delete/', json={'name': ''})
+        response2 = self.client.delete('/delete/', json={'name': ''})
         self.assertEqual(response2.status_code, 400)
         self.assertIn(b'request is empty', response2.data)
 
