@@ -79,7 +79,9 @@ class BasicTests(unittest.TestCase):
         self.assertEqual(rsp_color.status_code, 200)
 
         # check the colorized pic exists
-        rsp_result = self.client.get('/result/', json={'name': filename})
+        # change parameter, not json
+        url = '/result/?name=' + filename
+        rsp_result = self.client.get(url)
         self.assertEqual(rsp_result.status_code, 200)
 
         urls_result = json.loads(rsp_result.data)
