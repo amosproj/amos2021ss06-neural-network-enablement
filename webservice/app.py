@@ -130,7 +130,7 @@ def all():
     return jsonify(result)
 
 
-@app.get('/result/')
+@app.get('/result/<name>')
 def result():
     '''
     This endpoint returns the urls of the given image/video (specified by its filename)
