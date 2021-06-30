@@ -84,7 +84,7 @@ function deleteImage(imgName) {
   console.log('deleteImage ' + imgName);
 
   $.ajax({
-    type: "POST",
+    type: "DELETE",
     url: "/delete/",
     data: JSON.stringify({
       'name': imgName
@@ -144,16 +144,14 @@ function colorizeImageAndShowResult(imgName) {
 function showResult(imgName) {
   console.log('showResult', imgName);
 
-  // TODO: This should really be a GET request
   $.ajax({
-    type: "POST",
+    type: "GET",
     url: "/result/",
-    data: JSON.stringify({
-      'name': imgName
-    }),
+    data: {'name': encodeURI(imgName)},
     success: function(response) {
       let original = response['origin'];
       let colorized = response['colorized'];
+      let type = response['type']
 
       if (original.includes(imgName)) {
         console.log(colorized);

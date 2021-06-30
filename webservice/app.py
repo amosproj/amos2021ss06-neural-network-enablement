@@ -130,8 +130,7 @@ def all():
     return jsonify(result)
 
 
-# TODO: This should be a GET request
-@app.post('/result/')
+@app.get('/result/')
 def result():
     '''
     This endpoint returns the urls of the given image/video (specified by its filename)
@@ -139,7 +138,7 @@ def result():
 
     Return type: json
     '''
-    filename = request.get_json()['name'] if 'name' in request.get_json() else None
+    filename = request.args.get("name") if 'name' in request.args else None
 
     # get name and extension of origin img
     name = get_name(filename)
@@ -176,7 +175,7 @@ def result():
     return jsonify(result), 200
 
 
-@app.post('/delete/')
+@app.delete('/delete/')
 def delete():
     '''
     This endpoint deletes the image/video (specified by its filename)
@@ -230,9 +229,7 @@ def colorize():
         if not os.path.exists(foutpath):
             # colorize_image
             if extension.lower() in ALLOWED_EXTENSIONS['pic']:
-
                 if pipeline.colorize_image(finpath, foutpath) == 0:
-
                     return jsonify(msg="Colorization successful."), 200
                 else:
                     return jsonify(msg="Colorization failed."), 400
