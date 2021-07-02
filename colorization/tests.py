@@ -216,3 +216,16 @@ class FunctionalTest(unittest.TestCase):
         (b, g, r) = img[:, :, 0], img[:, :, 1], img[:, :, 2]
         ret = (b == g).all() and (b == r).all()
         self.assertFalse(ret)
+
+    def test_colorize_twice(self):
+        """
+        Functional test to test the colorization of two images in single session
+        """
+
+        ret = colorize_image(self.input_image_path, self.output_image_path)
+        self.assertEqual(ret, SUCCESS)
+
+        os.remove(self.output_image_path)
+
+        ret = colorize_image(self.input_image_path, self.output_image_path)
+        self.assertEqual(ret, SUCCESS)
