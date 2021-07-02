@@ -111,14 +111,15 @@ def all():
 
         result.append({
             'type': type,
-            'thumbnail': thumbnail
+            'thumbnail': thumbnail,
+            'id': folder
         })
 
     return jsonify(result)
 
 
-@app.get('/media/<filename>')
-def result(filename):
+@app.get('/media/<id>')
+def result(id):
     '''
     This endpoint returns the urls of the given image/video (specified by its filename)
     the colorized version of it.
@@ -171,8 +172,8 @@ def result(filename):
     return jsonify(result), 200
 
 
-@app.delete('/media/<filename>')
-def delete(filename):
+@app.delete('/media/<id>')
+def delete(id):
     '''
     This endpoint deletes the image/video (specified by its filename)
 
@@ -193,8 +194,8 @@ def delete(filename):
 
 
 # colorize files
-@app.post('/media/<filename>/colorize')
-def colorize(filename):
+@app.post('/media/<id>/colorize')
+def colorize(id):
     '''
     This endpoint starts the colorizing process for the given image/video
     (specified by its filename)
