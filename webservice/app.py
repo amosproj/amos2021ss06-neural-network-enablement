@@ -259,7 +259,7 @@ def get_name(filename):
     return filename.rsplit('.', 1)[0]
 
 
-@app.errorhandler(Exception)
+@app.errorhandler(RuntimeError)
 def handle_error(e):
     print('------------------')
     print('ERROR HANDLER CALLED')
