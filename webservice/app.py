@@ -120,7 +120,7 @@ def all():
 @app.get('/media/<id>')
 def result(id):
     '''
-    This endpoint returns the urls of the given image/video (specified by its filename)
+    This endpoint returns the urls of the given image/video (specified by its folder name)
     the colorized version of it.
 `
     Return type: json
@@ -164,7 +164,7 @@ def result(id):
 @app.delete('/media/<id>')
 def delete(id):
     '''
-    This endpoint deletes the image/video (specified by its filename)
+    This endpoint deletes the image/video (specified by its folder name)
 
     Return type: json
     '''
@@ -182,7 +182,7 @@ def delete(id):
 def colorize(id):
     '''
     This endpoint starts the colorizing process for the given image/video
-    (specified by its filename)
+    (specified by its folder name)
 
     Return type: json
     '''
