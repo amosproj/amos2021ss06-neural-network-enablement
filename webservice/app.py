@@ -31,7 +31,7 @@ def index():
     return render_template("index.html")
 
 
-@app.post('/upload/')
+@app.post('/media/')
 def upload():
     '''
     This endpoint accepts a single image/video
@@ -78,7 +78,7 @@ def upload():
         return jsonify(msg="No upload file"), 400
 
 
-@app.get('/all/')
+@app.get('/media/')
 def all():
     '''
     This endpoint returns a list of the urls of all uploaded images/videos
@@ -118,7 +118,7 @@ def all():
     return jsonify(result)
 
 
-@app.get('/result/<filename>')
+@app.get('/media/<filename>')
 def result(filename):
     '''
     This endpoint returns the urls of the given image/video (specified by its filename)
@@ -169,7 +169,7 @@ def result(filename):
     return jsonify(result), 200
 
 
-@app.delete('/delete/<filename>')
+@app.delete('/media/<filename>')
 def delete(filename):
     '''
     This endpoint deletes the image/video (specified by its filename)
@@ -188,7 +188,7 @@ def delete(filename):
 
 
 # colorize files
-@app.post('/colorize/<filename>')
+@app.post('/media/<filename>/colorize')
 def colorize(filename):
     '''
     This endpoint starts the colorizing process for the given image/video
