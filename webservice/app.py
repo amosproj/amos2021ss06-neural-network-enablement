@@ -269,7 +269,7 @@ def exists_folder(filename):
         return False
 
     folder_name = get_name(filename)
-    return folder_name in os.listdir(UPLOAD_FOLDER)
+    return folder_name in os.listdir(app.config['UPLOAD_FOLDER'])
 
 
 def get_extension(filename):
