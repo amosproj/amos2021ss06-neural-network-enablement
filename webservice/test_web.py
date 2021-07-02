@@ -74,12 +74,9 @@ class BasicTests(unittest.TestCase):
         len_after = len(urls_after)
         self.assertEqual(len_before + 1, len_after)
 
-        print(urls_after)
-
         # check colorize process
         filename = urls_after[0]['thumbnail'].split('/')[-1]
         rsp_color = self.client.post(f'/media/{filename}/colorize')
-        print(rsp_color.data)
         self.assertEqual(rsp_color.status_code, 200)
 
         # check the colorized pic exists
