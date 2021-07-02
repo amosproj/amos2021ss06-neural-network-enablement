@@ -125,7 +125,7 @@ def result(filename):
 
     Return type: json
     '''
-    if not exists_folder(filename):
+    if not exists_folder_for(filename):
         return jsonify(msg="Pictures not found!"), 400
 
     # get name and extension of input filename(img name, or thumbnail of the video)
@@ -178,7 +178,7 @@ def delete(filename):
 
     Return type: json
     '''
-    if not exists_folder(filename):
+    if not exists_folder_for(filename):
         return jsonify(msg="Pictures not found!"), 400
 
     name = get_name(filename)
@@ -201,7 +201,7 @@ def colorize(filename):
 
     Return type: json
     '''
-    if not exists_folder(filename):
+    if not exists_folder_for(filename):
         return jsonify(msg=f"Pictures not found! ({filename})"), 400
 
     name = get_name(filename)
@@ -261,7 +261,7 @@ def valid_filename(filename):
     return False
 
 
-def exists_folder(filename):
+def exists_folder_for(filename):
     '''
     Checks if the folder corresponding to the given filename exists
     '''
