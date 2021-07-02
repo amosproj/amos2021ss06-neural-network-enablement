@@ -4,7 +4,7 @@ import os
 import datetime
 import shutil
 import cv2
-#import colorization.pipeline as pipeline
+# import colorization.pipeline as pipeline
 
 
 # set path to store uploaded pics and videos
