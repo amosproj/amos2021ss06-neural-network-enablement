@@ -4,7 +4,7 @@ import os
 import datetime
 import shutil
 import cv2
-import colorization.pipeline as pipeline
+#import colorization.pipeline as pipeline
 
 
 # set path to store uploaded pics and videos
@@ -41,7 +41,7 @@ def upload():
     Return type: json
     '''
     file = request.files.get("file")
-    if file and allowed_file(file.filename):
+    if file and valid_filename(file.filename):
         sfilename = secure_filename(file.filename)
 
         # add timestamp at the beginning of filename
@@ -71,7 +71,7 @@ def upload():
 
         return jsonify(msg="Upload successfully"), 200
 
-    elif file and not allowed_file(file.filename):
+    elif file and not valid_filename(file.filename):
         return jsonify(msg="The file format is not supported"), 400
 
     else:
@@ -90,7 +90,6 @@ def all():
     folders = filter(lambda x: x != '.keep', os.listdir(app.config['UPLOAD_FOLDER']))
 
     for folder in folders:
-        print(folder)
         files = os.listdir(os.path.join(app.config['UPLOAD_FOLDER'], folder))
         extensions = map(lambda f: get_extension(f).lower(), files)
 
@@ -126,8 +125,12 @@ def result(filename):
 
     Return type: json
     '''
+    if not exists_folder(filename):
+        return jsonify(msg="Pictures not found!"), 400
+
     # get name and extension of input filename(img name, or thumbnail of the video)
     # if video : name = "20210622234327_greyscaleVideo_thumbnail" extension = jpg
+
     name = get_name(filename)
     extension = get_extension(filename)
 
@@ -165,7 +168,6 @@ def result(filename):
         'colorized': colorized_url,
         'thumbnail': thumbnail_url
     }
-    print(result)
     return jsonify(result), 200
 
 
@@ -176,6 +178,9 @@ def delete(filename):
 
     Return type: json
     '''
+    if not exists_folder(filename):
+        return jsonify(msg="Pictures not found!"), 400
+
     name = get_name(filename)
     if name.rsplit('_', 1)[1] == 'thumbnail':
         name = name.rsplit('_', 1)[0]
@@ -196,6 +201,9 @@ def colorize(filename):
 
     Return type: json
     '''
+    if not exists_folder(filename):
+        return jsonify(msg="Pictures not found!"), 400
+
     name = get_name(filename)
     extension = get_extension(filename)
 
@@ -215,10 +223,12 @@ def colorize(filename):
     if not os.path.exists(foutpath):
         # colorize_image
         if extension.lower() in ALLOWED_EXTENSIONS['pic']:
-            if pipeline.colorize_image(finpath, foutpath) == 0:
-                return jsonify(msg="Colorization successful."), 200
-            else:
-                return jsonify(msg="Colorization failed."),
+            # if pipeline.colorize_image(finpath, foutpath) == 0:
+            shutil.copy(finpath, foutpath)
+            return jsonify(msg="Colorization successful."), 200
+
+            # else:
+            #    return jsonify(msg="Colorization failed."),
         else:
             return jsonify(msg="Videos are not supported yet."), 400
     else:
@@ -236,11 +246,30 @@ def uploaded_file(fpath, filename):
     return send_from_directory(folderpath, filename)
 
 
-def allowed_file(filename):
+def valid_filename(filename):
+    '''
+    Checks if the given filename is valid.
+    '''
+    if '.' not in filename:
+        return False
+
     lower_extension = get_extension(filename).lower()
     if lower_extension in ALLOWED_EXTENSIONS['pic'] or lower_extension in \
             ALLOWED_EXTENSIONS['video']:
         return True
+
+    return False
+
+
+def exists_folder(filename):
+    '''
+    Checks if the folder corresponding to the given filename exists
+    '''
+    if not valid_filename(filename):
+        return False
+
+    folder_name = get_name(filename)
+    return folder_name in os.listdir(UPLOAD_FOLDER)
 
 
 def get_extension(filename):

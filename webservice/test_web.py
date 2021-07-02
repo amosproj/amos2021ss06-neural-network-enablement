@@ -1,4 +1,5 @@
 import os
+import shutil
 import unittest
 from app import app
 import json
@@ -32,7 +33,7 @@ class BasicTests(unittest.TestCase):
         tear down web app for the test, remove temporary folder for operating on test
         pictures
         """
-        os.rmdir(UPLOAD_FOLDER)
+        shutil.rmtree(UPLOAD_FOLDER)
 
     def test_main_page(self):
         """
@@ -73,9 +74,13 @@ class BasicTests(unittest.TestCase):
         len_after = len(urls_after)
         self.assertEqual(len_before + 1, len_after)
 
+        print(urls_after)
+
         # check colorize process
-        filename = urls_after[0]['thumbnail'].rsplit('/', 1)[1]
+        filename = urls_after[0]['thumbnail'].split('/', 1)[1]
+        print(filename)
         rsp_color = self.client.post(f'/media/{filename}/colorize')
+        print(rsp_color.data)
         self.assertEqual(rsp_color.status_code, 200)
 
         # check the colorized pic exists
@@ -104,23 +109,22 @@ class BasicTests(unittest.TestCase):
         Unit Test of the fail situation of deleting pictures
         """
         # delete a picture which not on the server
-        response1 = self.client.delete(f'/media/{"2020_nonfile.png"}')
+        response1 = self.client.delete('/media/2020_nonfile.png')
         self.assertEqual(response1.status_code, 400)
         self.assertIn(b'Pictures not found!', response1.data)
 
         # no filename as the input parameter in POST request
         response2 = self.client.delete('/media/')
-        self.assertEqual(response2.status_code, 400)
-        self.assertIn(b'request is empty', response2.data)
+        self.assertEqual(response2.status_code, 405)
+        self.assertIn(b'Pictures not found!', response1.data)
 
     def test_colorize(self):
         """
         Unit Test of the fail situation of colorizing pictures
         """
         # no filename as the input parameter in POST request
-        response1 = self.client.post('/media/colorize/')
-        self.assertEqual(response1.status_code, 400)
-        self.assertIn(b'No input file', response1.data)
+        response1 = self.client.post('/media/colorize')
+        self.assertEqual(response1.status_code, 405)
 
     def test_upload(self):
         """
