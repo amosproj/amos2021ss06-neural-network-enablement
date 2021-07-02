@@ -4,8 +4,8 @@ from .lib.atlasutil_so import libatlas
 
 def check_ret(message, ret):
     if ret != ACL_ERROR_NONE:
-        raise Exception("{} failed ret={}"
-                        .format(message, ret))
+        raise RuntimeError("{} failed ret={}"
+                           .format(message, ret))
 
 def copy_data_device_to_host(device_data, data_size):
     host_buffer, ret = acl.rt.malloc_host(data_size)

@@ -24,7 +24,7 @@ function showWarningToast(headline, message) {
 // dropzone initialization stuff
 
 let config = {
-  url: "/upload/",
+  url: "/media/",
   disablePreviews: true,
   //  acceptedFiles: ".jpeg,.jpg,.png,.gif,.mp4,.mkv,.webm"
 };
@@ -86,10 +86,7 @@ function deleteImage(imgName) {
 
   $.ajax({
     type: "DELETE",
-    url: "/delete/",
-    data: JSON.stringify({
-      'name': imgName
-    }),
+    url: "/media/" + encodeURI(imgName),
     success: function() {
       console.log('success');
 
@@ -117,10 +114,7 @@ function colorizeImageAndShowResult(imgName) {
   // call colorize function
   $.ajax({
     type: "POST",
-    url: "/colorize/",
-    data: JSON.stringify({
-      'name': imgName
-    }),
+    url: "/media/" + encodeURI(imgName) + "/colorize",
     success: function(response) {
       console.log(response['msg']);
       showResult(imgName);
@@ -152,8 +146,7 @@ function showResult(imgName) {
 
   $.ajax({
     type: "GET",
-    url: "/result/",
-    data: {'name': encodeURI(imgName)},
+    url: "/media/" + encodeURI(imgName),
     success: function(response) {
       let original = response['origin'];
       let colorized = response['colorized'];
@@ -185,7 +178,7 @@ function showResult(imgName) {
 // This is called on every page load.
 //
 // load images and display them in gallery
-$.get('/all/', null, function(data) {
+$.get('/media/', null, function(data) {
   if (data.length > 0) {
     document.getElementById('drpzn').classList.remove('invisible');
 
