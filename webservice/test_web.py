@@ -50,7 +50,7 @@ class BasicTests(unittest.TestCase):
             check return urls of pictures
         """
         # call all(), get amount of urls
-        rsp_all = self.client.get('/all/')
+        rsp_all = self.client.get('/media/')
         urls_before = json.loads(rsp_all.data)
         len_before = len(urls_before)
 
@@ -60,7 +60,7 @@ class BasicTests(unittest.TestCase):
         with open(test_img_path, 'rb') as test_img:
             test_img_io = BytesIO(test_img.read())
 
-        rsp_upload = self.client.post('/upload/',
+        rsp_upload = self.client.post('/media/',
                                       content_type='multipart/form-data',
                                       data={'file': (test_img_io, 'test_img.png')},
                                       follow_redirects=True)
@@ -68,20 +68,19 @@ class BasicTests(unittest.TestCase):
         self.assertIn(b'Upload successfully', rsp_upload.data)
 
         # check amount of urls added by 1 after uploading img
-        rsp_all_2 = self.client.get('/all/')
+        rsp_all_2 = self.client.get('/media/')
         urls_after = json.loads(rsp_all_2.data)
         len_after = len(urls_after)
         self.assertEqual(len_before + 1, len_after)
 
         # check colorize process
         filename = urls_after[0]['thumbnail'].rsplit('/', 1)[1]
-        rsp_color = self.client.post('/colorize/', json={'name': filename})
+        rsp_color = self.client.post(f'/media/{filename}/colorize')
         self.assertEqual(rsp_color.status_code, 200)
 
         # check the colorized pic exists
         # change parameter, not json
-        url = '/result/?name=' + filename
-        rsp_result = self.client.get(url)
+        rsp_result = self.client.get(f'/media/{filename}')
         self.assertEqual(rsp_result.status_code, 200)
 
         urls_result = json.loads(rsp_result.data)
@@ -91,7 +90,7 @@ class BasicTests(unittest.TestCase):
         self.assertIsNotNone(urls_result['origin'])
 
         # check delete images
-        rsp_delete = self.client.delete('/delete/', json={'name': filename})
+        rsp_delete = self.client.delete(f'/media/{filename}')
         self.assertEqual(rsp_delete.status_code, 200)
 
         # check files&folders is not there anymore
@@ -105,12 +104,12 @@ class BasicTests(unittest.TestCase):
         Unit Test of the fail situation of deleting pictures
         """
         # delete a picture which not on the server
-        response1 = self.client.delete('/delete/', json={'name': '2020_nonfile.png'})
+        response1 = self.client.delete(f'/media/{"2020_nonfile.png"}')
         self.assertEqual(response1.status_code, 400)
         self.assertIn(b'Pictures not found!', response1.data)
 
         # no filename as the input parameter in POST request
-        response2 = self.client.delete('/delete/', json={'name': ''})
+        response2 = self.client.delete('/media/')
         self.assertEqual(response2.status_code, 400)
         self.assertIn(b'request is empty', response2.data)
 
@@ -119,7 +118,7 @@ class BasicTests(unittest.TestCase):
         Unit Test of the fail situation of colorizing pictures
         """
         # no filename as the input parameter in POST request
-        response1 = self.client.post('/colorize/', json={'name': ''})
+        response1 = self.client.post('/media/colorize/')
         self.assertEqual(response1.status_code, 400)
         self.assertIn(b'No input file', response1.data)
 
@@ -127,8 +126,8 @@ class BasicTests(unittest.TestCase):
         """
         Unit Test of the fail situation of uploading pictures
         """
-        # no filename as the input parameter in POST request
-        response1 = self.client.post('/upload/', json={'name': ''})
+        # no file in POST request
+        response1 = self.client.post('/media/')
         self.assertEqual(response1.status_code, 400)
         self.assertIn(b'No upload file', response1.data)
 
@@ -138,7 +137,7 @@ class BasicTests(unittest.TestCase):
         with open(test_img_path, 'rb') as test_img:
             test_img_io = BytesIO(test_img.read())
 
-        response2 = self.client.post('/upload/',
+        response2 = self.client.post('/media/',
                                      content_type='multipart/form-data',
                                      data={'file': (test_img_io, 'test_img.bmp')},
                                      follow_redirects=True)
