@@ -61,7 +61,7 @@ function errorHandler(file, error, xhr) {
 
     if (error === 'Server responded with 0 code.') {
       // Improve default error message by dropzone
-      message = "Couldn't connect to localhost, is the webservice still running?"
+      message = "Couldn't connect to server. Is the service running?"
     } else {
       message = error;
     }
@@ -70,8 +70,9 @@ function errorHandler(file, error, xhr) {
     // print response by api
     message = error['msg']
 
-    showWarningToast('File upload failed', message);
   }
+
+  showWarningToast('File upload failed', message);
 }
 
 // end dropzone stuff
@@ -128,10 +129,15 @@ function colorizeImageAndShowResult(imgName) {
       if (error.status === 500 || error.status === 400) {
         let msg = error['responseJSON']['msg'];
         showWarningToast("Colorizing image failed.", msg);
-        console.log(msg)
-      } else {
-        showWarningToast("Colorizing image failed.", "The error was logged to the console.")
-        console.log('Colorizing image failed.', error)
+        console.log(msg);
+      }
+      else if (error.status === 0){
+        showWarningToast("Colorizing image failed.", "Couldn't connect to server. Is the service running?");
+        console.log("Colorizing image failed.", error);
+      }else {
+        showWarningToast("Colorizing image failed.", "The error was logged to the" +
+            " console.");
+        console.log('Colorizing image failed.', error);
       }
     },
     dataType: 'json',
