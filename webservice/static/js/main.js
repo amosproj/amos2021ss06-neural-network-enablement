@@ -85,10 +85,7 @@ function deleteImage(imgName) {
 
   $.ajax({
     type: "DELETE",
-    url: "/delete/",
-    data: JSON.stringify({
-      'name': imgName
-    }),
+    url: "/delete/" + encodeURI(imgName),
     success: function() {
       console.log('success');
 
@@ -116,10 +113,7 @@ function colorizeImageAndShowResult(imgName) {
   // call colorize function
   $.ajax({
     type: "POST",
-    url: "/colorize/",
-    data: JSON.stringify({
-      'name': imgName
-    }),
+    url: "/colorize/" + encodeURI(imgName),
     success: function(response) {
       console.log(response['msg']);
       showResult(imgName);
@@ -146,8 +140,7 @@ function showResult(imgName) {
 
   $.ajax({
     type: "GET",
-    url: "/result/",
-    data: {'name': encodeURI(imgName)},
+    url: "/result/" + encodeURI(imgName),
     success: function(response) {
       let original = response['origin'];
       let colorized = response['colorized'];
