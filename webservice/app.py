@@ -4,7 +4,7 @@ import os
 import datetime
 import shutil
 import cv2
-# import colorization.pipeline as pipeline
+import colorization.pipeline as pipeline
 
 
 # set path to store uploaded pics and videos
@@ -223,12 +223,11 @@ def colorize(filename):
     if not os.path.exists(foutpath):
         # colorize_image
         if extension.lower() in ALLOWED_EXTENSIONS['pic']:
-            # if pipeline.colorize_image(finpath, foutpath) == 0:
-            shutil.copy(finpath, foutpath)
-            return jsonify(msg="Colorization successful."), 200
+            if pipeline.colorize_image(finpath, foutpath) == 0:
+                return jsonify(msg="Colorization successful."), 200
 
-            # else:
-            #    return jsonify(msg="Colorization failed."),
+            else:
+                return jsonify(msg="Colorization failed."),
         else:
             return jsonify(msg="Videos are not supported yet."), 400
     else:
