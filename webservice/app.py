@@ -201,7 +201,7 @@ def colorize(filename):
 
     Return type: json
     '''
-    if not exists_folder_for(filename):
+    if (not exists_folder_for(filename)) and ('thumbnail' not in filename):
         return jsonify(msg=f"Pictures not found! ({filename})"), 400
 
     name = get_name(filename)
