@@ -6,7 +6,7 @@ from .atlas_utils.utils import *
 class AclResource(object):
     """
     This class is a singleton, init is called when creating the first object,
-    for subsequent calls of the constructor init is _not_ called.
+    for subsequent calls of the constructor init is not called.
     """
 
     _instance = None
