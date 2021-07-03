@@ -5,7 +5,7 @@ import numpy as np
 import shutil
 import colorization.videodata as videodata
 from colorization.colorize_process import preprocess, inference, postprocess
-from colorization.pipeline import colorize_image
+from colorization.pipeline import colorize_image, colorize_video
 
 FAILED = 1
 SUCCESS = 0
@@ -184,6 +184,10 @@ class FunctionalTest(unittest.TestCase):
             os.path.dirname(__file__)), 'test_data/lena_colorized.png')
         self.fake_input_image_path = os.path.join(os.path.abspath(
             os.path.dirname(__file__)), '../../Data/notexist.png')
+        self.input_video_path = os.path.join(os.path.abspath(
+            os.path.dirname(__file__)), 'test_data/greyscaleVideo.mp4')
+        self.output_video_path = os.path.join(os.path.abspath(
+            os.path.dirname(__file__)), 'test_data/colorized_video.mp4')
 
     def tearDown(self):
         # cleanup files, that were created in the
@@ -229,3 +233,13 @@ class FunctionalTest(unittest.TestCase):
 
         ret = colorize_image(self.input_image_path, self.output_image_path)
         self.assertEqual(ret, SUCCESS)
+
+    def test_colorize_video(self):
+        """
+        Functional test to test the colorization of two images in single session
+        """
+
+        ret = colorize_video(self.input_video_path, self.output_video_path)
+        self.assertEqual(ret, SUCCESS)
+        self.assertTrue(os.path.isfile(self.output_video_path))
+        os.remove(self.output_video_path)
