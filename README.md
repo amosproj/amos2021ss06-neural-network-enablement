@@ -36,18 +36,10 @@ The goal of the project is to transfer existing neural networks onto Huawei prov
 
 The main function of the neural network allows for colorization of black & white images.
 
-<table style="border: 0">
-    <tr>
-        <td width="60%" height="60%">
-            <img src="Deliverables/screenshot/dog_blackandwhite.jpg" alt="Black and 
-white picture sample" border=0>
-        </td>
-        <td width="60%" height="60%">
-            <img src="Deliverables/screenshot/dog_colored.jpg" alt="Colored picture 
-sample" border=0>
-        </td>
-    </tr>
-</table>
+<p align="center">
+    <img src="Deliverables/screenshot/present%20colorize%20result.png" alt="Sample 
+Pictures" width="70%" height="70%">
+</p>
 
 Further function: colorize the black & while video.
 
