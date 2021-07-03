@@ -4,6 +4,7 @@ import cv2
 import tempfile
 from .videodata import video2frames, frames2video, \
     split_audio_from_video, merge_audio_and_video
+from moviepy.editor import  VideoFileClip
 
 # error codes
 FAILED = 1
@@ -101,11 +102,11 @@ def colorize_video(video_path_input, video_path_output):
         return FAILED
 
     # split video into images
-    tmpdir = tempfile.mkstemp(suffix="_split_and_merge",
+    tmpdir = tempfile.mkdtemp(suffix="_split_and_merge",
                               prefix="tp_images_and_audio_", dir="/tmp")
-    image_output_folder_path = tmpdir.name
-    video_intermediate_path = os.path.join(tmpdir.name, 'merged_images.mp4')
-    audio_path = os.path.join(tmpdir.name, 'split_audio.mp3')
+    image_output_folder_path = tmpdir
+    video_intermediate_path = os.path.join(tmpdir, 'merged_images.mp4')
+    audio_path = os.path.join(tmpdir, 'split_audio.mp3')
     ret = video2frames(video_path_input, image_output_folder_path)
     if ret != SUCCESS:
         print("split video into images failed")
@@ -128,16 +129,17 @@ def colorize_video(video_path_input, video_path_output):
         return FAILED
 
     # save at <video_path_output>
-    ret = split_audio_from_video(video_path_input, audio_path)
-    if ret != SUCCESS:
-        print("split audio from original video failed")
-        tmpdir.cleanup()
-        return FAILED
-    ret = merge_audio_and_video(video_intermediate_path, audio_path, video_path_output)
-    if ret != SUCCESS:
-        print("merge audio back to colorized video failed")
-        tmpdir.cleanup()
-        return FAILED
+    if VideoFileClip(video_path_input).audio is not None:
+        ret = split_audio_from_video(video_path_input, audio_path)
+        if ret != SUCCESS:
+            print("split audio from original video failed")
+            tmpdir.cleanup()
+            return FAILED
+        ret = merge_audio_and_video(video_intermediate_path, audio_path, video_path_output)
+        if ret != SUCCESS:
+            print("merge audio back to colorized video failed")
+            tmpdir.cleanup()
+            return FAILED
 
     # return success code -> talk with webservice people
     tmpdir.cleanup()
