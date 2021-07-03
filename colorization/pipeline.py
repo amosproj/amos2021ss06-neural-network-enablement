@@ -2,7 +2,7 @@ from .colorize_process import preprocess, inference, postprocess
 import os
 import cv2
 import tempfile
-from videodata import video2frames, frames2video, \
+from .videodata import video2frames, frames2video, \
     split_audio_from_video, merge_audio_and_video
 
 # error codes
