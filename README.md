@@ -43,7 +43,7 @@ The main function of the neural network allows for colorization of black & white
 white picture sample" border=0>
         </td>
         <td>
-            <img src="Deliverables/screenshot/dog_colored.jpg.jpg" alt="Colored picture 
+            <img src="Deliverables/screenshot/dog_colored.jpg" alt="Colored picture 
 sample" border=0>
         </td>
     </tr>
