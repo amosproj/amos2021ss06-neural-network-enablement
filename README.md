@@ -38,10 +38,10 @@ The main function of the neural network allows for colorization of black & white
 
 <p align="center">
     <img src="Deliverables/screenshot/present%20colorize%20result.png" alt="Sample 
-Pictures" width="70%" height="70%">
+Pictures" width="80%" height="80%">
 </p>
 
-Further function: colorize the black & while video.
+Further function: colorize the black & white video.
 
 **Project Constraints:**
 
