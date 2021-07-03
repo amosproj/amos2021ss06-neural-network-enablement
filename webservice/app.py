@@ -202,13 +202,18 @@ def colorize(id):
             if not os.path.exists(foutpath):
                 # colorize_image
                 if extension.lower() in ALLOWED_EXTENSIONS['pic']:
-                    if pipeline.colorize_image(finpath, foutpath) == 0:
-                        return jsonify(msg="Colorization successful."), 200
-
-                    else:
-                        return jsonify(msg="Colorization failed."), 400
+                    res = pipeline.colorize_image(finpath, foutpath)
+                elif extension.lower() in ALLOWED_EXTENSIONS['video']:
+                    # res = pipeline.colorize_video(finpath, foutpath)
+                    shutil.copy(finpath, foutpath)
                 else:
-                    return jsonify(msg="Videos are not supported yet."), 400
+                    return jsonify(msg="Unsupported file format"), 400
+
+                if res == 0:
+                    return jsonify(msg="Colorization successful."), 200
+                else:
+                    return jsonify(msg="Colorization failed."), 400
+
             else:
                 return jsonify(
                     msg='Colorization file exists. Colorization successful.'), 200
