@@ -5,6 +5,7 @@ import tempfile
 from .videodata import video2frames, \
     frames2video, split_audio_from_video, merge_audio_and_video
 from moviepy.editor import VideoFileClip
+import shutil
 
 # error codes
 FAILED = 1
@@ -110,7 +111,7 @@ def colorize_video(video_path_input, video_path_output):
     ret = video2frames(video_path_input, image_output_folder_path)
     if ret != SUCCESS:
         print("split video into images failed")
-        tmpdir.cleanup()
+        shutil.rmtree(tmpdir)
         return FAILED
     # call colorize_image on each image
     images = os.listdir(image_output_folder_path)
@@ -119,7 +120,7 @@ def colorize_video(video_path_input, video_path_output):
         ret = colorize_image(image_path, image_path)
         if ret != SUCCESS:
             print("colorize video failed")
-            tmpdir.cleanup()
+            shutil.rmtree(tmpdir)
             return FAILED
 
     # combine to video and save at <video_path_output>
@@ -127,26 +128,26 @@ def colorize_video(video_path_input, video_path_output):
         ret = frames2video(image_output_folder_path, video_path_output)
         if ret != SUCCESS:
             print("merge images back to video failed")
-            tmpdir.cleanup()
+            shutil.rmtree(tmpdir)
             return FAILED
     else:
         ret = frames2video(image_output_folder_path, video_intermediate_path)
         if ret != SUCCESS:
             print("merge images back to video failed")
-            tmpdir.cleanup()
+            shutil.rmtree(tmpdir)
             return FAILED
         ret = split_audio_from_video(video_path_input, audio_path)
         if ret != SUCCESS:
             print("split audio from original video failed")
-            tmpdir.cleanup()
+            shutil.rmtree(tmpdir)
             return FAILED
         ret = merge_audio_and_video(video_intermediate_path,
                                     audio_path, video_path_output)
         if ret != SUCCESS:
             print("merge audio back to colorized video failed")
-            tmpdir.cleanup()
+            shutil.rmtree(tmpdir)
             return FAILED
 
     # return success code -> talk with webservice people
-    tmpdir.cleanup()
+    shutil.rmtree(tmpdir)
     return SUCCESS
