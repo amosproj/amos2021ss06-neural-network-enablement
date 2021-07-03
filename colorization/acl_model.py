@@ -8,6 +8,7 @@ from .atlas_utils.acl_image import AclImage
 class Model(object):
     def __init__(self, acl_resource, model_path):
         self._run_mode = acl_resource.run_mode
+        self._context = acl_resource.context
         self.model_path = model_path    # string
         self.model_id = None            # pointer
         self.input_dataset = None
@@ -15,11 +16,11 @@ class Model(object):
         self._output_info = []
         self.model_desc = None          # pointer when using
         self._init_resource()
-        
+
 
     def __del__(self):
         if self.input_dataset:
-            self._release_dataset(self.input_dataset)        
+            self._release_dataset(self.input_dataset)
         if self.output_dataset:
             self._release_dataset(self.output_dataset)
         if self.model_id:
@@ -34,6 +35,8 @@ class Model(object):
 
     def _init_resource(self):
         print("Init model resource")
+        # setting the context for the current thread
+        acl.rt.set_context(self._context)
         # loading model file
         self.model_id, ret = acl.mdl.load_from_file(self.model_path)
         check_ret("acl.mdl.load_from_file", ret)
@@ -61,7 +64,7 @@ class Model(object):
             size = acl.mdl.get_output_size_by_index(self.model_desc, i)
 
             if datatype == ACL_FLOAT:
-                np_type = np.float32            
+                np_type = np.float32
             elif datatype == ACL_INT32:
                 np_type = np.int32
             elif datatype == ACL_UINT32:
@@ -69,14 +72,14 @@ class Model(object):
             else:
                 print("Unspport model output datatype ", datatype)
                 return None
-            # create a numpy array corresponding to outputs, with the same datatype and shape of outputs        
+            # create a numpy array corresponding to outputs, with the same datatype and shape of outputs
             output_tensor = np.zeros(size//4, dtype=np_type).reshape(shape)
             if not output_tensor.flags['C_CONTIGUOUS']:
                 output_tensor = np.ascontiguousarray(output_tensor)
 
-            tensor_ptr = acl.util.numpy_to_ptr(output_tensor)           
+            tensor_ptr = acl.util.numpy_to_ptr(output_tensor)
             self._output_info.append({"ptr": tensor_ptr,
-                                      "tensor": output_tensor})            
+                                      "tensor": output_tensor})
 
     def _gen_output_dataset(self, size):
         print("[Model] create model output dataset:")
@@ -88,11 +91,11 @@ class Model(object):
             check_ret("acl.rt.malloc", ret)
             # create output data buffer structure, fill allocated memory into the data buffer
             dataset_buffer = acl.create_data_buffer(buffer, size)
-            #add data buffer to output dataset 
+            #add data buffer to output dataset
             _, ret = acl.mdl.add_dataset_buffer(dataset, dataset_buffer)
             print("malloc output %d, size %d"%(i, size))
             if ret:
-                # release resource if failed 
+                # release resource if failed
                 acl.rt.free(buffer)
                 acl.destroy_data_buffer(dataset)
                 check_ret("acl.destroy_data_buffer", ret)
@@ -105,12 +108,12 @@ class Model(object):
         self._input_num = acl.mdl.get_num_inputs(self.model_desc)
         self._input_buffer = []
         for i in range(self._input_num):
-            # none of inputs is allocated memory initially 
+            # none of inputs is allocated memory initially
             item = {"addr":None, "size":0}
             self._input_buffer.append(item)
 
     def _gen_input_dataset(self, input_list):
-        # organize input dataset structure 
+        # organize input dataset structure
         ret = SUCCESS
         # return if the input number does not match model requirements
         if len(input_list) != self._input_num:
@@ -122,7 +125,7 @@ class Model(object):
         for i in range(self._input_num):
             item = input_list[i]
             # parse input, currently supports AclImage type, Acl pointer and numpy array
-            data, size = self._parse_input_data(item, i)            
+            data, size = self._parse_input_data(item, i)
             if (data is None) or (size == 0):
                 # not parse the remaining data when parsing data fails
                 ret = FAILED
@@ -130,7 +133,7 @@ class Model(object):
                 break
             # create input dataset buffer structure, fill in input data
             dataset_buffer = acl.create_data_buffer(data, size)
-            # add dataset buffer to dataset 
+            # add dataset buffer to dataset
             _, ret = acl.mdl.add_dataset_buffer(self.input_dataset,
                                                 dataset_buffer)
             if ret:
@@ -139,7 +142,7 @@ class Model(object):
                 ret = FAILED
                 break
         if ret == FAILED:
-            # release dataset if fails 
+            # release dataset if fails
             self._release_dataset(self.input_dataset)
 
         return ret
@@ -149,7 +152,7 @@ class Model(object):
         size = 0
         if isinstance(input, AclImage):
             # if input data is AclImage, directly return memory pointer and sieze of image
-            # defautly image memory is data on the device 
+            # defautly image memory is data on the device
             size = input.size
             data = input.data()
         elif isinstance(input, np.ndarray):
@@ -187,7 +190,7 @@ class Model(object):
             buffer_item['size'] = size
         elif size == buffer_item['size']:
             # if memory has already been allocated for the input, and memory size is consistent with current input data
-            # copy data to this memory for inference 
+            # copy data to this memory for inference
             ret = acl.rt.memcpy(buffer_item['addr'], size,
                                 input_ptr, size,
                                 ACL_MEMCPY_DEVICE_TO_DEVICE)
@@ -197,7 +200,7 @@ class Model(object):
             data = buffer_item['addr']
         else:
             # if memory has already been allocated for the input, but memory size is not consistent with current input data
-            # it would be considered as exception. because size of each model input is fixed 
+            # it would be considered as exception. because size of each model input is fixed
             print("The model %dth input size %d is change,"
                   " before is %d"%(index, size, buffer_item['size']))
             return None
@@ -218,9 +221,9 @@ class Model(object):
         if ret != ACL_ERROR_NONE:
             print("Execute model failed for acl.mdl.execute error ", ret)
             return None
-        end = datetime.datetime.now()        
+        end = datetime.datetime.now()
         print("acl.mdl.execute exhaust ", end - start)
-        # release input dataset object instance without releasing input data memory 
+        # release input dataset object instance without releasing input data memory
         #self._release_dataset(self.input_dataset)
         # decode the binary data stream output from inference to numpy array, shape and datatype of the array are consistent with model outputs
         return self._output_dataset_to_numpy()
@@ -228,7 +231,7 @@ class Model(object):
     def _output_dataset_to_numpy(self):
         dataset = []
         num = acl.mdl.get_dataset_num_buffers(self.output_dataset)
-        # iterative each output 
+        # iterative each output
         for i in range(num):
             # obtain memory address from output buffer
             buffer = acl.mdl.get_dataset_buffer(self.output_dataset, i)
@@ -236,7 +239,7 @@ class Model(object):
             size = int(acl.get_data_buffer_size(buffer))
             output_ptr = self._output_info[i]["ptr"]
             output_tensor = self._output_info[i]["tensor"]
-            ret = acl.rt.memcpy(output_ptr, output_tensor.size*output_tensor.itemsize,                            
+            ret = acl.rt.memcpy(output_ptr, output_tensor.size*output_tensor.itemsize,
                                 data, size, ACL_MEMCPY_DEVICE_TO_DEVICE)
             if ret != ACL_ERROR_NONE:
                 print("Memcpy inference output to local failed")
@@ -244,7 +247,7 @@ class Model(object):
 
             dataset.append(output_tensor)
 
-        return dataset  
+        return dataset
 
     def _release_dataset(self, dataset):
         if not dataset:

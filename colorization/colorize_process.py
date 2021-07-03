@@ -59,8 +59,8 @@ def inference(model_path, input_image):
         ab channels of the preprocessed image.
     """
     # initialize acl runtime
+    # since AclResource is a singleton, the init is only called at the initial creation
     acl_resource = AclResource()
-    acl_resource.init()
 
     # parameters for model path and model inputs
     model_parameters = {
