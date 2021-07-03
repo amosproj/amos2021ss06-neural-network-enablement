@@ -31,19 +31,20 @@ The goal of the project is to transfer existing neural networks onto Huawei prov
     ● The application of the neural network to the images
     
     The neural networks:
-    ● Have to be transferred, configured, and possibly trained
+    ● Have to be transferred and configured
     ● Onto dedicated hardware attached to a student workstation
 
 The main function of the neural network allows for colorization of black & white images.
 
 <p align="center">
-<a href="https://github.com/amosproj/amos-ss2021-neural-network-enablement/blob/main/Deliverables/screenshot">
-    <img src="present%20colorize%20result.png" alt="Colorized" width="412" height="139">
-  </a>
+    <img src="Deliverables/screenshot/present%20colorize%20result.png" alt="Colorized" width="700" height="278">
+
 </p>
 
 Further function: colorize the black & while video.
 
 **Project Constraints:**
+
 Core technologies: Python, Python frameworks, and Linux
+
 Needed resources: The Atlas 200DK System 
