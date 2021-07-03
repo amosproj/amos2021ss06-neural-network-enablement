@@ -23,7 +23,7 @@ def video2frames(video_input_path, image_output_folder_path):
     if (video.isOpened() is False) or (not (type == '.mp4')):
         print("Error opening video")
         return FAILED
-    FPS = 10  # frames per second
+    FPS = 1  # frames per second
     video.set(cv2.CAP_PROP_FPS, FPS)
     currentFrame = 0
     while (video.isOpened()):
@@ -60,7 +60,7 @@ def frames2video(image_input_folder_path, video_output_path):
     if numpy.any(mat) is None:
         return FAILED
     size = mat.shape[:2]
-    FPS = 10
+    FPS = 1
     fourcc = cv2.VideoWriter_fourcc('M', 'J', 'P', 'G')
     video = cv2.VideoWriter(os.path.join(video_output_path, "out01.avi"),
                             fourcc, FPS, (size[1], size[0]))
