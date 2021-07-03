@@ -240,17 +240,6 @@ def valid_filename(filename):
     return False
 
 
-def exists_folder_for(filename):
-    '''
-    Checks if the folder corresponding to the given filename exists
-    '''
-    if not valid_filename(filename):
-        return False
-
-    folder_name = get_name(filename)
-    return folder_name in os.listdir(app.config['UPLOAD_FOLDER'])
-
-
 def get_extension(filename):
     return filename.rsplit('.', 1)[1]
 
