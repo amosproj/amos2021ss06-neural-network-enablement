@@ -135,7 +135,8 @@ def colorize_video(video_path_input, video_path_output):
             print("split audio from original video failed")
             tmpdir.cleanup()
             return FAILED
-        ret = merge_audio_and_video(video_intermediate_path, audio_path, video_path_output)
+        ret = merge_audio_and_video(video_intermediate_path,
+                                    audio_path, video_path_output)
         if ret != SUCCESS:
             print("merge audio back to colorized video failed")
             tmpdir.cleanup()
