@@ -125,9 +125,14 @@ def result(id):
 `
     Return type: json
     '''
+
+    if id in os.listdir(app.config['UPLOAD_FOLDER']):
+        folder = os.path.join(app.config['UPLOAD_FOLDER'], id)
+    else:
+        return jsonify(msg="The file doesn't exist"), 400
+
     thumbnail_url = None
 
-    folder = os.path.join(app.config['UPLOAD_FOLDER'], id)
     for f in os.listdir(folder):
         if get_name(f) == id:
             # generate urls of the original and colorized files
