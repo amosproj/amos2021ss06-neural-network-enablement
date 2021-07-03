@@ -121,15 +121,20 @@ def colorize_video(video_path_input, video_path_output):
             print("colorize video failed")
             tmpdir.cleanup()
             return FAILED
-    # combine to video
-    ret = frames2video(image_output_folder_path, video_intermediate_path)
-    if ret != SUCCESS:
-        print("merge images back to video failed")
-        tmpdir.cleanup()
-        return FAILED
 
-    # save at <video_path_output>
-    if VideoFileClip(video_path_input).audio is not None:
+    # combine to video and save at <video_path_output>
+    if VideoFileClip(video_path_input).audio is None:
+        ret = frames2video(image_output_folder_path, video_path_output)
+        if ret != SUCCESS:
+            print("merge images back to video failed")
+            tmpdir.cleanup()
+            return FAILED
+    else:
+        ret = frames2video(image_output_folder_path, video_intermediate_path)
+        if ret != SUCCESS:
+            print("merge images back to video failed")
+            tmpdir.cleanup()
+            return FAILED
         ret = split_audio_from_video(video_path_input, audio_path)
         if ret != SUCCESS:
             print("split audio from original video failed")
