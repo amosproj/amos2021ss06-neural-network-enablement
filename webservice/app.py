@@ -94,17 +94,15 @@ def all():
 
         if any(map(lambda e: e in ALLOWED_EXTENSIONS['video'], extensions)):
             type = 'video'
-
-            for f in files:
-                if 'thumbnail' in f:
-                    thumbnail = url_for('uploaded_file', fpath=folder, filename=f)
-
         else:
             type = 'image'
 
-            for f in files:
-                if 'color' not in f:
-                    thumbnail = url_for("uploaded_file", fpath=folder, filename=f)
+        for f in files:
+            if type == 'video' and 'thumbnail' in f:
+                thumbnail = url_for('uploaded_file', fpath=folder, filename=f)
+
+            elif type == 'image' and get_name(f) == folder:
+                thumbnail = url_for("uploaded_file", fpath=folder, filename=f)
 
         assert 'thumbnail' in locals(), f'thumbnail for {folder} not found'
 
@@ -122,7 +120,7 @@ def result(id):
     '''
     This endpoint returns the urls of the given image/video (specified by its folder name)
     the colorized version of it.
-`
+
     Return type: json
     '''
     thumbnail_url = None
