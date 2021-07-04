@@ -74,14 +74,14 @@ class BasicTests(unittest.TestCase):
         len_after = len(urls_after)
         self.assertEqual(len_before + 1, len_after)
 
-        # check colorize process
-        filename = urls_after[0]['thumbnail'].split('/')[-1]
-        rsp_color = self.client.post(f'/media/{filename}/colorize')
+        # check colorize process, use folder name
+        foldername = urls_after[0]['id']
+        rsp_color = self.client.post(f'/media/{foldername}/colorize')
         self.assertEqual(rsp_color.status_code, 200)
 
         # check the colorized pic exists
         # change parameter, not json
-        rsp_result = self.client.get(f'/media/{filename}')
+        rsp_result = self.client.get(f'/media/{foldername}')
         self.assertEqual(rsp_result.status_code, 200)
 
         urls_result = json.loads(rsp_result.data)
@@ -91,11 +91,11 @@ class BasicTests(unittest.TestCase):
         self.assertIsNotNone(urls_result['origin'])
 
         # check delete images
-        rsp_delete = self.client.delete(f'/media/{filename}')
+        rsp_delete = self.client.delete(f'/media/{foldername}')
         self.assertEqual(rsp_delete.status_code, 200)
 
         # check files&folders is not there anymore
-        d_path = os.path.join(app.config['UPLOAD_FOLDER'], filename.rsplit('.', 1)[0])
+        d_path = os.path.join(app.config['UPLOAD_FOLDER'], foldername)
         self.assertEqual(os.path.exists(d_path), False)
 
     # TODO : def test_integration_video(self):

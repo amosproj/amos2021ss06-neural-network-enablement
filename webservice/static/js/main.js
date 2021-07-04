@@ -81,12 +81,12 @@ function errorHandler(file, error, xhr) {
 
 // sends the service a request to delete the image
 // after the user clicked on the 'delete icon'
-function deleteImage(imgName) {
-  console.log('deleteImage ' + imgName);
+function deleteImage(id) {
+  console.log('deleteImage ' + id);
 
   $.ajax({
     type: "DELETE",
-    url: "/media/" + encodeURI(imgName),
+    url: "/media/" + encodeURI(id),
     success: function() {
       console.log('success');
 
@@ -108,16 +108,16 @@ function deleteImage(imgName) {
 // sends the service a request to colorize the image
 // after the user clicked on the 'colorize icon',
 // if successful it calls the showResult function
-function colorizeImageAndShowResult(imgName) {
-  console.log(imgName, 'colorize')
+function colorizeImageAndShowResult(id) {
+  console.log(id, 'colorize')
 
   // call colorize function
   $.ajax({
     type: "POST",
-    url: "/media/" + encodeURI(imgName) + "/colorize",
+    url: "/media/" + encodeURI(id) + "/colorize",
     success: function(response) {
       console.log(response['msg']);
-      showResult(imgName);
+      showResult(id);
     },
     error: function(error) {
       if (error.status === 500 || error.status === 400) {
@@ -141,18 +141,18 @@ function colorizeImageAndShowResult(imgName) {
 
 
 // displays the original and the colorized image next to each other
-function showResult(imgName) {
-  console.log('showResult', imgName);
+function showResult(id) {
+  console.log('showResult', id);
 
   $.ajax({
     type: "GET",
-    url: "/media/" + encodeURI(imgName),
+    url: "/media/" + encodeURI(id),
     success: function(response) {
       let original = response['origin'];
       let colorized = response['colorized'];
       let type = response['type']
 
-      if (original.includes(imgName)) {
+      if (original.includes(id)) {
         console.log(colorized);
 
         // show result page popup
@@ -187,21 +187,19 @@ $.get('/media/', null, function(data) {
     });
 
     data.forEach(function(data) {
-      let url = data.thumbnail
+      let id = data.id
       let type = data.type
+      let thumbnail = data.thumbnail
 
       let div = document.createElement('div');
       div.innerHTML = document.querySelector('#template-gallery-image').innerHTML
       console.log(div)
 
-      div.querySelector('#gallery-image').setAttribute('src', url);
+      div.querySelector('#gallery-image').setAttribute('src', thumbnail);
 
       if (type === 'video') {
         div.querySelector('#video-icon').classList.remove('invisible');
       }
-
-      let imgNameParts = url.split('/')
-      let imgName = imgNameParts[imgNameParts.length - 1]
 
       let imgButton = div.querySelector('#delete-image-button');
 
@@ -209,12 +207,12 @@ $.get('/media/', null, function(data) {
         // only allow one mouseclick, remove the eventlistener after first click
         imgButton.onclick = function() {}
 
-        deleteImage(imgName);
+        deleteImage(id);
       }
 
       let colorizeButton = div.querySelector('#colorize-image-button');
       colorizeButton.onclick = function() {
-        colorizeImageAndShowResult(imgName);
+        colorizeImageAndShowResult(id);
       }
 
       document.getElementById("drpzn").appendChild(div)
