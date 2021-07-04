@@ -255,6 +255,6 @@ class FunctionalTest(unittest.TestCase):
         self.assertTrue(os.path.isfile(self.output_video_path))
 
         ret = colorize_video(self.input_video_path_with_audio,
-                             self.output_video_path)
+                             self.output_video_path_is_audio)
         self.assertEqual(ret, SUCCESS)
         self.assertTrue(os.path.isfile(self.output_video_path_with_audio))

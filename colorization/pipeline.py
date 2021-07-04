@@ -106,7 +106,7 @@ def colorize_video(video_path_input, video_path_output):
     tmpdir = tempfile.mkdtemp(suffix="_split_and_merge",
                               prefix="tp_images_and_audio_", dir="/tmp")
     image_output_folder_path = tmpdir
-    video_intermediate_path = os.path.join(tmpdir, 'merged_images.mp4')
+    video_intermediate_path = os.path.join(tmpdir, 'merged_images01.mp4')
     audio_path = os.path.join(tmpdir, 'split_audio.mp3')
     ret = video2frames(video_path_input, image_output_folder_path)
     if ret != SUCCESS:
@@ -115,8 +115,7 @@ def colorize_video(video_path_input, video_path_output):
         return FAILED
     # call colorize_image on each image
     images = os.listdir(image_output_folder_path)
-    # for i in range(len(images)):
-    for i in range(0, 1):
+    for i in range(len(images)):
         image_path = os.path.join(image_output_folder_path, images[i])
         ret = colorize_image(image_path, image_path)
         if ret != SUCCESS:
