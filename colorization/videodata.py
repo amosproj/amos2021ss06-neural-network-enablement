@@ -6,7 +6,7 @@ from moviepy.editor import VideoFileClip
 
 SUCCESS = 0
 FAILED = 1
-
+FPS
 
 def video2frames(video_input_path, image_output_folder_path):
     """This function is used to convert video into images.
@@ -59,9 +59,9 @@ def frames2video(image_input_folder_path, video_output_path):
         return FAILED
     size = mat.shape[:2]
     fourcc = cv2.VideoWriter_fourcc('m', 'p', '4', 'v')
-#    video = cv2.VideoWriter(os.path.join(video_output_path, "out01.avi"),
-#                            fourcc, FPS, (size[1], size[0]))
-    video = cv2.VideoWriter(video_output_path,
+    video = cv2.VideoWriter(os.path.join(video_output_path, "out0.avi"),
+                            fourcc, FPS, (size[1], size[0]))
+    # video = cv2.VideoWriter(video_output_path,
                             fourcc, FPS, (size[1], size[0]))
     files = os.listdir(image_input_folder_path)
     length = len(files)
