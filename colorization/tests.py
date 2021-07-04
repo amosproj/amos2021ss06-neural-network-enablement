@@ -189,12 +189,23 @@ class FunctionalTest(unittest.TestCase):
         self.output_video_path = os.path.join(os.path.abspath(
             os.path.dirname(__file__)), 'test_data/colorized_video.mp4')
 
+        self.input_video_path_with_audio = \
+            os.path.join(os.path.abspath(
+                os.path.dirname(__file__)), 'test_data/test_video_with_voice.mp4')
+        self.output_video_path_with_audio = os.path.join(os.path.abspath(
+            os.path.dirname(__file__)),
+            'test_data/colorized_video_with_audio.mp4')
+
     def tearDown(self):
         # cleanup files, that were created in the
         # test_complete_colorize_image test run
         print('tear down called')
         if os.path.isfile(self.output_image_path):
             os.remove(self.output_image_path)
+        if os.path.isfile(self.output_video_path):
+            os.remove(self.output_video_path)
+        if os.path.isfile(self.output_video_path_with_audio):
+            os.remove(self.output_video_path_with_audio)
 
     def test_complete_colorize_image(self):
         """
@@ -242,4 +253,8 @@ class FunctionalTest(unittest.TestCase):
         ret = colorize_video(self.input_video_path, self.output_video_path)
         self.assertEqual(ret, SUCCESS)
         self.assertTrue(os.path.isfile(self.output_video_path))
-        os.remove(self.output_video_path)
+
+        ret = colorize_video(self.input_video_path_with_audio,
+                             self.output_video_path)
+        self.assertEqual(ret, SUCCESS)
+        self.assertTrue(os.path.isfile(self.output_video_path_with_audio))

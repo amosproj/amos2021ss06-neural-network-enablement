@@ -1,7 +1,6 @@
 import cv2
 import os
 import numpy
-import shutil
 from moviepy.editor import AudioFileClip
 from moviepy.editor import VideoFileClip
 
