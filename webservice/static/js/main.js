@@ -156,8 +156,26 @@ function showResult(id) {
         console.log(colorized);
 
         // show result page popup
-        document.querySelector('#result-image-original').setAttribute('src', original);
-        document.querySelector('#result-image-colorized').setAttribute('src', colorized);
+
+        if (type === 'image') {
+
+          let imgOriginal = $('<img />', {
+            id: 'result-image-original',
+            src: original
+          })
+
+          let imgColorized = $('<img />', {
+            id: 'result-image-colorized',
+            src: colorized
+          })
+
+          $('#result-div-original').prepend(imgOriginal)
+          $('#result-div-colorized').prepend(imgColorized)
+        } else {
+
+          // TODO: show video
+
+        }
 
         setTimeout(function() {
           document.querySelector('#result-colorize').classList.remove('invisible');
