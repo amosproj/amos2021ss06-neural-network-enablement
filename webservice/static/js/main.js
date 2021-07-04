@@ -162,13 +162,13 @@ function showResult(id) {
         // create images to add to result page
         original = $('<img />', {
           id: 'result-image-original',
-          class: 'm-6 mr-4 py-6 text-center my-auto h-full w-full float-left object-contain',
+          class: 'h-full w-full object-contain',
           src: urlOriginal
         })
 
         colorized = $('<img />', {
           id: 'result-image-colorized',
-          class: 'm-6 mr-4 py-6 text-center my-auto h-full w-full float-right object-contain',
+          class: 'h-full w-full object-contain',
           src: urlColor
         })
 
@@ -177,13 +177,13 @@ function showResult(id) {
         // create videos to add to result page
         original = $('<video />', {
           id: 'result-video-original',
-          class: 'm-6 mr-4 py-6 text-center my-auto h-full w-full float-left object-contain',
+          class: 'h-full w-full object-contain',
           src: urlOriginal
         })
 
         colorized = $('<video />', {
           id: 'result-video-colorized',
-          class: 'm-6 mr-4 py-6 text-center my-auto h-full w-full float-left object-contain',
+          class: 'h-full w-full object-contain',
           src: urlColor
         })
 
