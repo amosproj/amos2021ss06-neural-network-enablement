@@ -161,13 +161,13 @@ function showResult(id) {
 
           let imgOriginal = $('<img />', {
             id: 'result-image-original',
-            class: 'm-6 mr-4 py-6 text-center my-auto h-full w-full float-left',
+            class: 'm-6 mr-4 py-6 text-center my-auto h-full w-full float-left object-contain',
             src: original
           })
 
           let imgColorized = $('<img />', {
             id: 'result-image-colorized',
-            class: 'm-6 mr-4 py-6 text-center my-auto h-full w-full float-left',
+            class: 'm-6 mr-4 py-6 text-center my-auto h-full w-full float-left object-contain',
             src: colorized
           })
 
