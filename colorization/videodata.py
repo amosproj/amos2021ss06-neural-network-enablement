@@ -23,7 +23,7 @@ def video2frames(video_input_path, image_output_folder_path):
     if (video.isOpened() is False) or (not (type == '.mp4')):
         print("Error opening video")
         return FAILED
-    video.set(cv2.CAP_PROP_FPS, FPS)
+    FPS = int(video.get(cv2.CV_CAP_PROP_FPS))
     currentFrame = 0
     while (video.isOpened()):
         ret, frame = video.read()
