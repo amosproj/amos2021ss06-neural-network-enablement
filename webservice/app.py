@@ -147,7 +147,7 @@ def result(id):
 
             # get the type and generate the thumbnail url if it's a video
             if extension.lower() in ALLOWED_EXTENSIONS['pic']:
-                type = 'images'
+                type = 'image'
             else:
                 type = 'video'
                 thumbnail = get_name(f) + "_thumbnail.jpg"
