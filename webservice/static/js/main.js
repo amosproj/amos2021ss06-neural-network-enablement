@@ -172,6 +172,10 @@ function showResult(id) {
           src: urlColor
         })
 
+        // callback when clicking the X button
+        $('#result-button-close').click(function() {
+          $('#result-colorize').addClass('invisible');
+        })
       } else {
 
         // create videos to add to result page
@@ -187,6 +191,7 @@ function showResult(id) {
           src: urlColor
         })
 
+        // set video properties
         original.prop('controls', true)
         original.prop('muted', true)
         original.prop('autoplay', true)
@@ -194,6 +199,13 @@ function showResult(id) {
         colorized.prop('controls', true)
         colorized.prop('muted', true)
         colorized.prop('autoplay', true)
+
+        // callback when clicking the X button
+        $('#result-button-close').click(function() {
+          $('#result-colorize').addClass('invisible');
+          $('#result-video-colorized').trigger('pause');
+          $('#result-video-original').trigger('pause');
+        })
       }
 
       // clear old images / videos
