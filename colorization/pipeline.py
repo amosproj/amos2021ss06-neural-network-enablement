@@ -115,7 +115,8 @@ def colorize_video(video_path_input, video_path_output):
         return FAILED
     # call colorize_image on each image
     images = os.listdir(image_output_folder_path)
-    for i in range(len(images)):
+    # for i in range(len(images)):
+    for i in range(0, 1):
         image_path = os.path.join(image_output_folder_path, images[i])
         ret = colorize_image(image_path, image_path)
         if ret != SUCCESS:
@@ -149,5 +150,6 @@ def colorize_video(video_path_input, video_path_output):
             return FAILED
 
     # return success code -> talk with webservice people
+    print(tmpdir)
     shutil.rmtree(tmpdir)
     return SUCCESS
