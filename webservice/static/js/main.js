@@ -168,7 +168,7 @@ function showResult(id) {
 
         colorized = $('<img />', {
           id: 'result-image-colorized',
-          class: 'm-6 mr-4 py-6 text-center my-auto h-full w-full float-left object-contain',
+          class: 'm-6 mr-4 py-6 text-center my-auto h-full w-full float-right object-contain',
           src: urlColor
         })
 
