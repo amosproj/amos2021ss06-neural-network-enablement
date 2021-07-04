@@ -192,8 +192,9 @@ function showResult(id) {
       $('#result-div-original').empty()
       $('#result-div-colorized').empty()
 
-      $('#result-div-original').append(imgOriginal)
-      $('#result-div-colorized').append(imgColorized)
+      // add images / videos
+      $('#result-div-original').append(original)
+      $('#result-div-colorized').append(colorized)
 
       setTimeout(function() {
         document.querySelector('#result-colorize').classList.remove('invisible');
