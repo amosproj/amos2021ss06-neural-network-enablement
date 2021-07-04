@@ -71,8 +71,6 @@ def frames2video(image_input_folder_path, video_output_path):
         img = cv2.imread(item)
         video.write(img)
     video.release()
-    # after merged video delate the image_input_folder_path folder
-    # shutil.rmtree(image_input_folder_path)
     return SUCCESS
 
 
