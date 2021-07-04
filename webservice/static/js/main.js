@@ -175,17 +175,25 @@ function showResult(id) {
       } else {
 
         // create videos to add to result page
-        original = $('<video controls autoplay muted />', {
+        original = $('<video />', {
           id: 'result-video-original',
           class: 'm-6 mr-4 py-6 text-center my-auto h-full w-full float-left object-contain',
           src: urlOriginal
         })
 
-        colorized = $('<video controls autoplay muted />', {
+        colorized = $('<video />', {
           id: 'result-video-colorized',
           class: 'm-6 mr-4 py-6 text-center my-auto h-full w-full float-left object-contain',
           src: urlColor
         })
+
+        original.prop('controls', true)
+        original.prop('muted', true)
+        original.prop('autoplay', true)
+
+        colorized.prop('controls', true)
+        colorized.prop('muted', true)
+        colorized.prop('autoplay', true)
       }
 
       // clear old images / videos
