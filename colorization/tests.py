@@ -187,14 +187,14 @@ class FunctionalTest(unittest.TestCase):
         self.input_video_path = os.path.join(os.path.abspath(
             os.path.dirname(__file__)), 'test_data/greyscaleVideo.mp4')
         self.output_video_path = os.path.join(os.path.abspath(
-            os.path.dirname(__file__)), 'test_data/colorized_video.mp4')
+            os.path.dirname(__file__)), 'test_data/colorized_video.avi')
 
         self.input_video_path_with_audio = \
             os.path.join(os.path.abspath(
                 os.path.dirname(__file__)), 'test_data/test_video_with_voice.mp4')
         self.output_video_path_with_audio = os.path.join(os.path.abspath(
             os.path.dirname(__file__)),
-            'test_data/colorized_video_with_audio.mp4')
+            'test_data/colorized_video_with_audio.avi')
 
     def tearDown(self):
         # cleanup files, that were created in the

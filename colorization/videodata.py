@@ -6,7 +6,7 @@ from moviepy.editor import VideoFileClip
 
 SUCCESS = 0
 FAILED = 1
-FPS = 0
+FPS = 60  # frames per seconds
 
 
 def video2frames(video_input_path, image_output_folder_path):
@@ -59,11 +59,9 @@ def frames2video(image_input_folder_path, video_output_path):
     if numpy.any(mat) is None:
         return FAILED
     size = mat.shape[:2]
-    fourcc = cv2.VideoWriter_fourcc('m', 'p', '4', 'v')
-    video = cv2.VideoWriter(os.path.join(video_output_path, "out0.avi"),
+    fourcc = cv2.VideoWriter_fourcc('D', 'I', 'V', 'X')
+    video = cv2.VideoWriter(video_output_path,
                             fourcc, FPS, (size[1], size[0]))
-    # video = cv2.VideoWriter(video_output_path,
-    #                         fourcc, FPS, (size[1], size[0]))
     files = os.listdir(image_input_folder_path)
     length = len(files)
     for i in range(0, length):
@@ -117,7 +115,7 @@ def merge_audio_and_video(video_input_path, audio_input_path, video_output_path)
     my_video_clip = VideoFileClip(video_input_path)
     my_audio_clip = AudioFileClip(audio_input_path)
     video = my_video_clip.set_audio(my_audio_clip)
-    video.write_videofile(video_output_path)
+    video.write_videofile(video_output_path, codec='mpeg4')
     if not os.path.isfile(video_output_path):
         print("invalid output path")
         return FAILED
