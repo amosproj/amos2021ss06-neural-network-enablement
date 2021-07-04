@@ -175,13 +175,13 @@ function showResult(id) {
       } else {
 
         // create videos to add to result page
-        original = $('<video />', {
+        original = $('<video controls autoplay muted />', {
           id: 'result-video-original',
           class: 'm-6 mr-4 py-6 text-center my-auto h-full w-full float-left object-contain',
           src: urlOriginal
         })
 
-        colorized = $('<video />', {
+        colorized = $('<video controls autoplay muted />', {
           id: 'result-video-colorized',
           class: 'm-6 mr-4 py-6 text-center my-auto h-full w-full float-left object-contain',
           src: urlColor
