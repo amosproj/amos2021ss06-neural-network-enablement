@@ -124,13 +124,12 @@ function colorizeImageAndShowResult(id) {
         let msg = error['responseJSON']['msg'];
         showWarningToast("Colorizing image failed.", msg);
         console.log(msg);
-      }
-      else if (error.status === 0){
+      } else if (error.status === 0) {
         showWarningToast("Colorizing image failed.", "Couldn't connect to server. Is the service running?");
         console.log("Colorizing image failed.", error);
-      }else {
+      } else {
         showWarningToast("Colorizing image failed.", "The error was logged to the" +
-            " console.");
+          " console.");
         console.log('Colorizing image failed.', error);
       }
     },
@@ -148,44 +147,57 @@ function showResult(id) {
     type: "GET",
     url: "/media/" + encodeURI(id),
     success: function(response) {
-      let original = response['origin'];
-      let colorized = response['colorized'];
+
       let type = response['type']
+      let urlOriginal = response['origin']
+      let urlColor = response['colorized']
 
-      if (original.includes(id)) {
-        console.log(colorized);
+      let original = null
+      let colorized = null
 
-        // show result page popup
+      // show result page popup
 
-        if (type === 'image') {
+      if (type === 'image') {
 
-          let imgOriginal = $('<img />', {
-            id: 'result-image-original',
-            class: 'm-6 mr-4 py-6 text-center my-auto h-full w-full float-left object-contain',
-            src: original
-          })
+        // create images to add to result page
+        original = $('<img />', {
+          id: 'result-image-original',
+          class: 'm-6 mr-4 py-6 text-center my-auto h-full w-full float-left object-contain',
+          src: urlOriginal
+        })
 
-          let imgColorized = $('<img />', {
-            id: 'result-image-colorized',
-            class: 'm-6 mr-4 py-6 text-center my-auto h-full w-full float-left object-contain',
-            src: colorized
-          })
+        colorized = $('<img />', {
+          id: 'result-image-colorized',
+          class: 'm-6 mr-4 py-6 text-center my-auto h-full w-full float-left object-contain',
+          src: urlColor
+        })
 
-          $('#result-div-original').empty()
-          $('#result-div-colorized').empty()
+      } else {
 
-          $('#result-div-original').append(imgOriginal)
-          $('#result-div-colorized').append(imgColorized)
-        } else {
+        // create videos to add to result page
+        original = $('<video />', {
+          id: 'result-video-original',
+          class: 'm-6 mr-4 py-6 text-center my-auto h-full w-full float-left object-contain',
+          src: urlOriginal
+        })
 
-          // TODO: show video
-
-        }
-
-        setTimeout(function() {
-          document.querySelector('#result-colorize').classList.remove('invisible');
-        }, 100);
+        colorized = $('<video />', {
+          id: 'result-video-colorized',
+          class: 'm-6 mr-4 py-6 text-center my-auto h-full w-full float-left object-contain',
+          src: urlColor
+        })
       }
+
+      // clear old images / videos
+      $('#result-div-original').empty()
+      $('#result-div-colorized').empty()
+
+      $('#result-div-original').append(imgOriginal)
+      $('#result-div-colorized').append(imgColorized)
+
+      setTimeout(function() {
+        document.querySelector('#result-colorize').classList.remove('invisible');
+      }, 100);
     },
     error: function(error) {
       console.log(error);
