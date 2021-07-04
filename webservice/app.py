@@ -206,8 +206,7 @@ def colorize(id):
                 if extension.lower() in ALLOWED_EXTENSIONS['pic']:
                     res = pipeline.colorize_image(finpath, foutpath)
                 elif extension.lower() in ALLOWED_EXTENSIONS['video']:
-                    # res = pipeline.colorize_video(finpath, foutpath)
-                    shutil.copy(finpath, foutpath)
+                    res = pipeline.colorize_video(finpath, foutpath)
                 else:
                     return jsonify(msg="Unsupported file format"), 400
 
