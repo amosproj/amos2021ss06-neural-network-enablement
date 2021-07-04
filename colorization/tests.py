@@ -96,6 +96,8 @@ class SplitAndMergeTestsForVideo(unittest.TestCase):
         # init path variables
         self.video_input_path = os.path.join(os.path.abspath(
             os.path.dirname(__file__)), 'test_data/greyscaleVideo.mp4')
+        self.video_input_path_with_audio = os.path.join(os.path.abspath(
+            os.path.dirname(__file__)), 'test_data/test_video_with_voice.mp4')
         self.audio_output_path = os.path.join(os.path.abspath(
             os.path.dirname(__file__)), 'test_data/audio_from_video.mp3')
         self.audio_input_path = os.path.join(os.path.abspath(
@@ -135,7 +137,7 @@ class SplitAndMergeTestsForVideo(unittest.TestCase):
 
         # Test3: test to merge the frames
         # output video path
-        video_output_path = os.path.join(cwd, 'test_data/merged_video')
+        video_output_path = os.path.join(cwd, 'test_data/merged_video.mp4')
         # create the output video folder
         os.mkdir(video_output_path)
         # merge the video
@@ -149,11 +151,9 @@ class SplitAndMergeTestsForVideo(unittest.TestCase):
         """
         Unit-Test to test the split_audio_from_video function
         """
-        my_video_input_path = os.path.join(os.path.abspath(
-            os.path.dirname(__file__)), 'test_data/test_video_with_voice.mp4')
-        self.assertTrue(os.path.isfile(my_video_input_path))
+        self.assertTrue(os.path.isfile(self.video_input_path_with_audio))
         ret = videodata.split_audio_from_video(
-            my_video_input_path, self.audio_output_path)
+            self.video_input_path_with_audio, self.audio_output_path)
         self.assertEqual(ret, SUCCESS)
         self.assertTrue(os.path.isfile(self.audio_output_path))
 
@@ -161,10 +161,10 @@ class SplitAndMergeTestsForVideo(unittest.TestCase):
         """
         Unit-Test to test the merge_audio_and_video function
         """
-        self.assertTrue(os.path.isfile(self.video_input_path))
+        self.assertTrue(os.path.isfile(self.video_input_path_with_audio))
         self.assertTrue(os.path.isfile(self.audio_input_path))
         ret = videodata.merge_audio_and_video(
-            self.video_input_path, self.audio_input_path,
+            self.video_input_path_with_audio, self.audio_input_path,
             self.video_with_audio_output_path)
         self.assertEqual(ret, SUCCESS)
         self.assertTrue(os.path.isfile(self.video_with_audio_output_path))
@@ -255,6 +255,6 @@ class FunctionalTest(unittest.TestCase):
         self.assertTrue(os.path.isfile(self.output_video_path))
 
         ret = colorize_video(self.input_video_path_with_audio,
-                             self.output_video_path_is_audio)
+                             self.output_video_path_with_audio)
         self.assertEqual(ret, SUCCESS)
         self.assertTrue(os.path.isfile(self.output_video_path_with_audio))
