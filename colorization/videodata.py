@@ -60,8 +60,10 @@ def frames2video(image_input_folder_path, video_output_path):
     if numpy.any(mat) is None:
         return FAILED
     size = mat.shape[:2]
-    fourcc = cv2.VideoWriter_fourcc('M', 'J', 'P', 'G')
-    video = cv2.VideoWriter(os.path.join(video_output_path, "out01.avi"),
+    fourcc = cv2.VideoWriter_fourcc('m', 'p', '4', 'v')
+#    video = cv2.VideoWriter(os.path.join(video_output_path, "out01.avi"),
+#                            fourcc, FPS, (size[1], size[0]))
+    video = cv2.VideoWriter(video_output_path,
                             fourcc, FPS, (size[1], size[0]))
     files = os.listdir(image_input_folder_path)
     length = len(files)
@@ -73,7 +75,7 @@ def frames2video(image_input_folder_path, video_output_path):
         video.write(img)
     video.release()
     # after merged video delate the image_input_folder_path folder
-    shutil.rmtree(image_input_folder_path)
+    # shutil.rmtree(image_input_folder_path)
     return SUCCESS
 
 

@@ -150,6 +150,5 @@ def colorize_video(video_path_input, video_path_output):
             return FAILED
 
     # return success code -> talk with webservice people
-    print(tmpdir)
     shutil.rmtree(tmpdir)
     return SUCCESS
