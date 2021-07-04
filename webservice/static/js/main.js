@@ -171,8 +171,11 @@ function showResult(id) {
             src: colorized
           })
 
-          $('#result-div-original').prepend(imgOriginal)
-          $('#result-div-colorized').prepend(imgColorized)
+          $('#result-div-original').empty()
+          $('#result-div-colorized').empty()
+
+          $('#result-div-original').append(imgOriginal)
+          $('#result-div-colorized').append(imgColorized)
         } else {
 
           // TODO: show video
