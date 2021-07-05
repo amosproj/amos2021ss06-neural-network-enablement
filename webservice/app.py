@@ -118,9 +118,9 @@ def all():
 @app.get('/media/<id>')
 def result(id):
     '''
-    This endpoint returns the urls of the given image/video (specified by its folder name)
-    the colorized version of it.
-`
+    This endpoint returns the urls of the given image/video (specified by its folder
+    name) and of its colorized version.
+
     Return type: json
     '''
     if id in os.listdir(app.config['UPLOAD_FOLDER']):
