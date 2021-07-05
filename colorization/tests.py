@@ -99,11 +99,11 @@ class SplitAndMergeTestsForVideo(unittest.TestCase):
         self.video_input_path_with_audio = os.path.join(os.path.abspath(
             os.path.dirname(__file__)), 'test_data/test_video_with_voice.mp4')
         self.audio_output_path = os.path.join(os.path.abspath(
-            os.path.dirname(__file__)), 'test_data/audio_from_video.mp3')
+            os.path.dirname(__file__)), 'test_data/audio_from_video.ogg')
         self.audio_input_path = os.path.join(os.path.abspath(
-            os.path.dirname(__file__)), 'test_data/audio_for_video.mp3')
+            os.path.dirname(__file__)), 'test_data/audio_for_video.ogg')
         self.video_with_audio_output_path = os.path.join(os.path.abspath(
-            os.path.dirname(__file__)), 'test_data/merged_video_with_audio.mp4')
+            os.path.dirname(__file__)), 'test_data/merged_video_with_audio.webm')
 
     def tearDown(self):
         # cleanup files, that were created in this class
@@ -137,7 +137,7 @@ class SplitAndMergeTestsForVideo(unittest.TestCase):
 
         # Test3: test to merge the frames
         # output video path
-        video_output_path = os.path.join(cwd, 'test_data/merged_video.mp4')
+        video_output_path = os.path.join(cwd, 'test_data/merged_video.webm')
         # create the output video folder
         os.mkdir(video_output_path)
         # merge the video
