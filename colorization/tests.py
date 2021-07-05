@@ -187,7 +187,7 @@ class FunctionalTest(unittest.TestCase):
         self.input_video_path = os.path.join(os.path.abspath(
             os.path.dirname(__file__)), 'test_data/greyscaleVideo.mp4')
         self.output_video_path = os.path.join(os.path.abspath(
-            os.path.dirname(__file__)), 'test_data/colorized_video.avi')
+            os.path.dirname(__file__)), 'test_data/colorized_video.webm')
 
         self.input_video_path_with_audio = \
             os.path.join(os.path.abspath(

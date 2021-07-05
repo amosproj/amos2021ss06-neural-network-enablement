@@ -3,6 +3,7 @@ import os
 import numpy
 from moviepy.editor import AudioFileClip
 from moviepy.editor import VideoFileClip
+from moviepy.video.io import ImageSequenceClip
 
 SUCCESS = 0
 FAILED = 1
@@ -49,22 +50,27 @@ def frames2video(image_input_folder_path, video_output_path):
         1 for FAILED.
 
     """
+
     mat = cv2.imread(os.path.join(image_input_folder_path + '/0.png'),
                      cv2.IMREAD_COLOR)
     if numpy.any(mat) is None:
         return FAILED
     size = mat.shape[:2]
-    fourcc = cv2.VideoWriter_fourcc('D', 'I', 'V', 'X')
-    video = cv2.VideoWriter(video_output_path,
-                            fourcc, FPS, (size[1], size[0]))
     files = os.listdir(image_input_folder_path)
-    length = len(files)
-    for i in range(0, length):
-        index = str(i)
-        item = image_input_folder_path + '/' + index + '.png'
-        img = cv2.imread(item)
-        video.write(img)
-    video.release()
+    frames_path = [image_input_folder_path+'/'+str(i)+'.png' for i in range(len(files))]
+    clip = ImageSequenceClip.ImageSequenceClip(frames_path, fps=FPS)
+    clip.write_videofile(video_output_path, codec='libvpx')
+    #fourcc = cv2.VideoWriter_fourcc('T', 'H', 'E', 'O')
+    #video = cv2.VideoWriter(video_output_path,
+    #                        fourcc, FPS, (size[1], size[0]))
+    #files = os.listdir(image_input_folder_path)
+    #length = len(files)
+    #for i in range(0, length):
+    #    index = str(i)
+    #    item = image_input_folder_path + '/' + index + '.png'
+    #    img = cv2.imread(item)
+    #    video.write(img)
+    #video.release()
     return SUCCESS
 
 
@@ -81,7 +87,7 @@ def split_audio_from_video(video_input_path, audio_output_path):
         print("invalid video path")
         return FAILED
     my_audio_clip = AudioFileClip(video_input_path)
-    my_audio_clip.write_audiofile(audio_output_path)
+    my_audio_clip.write_audiofile(audio_output_path, codec='libvorbis')
     if not os.path.isfile(audio_output_path):
         print("invalid output path")
         return FAILED
