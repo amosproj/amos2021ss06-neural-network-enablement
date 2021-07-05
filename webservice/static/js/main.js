@@ -263,7 +263,7 @@ $.get('/media/', null, function(data) {
         // only allow one mouseclick, remove the eventlistener after first click
         imgButton.onclick = function() {}
 
-        deleteImage(id);
+        deleteMedia(id);
       }
 
       let colorizeButton = div.querySelector('#colorize-button');
