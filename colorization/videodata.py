@@ -6,7 +6,7 @@ from moviepy.editor import VideoFileClip
 
 SUCCESS = 0
 FAILED = 1
-fps = 0
+FPS = 60
 
 
 def video2frames(video_input_path, image_output_folder_path):
