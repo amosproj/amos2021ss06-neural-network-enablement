@@ -1,6 +1,7 @@
 from .colorize_process import preprocess, inference, postprocess
 import os
 import cv2
+import shutil
 
 # error codes
 FAILED = 1
@@ -98,5 +99,5 @@ def colorize_video(video_path_input, video_path_output):
     # TODO: combine to video
     # TODO: save at <video_path_output>
 
-    # TODO: return success code -> talk with webservice people
-    pass
+    shutil.copyfile(video_path_input, video_path_output)
+    return SUCCESS
