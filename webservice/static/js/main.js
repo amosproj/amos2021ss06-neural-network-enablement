@@ -268,7 +268,7 @@ $.get('/media/', null, function(data) {
 
       let colorizeButton = div.querySelector('#colorize-button');
       colorizeButton.onclick = function() {
-        colorizeImageAndShowResult(id);
+        colorizeAndShowResult(id);
       }
 
       document.getElementById("drpzn").appendChild(div)
