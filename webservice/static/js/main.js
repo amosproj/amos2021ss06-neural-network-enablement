@@ -124,13 +124,12 @@ function colorizeImageAndShowResult(id) {
         let msg = error['responseJSON']['msg'];
         showWarningToast("Colorizing image failed.", msg);
         console.log(msg);
-      }
-      else if (error.status === 0){
+      } else if (error.status === 0) {
         showWarningToast("Colorizing image failed.", "Couldn't connect to server. Is the service running?");
         console.log("Colorizing image failed.", error);
-      }else {
+      } else {
         showWarningToast("Colorizing image failed.", "The error was logged to the" +
-            " console.");
+          " console.");
         console.log('Colorizing image failed.', error);
       }
     },
@@ -148,21 +147,78 @@ function showResult(id) {
     type: "GET",
     url: "/media/" + encodeURI(id),
     success: function(response) {
-      let original = response['origin'];
-      let colorized = response['colorized'];
+
       let type = response['type']
+      let urlOriginal = response['origin']
+      let urlColor = response['colorized']
 
-      if (original.includes(id)) {
-        console.log(colorized);
+      let original = null
+      let colorized = null
 
-        // show result page popup
-        document.querySelector('#result-image-original').setAttribute('src', original);
-        document.querySelector('#result-image-colorized').setAttribute('src', colorized);
+      // show result page popup
 
-        setTimeout(function() {
-          document.querySelector('#result-colorize').classList.remove('invisible');
-        }, 100);
+      if (type === 'image') {
+
+        // create images to add to result page
+        original = $('<img />', {
+          id: 'result-image-original',
+          class: 'h-full w-full object-contain',
+          src: urlOriginal
+        })
+
+        colorized = $('<img />', {
+          id: 'result-image-colorized',
+          class: 'h-full w-full object-contain',
+          src: urlColor
+        })
+
+        // callback when clicking the X button
+        $('#result-button-close').click(function() {
+          $('#result-colorize').addClass('invisible');
+        })
+      } else {
+
+        // create videos to add to result page
+        original = $('<video />', {
+          id: 'result-video-original',
+          class: 'h-full w-full object-contain',
+          src: urlOriginal
+        })
+
+        colorized = $('<video />', {
+          id: 'result-video-colorized',
+          class: 'h-full w-full object-contain',
+          src: urlColor
+        })
+
+        // set video properties
+        original.prop('controls', true)
+        original.prop('muted', true)
+        original.prop('autoplay', true)
+
+        colorized.prop('controls', true)
+        colorized.prop('muted', true)
+        colorized.prop('autoplay', true)
+
+        // callback when clicking the X button
+        $('#result-button-close').click(function() {
+          $('#result-colorize').addClass('invisible');
+          $('#result-video-colorized').trigger('pause');
+          $('#result-video-original').trigger('pause');
+        })
       }
+
+      // clear old images / videos
+      $('#result-div-original').empty()
+      $('#result-div-colorized').empty()
+
+      // add images / videos
+      $('#result-div-original').append(original)
+      $('#result-div-colorized').append(colorized)
+
+      setTimeout(function() {
+        document.querySelector('#result-colorize').classList.remove('invisible');
+      }, 100);
     },
     error: function(error) {
       console.log(error);
