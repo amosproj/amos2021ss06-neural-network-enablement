@@ -6,6 +6,7 @@ from moviepy.editor import VideoFileClip
 
 SUCCESS = 0
 FAILED = 1
+fps = 0
 
 
 def video2frames(video_input_path, image_output_folder_path):
@@ -22,7 +23,8 @@ def video2frames(video_input_path, image_output_folder_path):
     if (video.isOpened() is False) or (not (type == '.mp4')):
         print("Error opening video")
         return FAILED
-    global FPS = int(video.get(cv2.CAP_PROP_FPS))
+    global FPS
+    FPS = int(video.get(cv2.CAP_PROP_FPS))
     currentFrame = 0
     while (video.isOpened()):
         ret, frame = video.read()
