@@ -75,7 +75,6 @@ class BasicTests(unittest.TestCase):
         self.assertEqual(len_before + 1, len_after)
 
         # check colorize process, use folder name
-        foldername = urls_after[0]['thumbnail'].rsplit('/')[1]
         foldername = urls_after[0]['id']
         rsp_color = self.client.post(f'/media/{foldername}/colorize')
         self.assertEqual(rsp_color.status_code, 200)
