@@ -118,7 +118,8 @@ class SplitAndMergeTestsForVideo(unittest.TestCase):
             os.remove(self.audio_output_path)
         if os.path.isfile(self.video_with_audio_output_path):
             os.remove(self.video_with_audio_output_path)
-        os.remove(self.image_output_folder_path)
+        if os.path.isdir(self.image_output_folder_path):
+            shutil.rmtree(self.image_output_folder_path)
 
     def test_step_video2frames_frames2video(self):
         """
