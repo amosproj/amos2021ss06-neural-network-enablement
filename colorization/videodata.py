@@ -49,11 +49,10 @@ def frames2video(image_input_folder_path, video_output_path):
         1 for FAILED.
 
     """
-
     files = os.listdir(image_input_folder_path)
     frames_path = [image_input_folder_path+'/'+str(i)+'.png' for i in range(len(files))]
     clip = ImageSequenceClip.ImageSequenceClip(frames_path, fps=FPS)
-    clip.write_videofile(video_output_path, codec='libvpx')
+    clip.write_videofile(video_output_path, codec='libvpx', bitrate="50000k")
     return SUCCESS
 
 
