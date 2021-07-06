@@ -136,7 +136,12 @@ def result(id):
             origin_url = url_for("uploaded_file", fpath=id, filename=f)
 
             extension = get_extension(f)
-            color_name = get_name(f) + "_color." + extension
+
+            if extension.lower() in ALLOWED_EXTENSIONS['video']:
+                color_name = get_name(f) + "_color.webm"
+            else:
+                color_name = get_name(f) + "_color." + extension
+
             colorized_url = url_for("uploaded_file", fpath=id, filename=color_name)
 
             #  check whether the colorization process is finished
