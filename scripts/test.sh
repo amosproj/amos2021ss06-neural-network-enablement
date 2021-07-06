@@ -24,7 +24,16 @@ venv/bin/pytest colorization/tests.py -k 'FunctionalTest' --cov=. --cov-config=.
 PIPELINE_RET=$?
 
 
-if [ $WEB_RET -ne 0 ] || [ $STEPS_RET -ne 0 ] || [ $PIPELINE_RET -ne 0 ] || [ $VIDEO_RET -ne 0 ]; then
-    # exit failure if any of the tests failed
+if [ $WEB_RET -ne 0 ]; then
+    echo "Webservice test failed with status $WEB_RET."
+    exit 1
+elif [ $VIDEO_RET -ne 0 ]; then
+    echo "Video merge/split test failed with status $VIDEO_RET."
+    exit 1
+elif [ $STEPS_RET -ne 0 ]; then
+    echo "Pipeline steps test failed with status $STEPS_RET."
+    exit 1
+elif [ $PIPELINE_RET -ne 0 ]; then
+    echo "Pipeline integrations test failed with status $PIPELINE_RET."
     exit 1
 fi
