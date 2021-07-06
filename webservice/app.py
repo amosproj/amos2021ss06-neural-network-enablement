@@ -198,7 +198,12 @@ def colorize(id):
         if get_name(f) == id:
             extension = get_extension(f)
             finpath = os.path.join(folder, f)
-            coloredfile = get_name(f) + "_color." + extension
+
+            if extension.lower() in ALLOWED_EXTENSIONS['video']:
+                coloredfile = get_name(f) + "_color.webm"
+            else:
+                coloredfile = get_name(f) + "_color." + extension
+
             foutpath = os.path.join(folder, coloredfile)
 
             if not os.path.exists(foutpath):
