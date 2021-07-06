@@ -50,7 +50,6 @@ function successHandler(file, resp) {
   window.location.reload(true);
 }
 
-
 // error handler: called, after dropzone library fails to upload a file
 function errorHandler(file, error, xhr) {
   console.log('error!')
@@ -97,7 +96,7 @@ function deleteMedia(id) {
       setTimeout(reload, 500);
     },
     error: function() {
-      showWarningToast("Deleting image/video failed.", "Couldn't connect to server. Is the service running?");
+      showWarningToast("Deletion failed.", "Couldn't connect to server. Is the service running?");
     },
     dataType: 'json',
     contentType: 'application/json',
@@ -122,15 +121,14 @@ function colorizeAndShowResult(id) {
     error: function(error) {
       if (error.status === 500 || error.status === 400) {
         let msg = error['responseJSON']['msg'];
-        showWarningToast("Colorizing image failed.", msg);
+        showWarningToast("Colorization failed.", msg);
         console.log(msg);
       } else if (error.status === 0) {
-        showWarningToast("Colorizing image/video failed.", "Couldn't connect to server. Is the service running?");
-        console.log("Colorizing image/video failed.", error);
+        showWarningToast("Colorization failed.", "Couldn't connect to server. Is the service running?");
+        console.log("Colorization failed.", error);
       } else {
-        showWarningToast("Colorizing image/video failed.", "The error was logged to the" +
-          " console.");
-        console.log('Colorizing image/video failed.', error);
+        showWarningToast("Colorization failed.", "The error was logged to the console.");
+        console.log('Colorization failed.', error);
       }
     },
     dataType: 'json',
