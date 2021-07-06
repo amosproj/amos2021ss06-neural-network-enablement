@@ -50,7 +50,6 @@ function successHandler(file, resp) {
   window.location.reload(true);
 }
 
-
 // error handler: called, after dropzone library fails to upload a file
 function errorHandler(file, error, xhr) {
   console.log('error!')
@@ -79,10 +78,10 @@ function errorHandler(file, error, xhr) {
 // ---------------------------------------------------------------------------------------
 
 
-// sends the service a request to delete the image
+// sends the service a request to delete the image/video
 // after the user clicked on the 'delete icon'
-function deleteImage(id) {
-  console.log('deleteImage ' + id);
+function deleteMedia(id) {
+  console.log('deleteMedia' + id);
 
   $.ajax({
     type: "DELETE",
@@ -97,7 +96,7 @@ function deleteImage(id) {
       setTimeout(reload, 500);
     },
     error: function() {
-      showWarningToast("Deleting image failed.", "Couldn't connect to server. Is the service running?");
+      showWarningToast("Deletion failed.", "Couldn't connect to server. Is the service running?");
     },
     dataType: 'json',
     contentType: 'application/json',
@@ -105,10 +104,10 @@ function deleteImage(id) {
 }
 
 
-// sends the service a request to colorize the image
+// sends the service a request to colorize the image/video
 // after the user clicked on the 'colorize icon',
 // if successful it calls the showResult function
-function colorizeImageAndShowResult(id) {
+function colorizeAndShowResult(id) {
   console.log(id, 'colorize')
 
   // call colorize function
@@ -122,15 +121,14 @@ function colorizeImageAndShowResult(id) {
     error: function(error) {
       if (error.status === 500 || error.status === 400) {
         let msg = error['responseJSON']['msg'];
-        showWarningToast("Colorizing image failed.", msg);
+        showWarningToast("Colorization failed.", msg);
         console.log(msg);
       } else if (error.status === 0) {
-        showWarningToast("Colorizing image failed.", "Couldn't connect to server. Is the service running?");
-        console.log("Colorizing image failed.", error);
+        showWarningToast("Colorization failed.", "Couldn't connect to server. Is the service running?");
+        console.log("Colorization failed.", error);
       } else {
-        showWarningToast("Colorizing image failed.", "The error was logged to the" +
-          " console.");
-        console.log('Colorizing image failed.', error);
+        showWarningToast("Colorization failed.", "The error was logged to the console.");
+        console.log('Colorization failed.', error);
       }
     },
     dataType: 'json',
@@ -139,7 +137,7 @@ function colorizeImageAndShowResult(id) {
 }
 
 
-// displays the original and the colorized image next to each other
+// displays the original and the colorized image/video next to each other
 function showResult(id) {
   console.log('showResult', id);
 
@@ -233,7 +231,7 @@ function showResult(id) {
 // ---------------------------------------------------------------------------------------
 // This is called on every page load.
 //
-// load images and display them in gallery
+// load thumbnails and display them in gallery
 $.get('/media/', null, function(data) {
   if (data.length > 0) {
     document.getElementById('drpzn').classList.remove('invisible');
@@ -257,18 +255,18 @@ $.get('/media/', null, function(data) {
         div.querySelector('#video-icon').classList.remove('invisible');
       }
 
-      let imgButton = div.querySelector('#delete-image-button');
+      let imgButton = div.querySelector('#delete-button');
 
       imgButton.onclick = function() {
         // only allow one mouseclick, remove the eventlistener after first click
         imgButton.onclick = function() {}
 
-        deleteImage(id);
+        deleteMedia(id);
       }
 
-      let colorizeButton = div.querySelector('#colorize-image-button');
+      let colorizeButton = div.querySelector('#colorize-button');
       colorizeButton.onclick = function() {
-        colorizeImageAndShowResult(id);
+        colorizeAndShowResult(id);
       }
 
       document.getElementById("drpzn").appendChild(div)
