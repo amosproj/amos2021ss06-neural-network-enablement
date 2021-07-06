@@ -21,7 +21,7 @@ def video2frames(video_input_path, image_output_folder_path):
     video = cv2.VideoCapture(video_input_path)
     type = os.path.splitext(video_input_path)[-1]
     if (video.isOpened() is False) or (not (type == '.mp4')):
-        print("Error opening video")
+        print("Input path is not a video")
         return FAILED
     global FPS
     FPS = int(video.get(cv2.CAP_PROP_FPS))
