@@ -104,7 +104,7 @@ def colorize_video(video_path_input, video_path_output):
 
     # split video into images
     tmpdir = tempfile.mkdtemp(suffix="_split_and_merge",
-                              prefix="tp_images_and_audio_", dir="/tmp")
+                              prefix="tp_images_and_audio_", dir="/home/HwHiAiUser/tmp/")
     image_output_folder_path = tmpdir
     video_intermediate_path = os.path.join(tmpdir, 'merged_images.webm')
     audio_path = os.path.join(tmpdir, 'split_audio.ogg')
