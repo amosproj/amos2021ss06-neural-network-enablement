@@ -5,7 +5,7 @@ import numpy as np
 import shutil
 import colorization.videodata as videodata
 from colorization.colorize_process import preprocess, inference, postprocess
-from colorization.pipeline import colorize_image
+from colorization.pipeline import colorize_image, colorize_video
 
 FAILED = 1
 SUCCESS = 0
@@ -94,22 +94,32 @@ class SplitAndMergeTestsForVideo(unittest.TestCase):
 
     def setUp(self):
         # init path variables
+        self.image_output_folder_path = os.path.join(os.path.abspath(
+            os.path.dirname(__file__)), 'test_data/split_frames')
         self.video_input_path = os.path.join(os.path.abspath(
             os.path.dirname(__file__)), 'test_data/greyscaleVideo.mp4')
+        self.video_input_path_with_audio = os.path.join(os.path.abspath(
+            os.path.dirname(__file__)), 'test_data/test_video_with_voice.mp4')
+        self.video_output_path = os.path.join(os.path.abspath(
+            os.path.dirname(__file__)), 'test_data/merged_video.webm')
         self.audio_output_path = os.path.join(os.path.abspath(
-            os.path.dirname(__file__)), 'test_data/audio_from_video.mp3')
+            os.path.dirname(__file__)), 'test_data/audio_from_video.ogg')
         self.audio_input_path = os.path.join(os.path.abspath(
-            os.path.dirname(__file__)), 'test_data/audio_for_video.mp3')
+            os.path.dirname(__file__)), 'test_data/audio_for_video.ogg')
         self.video_with_audio_output_path = os.path.join(os.path.abspath(
-            os.path.dirname(__file__)), 'test_data/merged_video_with_audio.mp4')
+            os.path.dirname(__file__)), 'test_data/merged_video_with_audio.webm')
 
     def tearDown(self):
         # cleanup files, that were created in this class
         print('tear down called')
+        if os.path.isfile(self.video_output_path):
+            os.remove(self.video_output_path)
         if os.path.isfile(self.audio_output_path):
             os.remove(self.audio_output_path)
         if os.path.isfile(self.video_with_audio_output_path):
             os.remove(self.video_with_audio_output_path)
+        if os.path.isdir(self.image_output_folder_path):
+            shutil.rmtree(self.image_output_folder_path)
 
     def test_step_video2frames_frames2video(self):
         """
@@ -119,41 +129,34 @@ class SplitAndMergeTestsForVideo(unittest.TestCase):
         # current path
         cwd = os.path.abspath(os.path.dirname(__file__))
         # split_frames path
-        image_output_folder_path = os.path.join(cwd, 'test_data/split_frames')
         # create split_frames path folder
-        os.mkdir(image_output_folder_path)
+        os.mkdir(self.image_output_folder_path)
         # split the video
-        ret = videodata.video2frames(self.video_input_path, image_output_folder_path)
+        ret = videodata.video2frames(self.video_input_path,
+                                     self.image_output_folder_path)
         self.assertEqual(ret, SUCCESS)
 
         # Test2: for wrong path (as a picture)
         video_input_path2 = os.path.join(cwd, 'test_data/dog.jpg')
         # split the video
         ret = videodata.video2frames(video_input_path2,
-                                     image_output_folder_path)
+                                     self.image_output_folder_path)
         self.assertEqual(ret, FAILED)
 
         # Test3: test to merge the frames
-        # output video path
-        video_output_path = os.path.join(cwd, 'test_data/merged_video')
-        # create the output video folder
-        os.mkdir(video_output_path)
         # merge the video
-        ret = videodata.frames2video(image_output_folder_path,
-                                     video_output_path)
+        ret = videodata.frames2video(self.image_output_folder_path,
+                                     self.video_output_path)
         self.assertEqual(ret, SUCCESS)
-        # destroy the frames folder and video folder after test
-        shutil.rmtree(video_output_path)
+        self.assertTrue(os.path.isfile(self.video_output_path))
 
     def test_step_split_audio_from_video(self):
         """
         Unit-Test to test the split_audio_from_video function
         """
-        my_video_input_path = os.path.join(os.path.abspath(
-            os.path.dirname(__file__)), 'test_data/test_video_with_voice.mp4')
-        self.assertTrue(os.path.isfile(my_video_input_path))
+        self.assertTrue(os.path.isfile(self.video_input_path_with_audio))
         ret = videodata.split_audio_from_video(
-            my_video_input_path, self.audio_output_path)
+            self.video_input_path_with_audio, self.audio_output_path)
         self.assertEqual(ret, SUCCESS)
         self.assertTrue(os.path.isfile(self.audio_output_path))
 
@@ -161,10 +164,10 @@ class SplitAndMergeTestsForVideo(unittest.TestCase):
         """
         Unit-Test to test the merge_audio_and_video function
         """
-        self.assertTrue(os.path.isfile(self.video_input_path))
+        self.assertTrue(os.path.isfile(self.video_input_path_with_audio))
         self.assertTrue(os.path.isfile(self.audio_input_path))
         ret = videodata.merge_audio_and_video(
-            self.video_input_path, self.audio_input_path,
+            self.video_input_path_with_audio, self.audio_input_path,
             self.video_with_audio_output_path)
         self.assertEqual(ret, SUCCESS)
         self.assertTrue(os.path.isfile(self.video_with_audio_output_path))
@@ -184,6 +187,17 @@ class FunctionalTest(unittest.TestCase):
             os.path.dirname(__file__)), 'test_data/lena_colorized.png')
         self.fake_input_image_path = os.path.join(os.path.abspath(
             os.path.dirname(__file__)), '../../Data/notexist.png')
+        self.input_video_path = os.path.join(os.path.abspath(
+            os.path.dirname(__file__)), 'test_data/greyscaleVideo.mp4')
+        self.output_video_path = os.path.join(os.path.abspath(
+            os.path.dirname(__file__)), 'test_data/colorized_video.webm')
+
+        self.input_video_path_with_audio = \
+            os.path.join(os.path.abspath(
+                os.path.dirname(__file__)), 'test_data/test_video_with_voice.mp4')
+        self.output_video_path_with_audio = os.path.join(os.path.abspath(
+            os.path.dirname(__file__)),
+            'test_data/colorized_video_with_audio.webm')
 
     def tearDown(self):
         # cleanup files, that were created in the
@@ -191,6 +205,10 @@ class FunctionalTest(unittest.TestCase):
         print('tear down called')
         if os.path.isfile(self.output_image_path):
             os.remove(self.output_image_path)
+        if os.path.isfile(self.output_video_path):
+            os.remove(self.output_video_path)
+        if os.path.isfile(self.output_video_path_with_audio):
+            os.remove(self.output_video_path_with_audio)
 
     def test_complete_colorize_image(self):
         """
@@ -229,3 +247,17 @@ class FunctionalTest(unittest.TestCase):
 
         ret = colorize_image(self.input_image_path, self.output_image_path)
         self.assertEqual(ret, SUCCESS)
+
+    def test_colorize_video(self):
+        """
+        Functional test to test the colorization of two images in single session
+        """
+
+        ret = colorize_video(self.input_video_path, self.output_video_path)
+        self.assertEqual(ret, SUCCESS)
+        self.assertTrue(os.path.isfile(self.output_video_path))
+
+        ret = colorize_video(self.input_video_path_with_audio,
+                             self.output_video_path_with_audio)
+        self.assertEqual(ret, SUCCESS)
+        self.assertTrue(os.path.isfile(self.output_video_path_with_audio))

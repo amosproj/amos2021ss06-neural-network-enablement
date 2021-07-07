@@ -1,6 +1,10 @@
 from .colorize_process import preprocess, inference, postprocess
 import os
 import cv2
+import tempfile
+from .videodata import video2frames, \
+    frames2video, split_audio_from_video, merge_audio_and_video
+from moviepy.editor import VideoFileClip
 import shutil
 
 # error codes
@@ -93,11 +97,68 @@ def colorize_video(video_path_input, video_path_output):
     video_path_output : str
         the path of the (colorized) video after processing
     """
-    # TODO: load video located at <video_path_input>
-    # TODO: split video into images
-    # TODO: call <processImage> on each image
-    # TODO: combine to video
-    # TODO: save at <video_path_output>
+    #  check if the input path is valid
+    if not os.path.isfile(video_path_input):
+        print("input path is not a file.")
+        return FAILED
 
-    shutil.copyfile(video_path_input, video_path_output)
+    # split video into images
+    my_tmp_path = os.path.join(os.path.abspath(
+        os.path.dirname(__file__)), '../tmp')
+
+    # hack to fix problem when the tmp folder is not found
+    # I suspect this is due to the colorization folder beeing
+    # used through a symlink in the webservice
+    if my_tmp_path.endswith('webservice/colorization/../tmp'):
+        my_tmp_path = my_tmp_path.replace('webservice/colorization/../tmp', 'tmp')
+
+    print(my_tmp_path)
+
+    tmpdir = tempfile.mkdtemp(suffix="_split_and_merge",
+                              prefix="tp_images_and_audio_", dir=my_tmp_path)
+    image_output_folder_path = tmpdir
+    video_intermediate_path = os.path.join(tmpdir, 'merged_images.webm')
+    audio_path = os.path.join(tmpdir, 'split_audio.ogg')
+    ret = video2frames(video_path_input, image_output_folder_path)
+    if ret != SUCCESS:
+        print("split video into images failed")
+        shutil.rmtree(tmpdir)
+        return FAILED
+    # call colorize_image on each image
+    images = os.listdir(image_output_folder_path)
+    for i in range(len(images)):
+        image_path = os.path.join(image_output_folder_path, images[i])
+        ret = colorize_image(image_path, image_path)
+        if ret != SUCCESS:
+            print("colorize video failed")
+            shutil.rmtree(tmpdir)
+            return FAILED
+
+    # combine to video and save at <video_path_output>
+    if VideoFileClip(video_path_input).audio is None:
+        ret = frames2video(image_output_folder_path, video_path_output)
+        if ret != SUCCESS:
+            print("merge images back to video failed")
+            shutil.rmtree(tmpdir)
+            return FAILED
+    else:
+        ret = frames2video(image_output_folder_path, video_intermediate_path)
+        if ret != SUCCESS:
+            print("merge images back to video failed")
+            shutil.rmtree(tmpdir)
+            return FAILED
+        ret = split_audio_from_video(video_path_input, audio_path)
+        if ret != SUCCESS:
+            print("split audio from original video failed")
+            shutil.rmtree(tmpdir)
+            return FAILED
+        ret = merge_audio_and_video(video_intermediate_path,
+                                    audio_path, video_path_output)
+        if ret != SUCCESS:
+            print("merge audio back to colorized video failed")
+            shutil.rmtree(tmpdir)
+            return FAILED
+
+    # cleanup and return success code
+    shutil.rmtree(tmpdir)
     return SUCCESS

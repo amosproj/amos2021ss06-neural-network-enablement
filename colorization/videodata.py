@@ -1,12 +1,12 @@
 import cv2
 import os
-import numpy
-import shutil
 from moviepy.editor import AudioFileClip
 from moviepy.editor import VideoFileClip
+from moviepy.video.io import ImageSequenceClip
 
 SUCCESS = 0
 FAILED = 1
+FPS = 60
 
 
 def video2frames(video_input_path, image_output_folder_path):
@@ -21,26 +21,21 @@ def video2frames(video_input_path, image_output_folder_path):
     video = cv2.VideoCapture(video_input_path)
     type = os.path.splitext(video_input_path)[-1]
     if (video.isOpened() is False) or (not (type == '.mp4')):
-        print("Error opening video")
+        print("Input path is not a video")
         return FAILED
-    FPS = 60  # frames per second
-    video.set(cv2.CAP_PROP_FPS, FPS)
+    global FPS
+    FPS = int(video.get(cv2.CAP_PROP_FPS))
     currentFrame = 0
     while (video.isOpened()):
         ret, frame = video.read()
         if ret is True:
             folder_name = os.path.join(image_output_folder_path,
                                        str(currentFrame) + '.png')
-            # print('Creating...' + folder_name)
-            # cv2.imshow('Frame', frame)
             cv2.imwrite(folder_name, frame)
             currentFrame += 1
-            # if cv2.waitKey(25) & 0xFF == ord('q'):
-            # break
         else:
             break
     video.release()
-    # cv2.destroyAllWindows()
     return SUCCESS
 
 
@@ -54,27 +49,11 @@ def frames2video(image_input_folder_path, video_output_path):
         1 for FAILED.
 
     """
-    mat = cv2.imread(os.path.join(image_input_folder_path + '/0.png'),
-                     cv2.IMREAD_COLOR)
-    # print(os.path.join(image_input_folder_path + '/0.png'))
-    if numpy.any(mat) is None:
-        return FAILED
-    size = mat.shape[:2]
-    FPS = 60
-    fourcc = cv2.VideoWriter_fourcc('M', 'J', 'P', 'G')
-    video = cv2.VideoWriter(os.path.join(video_output_path, "out01.avi"),
-                            fourcc, FPS, (size[1], size[0]))
     files = os.listdir(image_input_folder_path)
-    length = len(files)
-    for i in range(0, length):
-        index = str(i)
-        item = image_input_folder_path + '/' + index + '.png'
-        # print(item)
-        img = cv2.imread(item)
-        video.write(img)
-    video.release()
-    # after merged video delate the image_input_folder_path folder
-    shutil.rmtree(image_input_folder_path)
+    frames_path = [image_input_folder_path+'/'+str(i)+'.png' for i in range(len(files))]
+    clip = ImageSequenceClip.ImageSequenceClip(frames_path, fps=FPS)
+    clip.write_videofile(video_output_path, codec='libvpx', bitrate="50000k")
+    clip.close()
     return SUCCESS
 
 
@@ -91,10 +70,12 @@ def split_audio_from_video(video_input_path, audio_output_path):
         print("invalid video path")
         return FAILED
     my_audio_clip = AudioFileClip(video_input_path)
-    my_audio_clip.write_audiofile(audio_output_path)
+    my_audio_clip.write_audiofile(audio_output_path, codec='libvorbis')
     if not os.path.isfile(audio_output_path):
         print("invalid output path")
+        my_audio_clip.close()
         return FAILED
+    my_audio_clip.close()
     return SUCCESS
 
 
@@ -117,8 +98,12 @@ def merge_audio_and_video(video_input_path, audio_input_path, video_output_path)
     my_video_clip = VideoFileClip(video_input_path)
     my_audio_clip = AudioFileClip(audio_input_path)
     video = my_video_clip.set_audio(my_audio_clip)
-    video.write_videofile(video_output_path)
+    video.write_videofile(video_output_path, codec='libvpx')
     if not os.path.isfile(video_output_path):
         print("invalid output path")
+        my_audio_clip.close()
+        my_video_clip.close()
         return FAILED
+    my_audio_clip.close()
+    my_video_clip.close()
     return SUCCESS
