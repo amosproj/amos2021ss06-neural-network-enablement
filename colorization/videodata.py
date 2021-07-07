@@ -53,6 +53,7 @@ def frames2video(image_input_folder_path, video_output_path):
     frames_path = [image_input_folder_path+'/'+str(i)+'.png' for i in range(len(files))]
     clip = ImageSequenceClip.ImageSequenceClip(frames_path, fps=FPS)
     clip.write_videofile(video_output_path, codec='libvpx', bitrate="50000k")
+    clip.close()
     return SUCCESS
 
 
@@ -72,7 +73,9 @@ def split_audio_from_video(video_input_path, audio_output_path):
     my_audio_clip.write_audiofile(audio_output_path, codec='libvorbis')
     if not os.path.isfile(audio_output_path):
         print("invalid output path")
+        my_audio_clip.close()
         return FAILED
+    my_audio_clip.close()
     return SUCCESS
 
 
@@ -98,5 +101,9 @@ def merge_audio_and_video(video_input_path, audio_input_path, video_output_path)
     video.write_videofile(video_output_path, codec='libvpx')
     if not os.path.isfile(video_output_path):
         print("invalid output path")
+        my_audio_clip.close()
+        my_video_clip.close()
         return FAILED
+    my_audio_clip.close()
+    my_video_clip.close()
     return SUCCESS

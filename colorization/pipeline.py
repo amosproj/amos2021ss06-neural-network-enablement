@@ -103,9 +103,8 @@ def colorize_video(video_path_input, video_path_output):
         return FAILED
 
     # split video into images
-    my_tmp_path = "/home/HwHiAiUser/tmp/"
-    if not os.path.isdir(my_tmp_path):
-        os.mkdir(my_tmp_path)
+    my_tmp_path = os.path.join(os.path.abspath(
+        os.path.dirname('__file__')), '../tmp')
     tmpdir = tempfile.mkdtemp(suffix="_split_and_merge",
                               prefix="tp_images_and_audio_", dir=my_tmp_path)
     image_output_folder_path = tmpdir
@@ -151,6 +150,6 @@ def colorize_video(video_path_input, video_path_output):
             shutil.rmtree(tmpdir)
             return FAILED
 
-    # return success code -> talk with webservice people
+    # cleanup and return success code
     shutil.rmtree(tmpdir)
     return SUCCESS
