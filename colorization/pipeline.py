@@ -104,7 +104,7 @@ def colorize_video(video_path_input, video_path_output):
 
     # split video into images
     my_tmp_path = os.path.join(os.path.abspath(
-        os.path.dirname('__file__')), '../tmp')
+        os.path.dirname(__file__)), '../tmp')
     tmpdir = tempfile.mkdtemp(suffix="_split_and_merge",
                               prefix="tp_images_and_audio_", dir=my_tmp_path)
     image_output_folder_path = tmpdir
