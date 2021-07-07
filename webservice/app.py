@@ -214,8 +214,10 @@ def colorize(id):
             if not os.path.exists(foutpath):
                 # colorize_image
                 if extension.lower() in ALLOWED_EXTENSIONS['pic']:
+                    print(f'Starting colorization of {id}')
                     res = pipeline.colorize_image(finpath, foutpath)
                 elif extension.lower() in ALLOWED_EXTENSIONS['video']:
+                    print(f'Starting colorization of {id}')
                     res = pipeline.colorize_video(finpath, foutpath)
                 else:
                     return jsonify(msg="Unsupported file format"), 400
