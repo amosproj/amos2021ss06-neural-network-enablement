@@ -1,0 +1,4 @@
+Architecture
+==============
+
+.. image:: /image/Architecture
