@@ -43,7 +43,8 @@ templates_path = ['_templates']
 # This pattern also affects html_static_path and html_extra_path.
 exclude_patterns = ['atlas_utils.lib.rst', 'atlas_utils.lib.atlasutil_so']
 
-autodoc_default_options = {"members": True, "undoc-members": True, "private-members": True,
+autodoc_default_options = {"members": True, "undoc-members": True,
+                           "private-members": True,
                            "special-members": True, "show-inheritance": True}
 
 
