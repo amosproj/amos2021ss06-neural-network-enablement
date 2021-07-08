@@ -31,10 +31,10 @@ class Model(object):
             ret = acl.mdl.destroy_desc(self.model_desc)
             if ret != ACL_ERROR_NONE:
                 print("acl.mdl.destroy_desc error:", ret)
-        print("Model release source success")
+        # print("Model release source success")
 
     def _init_resource(self):
-        print("Init model resource")
+        # print("Init model resource")
         # setting the context for the current thread
         acl.rt.set_context(self._context)
         # loading model file
@@ -47,7 +47,7 @@ class Model(object):
         output_size = acl.mdl.get_num_outputs(self.model_desc)
         # create model output dataset structure
         self._gen_output_dataset(output_size)
-        print("[Model] class Model init resource stage success")
+        # print("[Model] class Model init resource stage success")
         # obtain shape and type of each output of the model
         self._get_output_desc(output_size)
         # create a table to record memory for input data, which can be reused when allocating memory for the input
@@ -82,7 +82,7 @@ class Model(object):
                                       "tensor": output_tensor})
 
     def _gen_output_dataset(self, size):
-        print("[Model] create model output dataset:")
+        # print("[Model] create model output dataset:")
         dataset = acl.mdl.create_dataset()
         for i in range(size):
             # allocate device memory for each output
@@ -91,16 +91,16 @@ class Model(object):
             check_ret("acl.rt.malloc", ret)
             # create output data buffer structure, fill allocated memory into the data buffer
             dataset_buffer = acl.create_data_buffer(buffer, size)
-            #add data buffer to output dataset
+            # add data buffer to output dataset
             _, ret = acl.mdl.add_dataset_buffer(dataset, dataset_buffer)
-            print("malloc output %d, size %d"%(i, size))
+            # print("malloc output %d, size %d"%(i, size))
             if ret:
                 # release resource if failed
                 acl.rt.free(buffer)
                 acl.destroy_data_buffer(dataset)
                 check_ret("acl.destroy_data_buffer", ret)
         self.output_dataset = dataset
-        print("[Model] create model output dataset success")
+        # print("[Model] create model output dataset success")
 
     def _init_input_buffer(self):
         # create a table recording the input data memory allocated for users
@@ -170,7 +170,7 @@ class Model(object):
             size = input['size']
             data = input['data']
         else:
-            print("Unsupport input")
+            print("Unsupported input")
 
         return data, size
 
@@ -252,7 +252,7 @@ class Model(object):
     def _release_dataset(self, dataset):
         if not dataset:
             return
-        print("destroy dataset")
+        # print("destroy dataset")
         num = acl.mdl.get_dataset_num_buffers(dataset)
         for i in range(num):
             data_buf = acl.mdl.get_dataset_buffer(dataset, i)

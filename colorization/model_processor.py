@@ -26,6 +26,4 @@ class ModelProcessor:
         # execute model inference
         result = self.model.execute([model_input])[0]
         canvas = result[0]
-        print(result[0].shape)
-        print(result.dtype)
         return canvas

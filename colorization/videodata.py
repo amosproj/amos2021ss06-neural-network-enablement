@@ -19,20 +19,20 @@ def video2frames(video_input_path, image_output_folder_path):
         0 on success.
      """
     video = cv2.VideoCapture(video_input_path)
-    type = os.path.splitext(video_input_path)[-1]
-    if (video.isOpened() is False) or (not (type == '.mp4')):
+    video_type = os.path.splitext(video_input_path)[-1]
+    if (video.isOpened() is False) or (not (video_type == '.mp4')):
         print("Input path is not a video")
         return FAILED
     global FPS
     FPS = int(video.get(cv2.CAP_PROP_FPS))
-    currentFrame = 0
-    while (video.isOpened()):
+    currentframe = 0
+    while video.isOpened():
         ret, frame = video.read()
         if ret is True:
             folder_name = os.path.join(image_output_folder_path,
-                                       str(currentFrame) + '.png')
+                                       str(currentframe) + '.png')
             cv2.imwrite(folder_name, frame)
-            currentFrame += 1
+            currentframe += 1
         else:
             break
     video.release()

@@ -24,7 +24,7 @@ class AclResource(object):
         return cls._instance
 
     def init(self):
-        print("init resource stage:")
+        # print("init resource stage:")
         ret = acl.init()
         check_ret("acl.rt.set_device", ret)
 
@@ -40,7 +40,7 @@ class AclResource(object):
         self.run_mode, ret = acl.rt.get_run_mode()
         check_ret("acl.rt.get_run_mode", ret)
 
-        print("Init resource success")
+        # print("Init resource success")
 
     def __del__(self):
         if self.stream:
@@ -49,4 +49,4 @@ class AclResource(object):
             acl.rt.destroy_context(self.context)
         acl.rt.reset_device(self.device_id)
         acl.finalize()
-        print("Release acl resource success")
+        # print("Release acl resource success")
