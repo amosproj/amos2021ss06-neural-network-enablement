@@ -3,10 +3,8 @@ from werkzeug.utils import secure_filename
 import os
 import datetime
 import shutil
-import colorization.pipeline as pipeline
 import cv2
-
-# from colorization.src.pipeline import *
+import colorization.pipeline as pipeline
 
 # set path to store uploaded pics and videos
 UPLOAD_FOLDER = os.path.abspath(os.path.dirname(__file__)) + "/uploaded/"
@@ -32,7 +30,7 @@ def index():
     return render_template("index.html")
 
 
-@app.post('/upload/')
+@app.post('/media/')
 def upload():
     '''
     This endpoint accepts a single image/video
@@ -42,7 +40,7 @@ def upload():
     Return type: json
     '''
     file = request.files.get("file")
-    if file and allowed_file(file.filename):
+    if file and valid_filename(file.filename):
         sfilename = secure_filename(file.filename)
 
         # add timestamp at the beginning of filename
@@ -72,11 +70,166 @@ def upload():
 
         return jsonify(msg="Upload successfully"), 200
 
-    elif file and not allowed_file(file.filename):
+    elif file and not valid_filename(file.filename):
         return jsonify(msg="The file format is not supported"), 400
 
     else:
         return jsonify(msg="No upload file"), 400
+
+
+@app.get('/media/')
+def all():
+    '''
+    This endpoint returns a list of the urls of all uploaded images/videos
+
+    Return type: json
+    '''
+    result = []
+
+    folders = filter(lambda x: x != '.keep', os.listdir(app.config['UPLOAD_FOLDER']))
+
+    for folder in folders:
+        files = os.listdir(os.path.join(app.config['UPLOAD_FOLDER'], folder))
+        extensions = map(lambda f: get_extension(f).lower(), files)
+
+        if any(map(lambda e: e in ALLOWED_EXTENSIONS['video'], extensions)):
+            type = 'video'
+        else:
+            type = 'image'
+
+        for f in files:
+            if type == 'video' and 'thumbnail' in f:
+                thumbnail = url_for('uploaded_file', fpath=folder, filename=f)
+
+            elif type == 'image' and get_name(f) == folder:
+                thumbnail = url_for("uploaded_file", fpath=folder, filename=f)
+
+        assert 'thumbnail' in locals(), f'thumbnail for {folder} not found'
+
+        result.append({
+            'type': type,
+            'thumbnail': thumbnail,
+            'id': folder
+        })
+
+    return jsonify(result)
+
+
+@app.get('/media/<id>')
+def result(id):
+    '''
+    This endpoint returns the urls of the given image/video (specified by its folder
+    name) and of its colorized version.
+
+    Return type: json
+    '''
+    if id in os.listdir(app.config['UPLOAD_FOLDER']):
+        folder = os.path.join(app.config['UPLOAD_FOLDER'], id)
+    else:
+        return jsonify(msg="The file doesn't exist"), 400
+
+    thumbnail_url = None
+
+    for f in os.listdir(folder):
+        if get_name(f) == id:
+            # generate urls of the original and colorized files
+            origin_url = url_for("uploaded_file", fpath=id, filename=f)
+
+            extension = get_extension(f)
+
+            if extension.lower() in ALLOWED_EXTENSIONS['video']:
+                color_name = get_name(f) + "_color.webm"
+            else:
+                color_name = get_name(f) + "_color." + extension
+
+            colorized_url = url_for("uploaded_file", fpath=id, filename=color_name)
+
+            #  check whether the colorization process is finished
+            if os.path.exists(os.path.join(folder, color_name)):
+                status = "finished"
+            else:
+                status = "unfinished"
+
+            # get the type and generate the thumbnail url if it's a video
+            if extension.lower() in ALLOWED_EXTENSIONS['pic']:
+                type = 'image'
+            else:
+                type = 'video'
+                thumbnail = get_name(f) + "_thumbnail.jpg"
+                thumbnail_url = url_for("uploaded_file", fpath=id, filename=thumbnail)
+
+    result = {
+        'type': type,
+        'status': status,
+        'origin': origin_url,
+        'colorized': colorized_url,
+        'thumbnail': thumbnail_url
+    }
+    return jsonify(result), 200
+
+
+@app.delete('/media/<id>')
+def delete(id):
+    '''
+    This endpoint deletes the image/video (specified by its folder name)
+
+    Return type: json
+    '''
+
+    if id in os.listdir(app.config['UPLOAD_FOLDER']):
+        deletepath = os.path.join(app.config['UPLOAD_FOLDER'], id)
+        shutil.rmtree(deletepath)
+        return jsonify(msg="Deleted!"), 200
+    else:
+        return jsonify(msg="Pictures not found!"), 400
+
+
+# colorize files
+@app.post('/media/<id>/colorize')
+def colorize(id):
+    '''
+    This endpoint starts the colorizing process for the given image/video
+    (specified by its folder name)
+
+    Return type: json
+    '''
+    if id in os.listdir(app.config['UPLOAD_FOLDER']):
+        folder = os.path.join(app.config['UPLOAD_FOLDER'], id)
+    else:
+        return jsonify(msg="The file doesn't exist"), 400
+
+    # get the extension(type), input path, output path from the original data
+    for f in os.listdir(folder):
+        if get_name(f) == id:
+            extension = get_extension(f)
+            finpath = os.path.join(folder, f)
+
+            if extension.lower() in ALLOWED_EXTENSIONS['video']:
+                coloredfile = get_name(f) + "_color.webm"
+            else:
+                coloredfile = get_name(f) + "_color." + extension
+
+            foutpath = os.path.join(folder, coloredfile)
+
+            if not os.path.exists(foutpath):
+                # colorize_image
+                if extension.lower() in ALLOWED_EXTENSIONS['pic']:
+                    print(f'Starting colorization of {id}')
+                    res = pipeline.colorize_image(finpath, foutpath)
+                elif extension.lower() in ALLOWED_EXTENSIONS['video']:
+                    print(f'Starting colorization of {id}')
+                    res = pipeline.colorize_video(finpath, foutpath)
+                else:
+                    return jsonify(msg="Unsupported file format"), 400
+
+                if res == 0:
+                    return jsonify(msg="Colorization successful."), 200
+                else:
+                    return jsonify(msg="Colorization failed."), 400
+
+            else:
+                return jsonify(
+                    msg='Colorization file exists. Colorization successful.'), 200
 
 
 @app.get('/<fpath>/<filename>')
@@ -90,144 +243,19 @@ def uploaded_file(fpath, filename):
     return send_from_directory(folderpath, filename)
 
 
-@app.get('/all/')
-def all():
+def valid_filename(filename):
     '''
-    This endpoint returns a list of the urls of all uploaded images/videos
-
-    Return type: json
+    Checks if the given filename is valid.
     '''
-    result = []
+    if '.' not in filename:
+        return False
 
-    folders = filter(lambda x: x != '.keep', os.listdir(app.config['UPLOAD_FOLDER']))
-
-    for folder in folders:
-        print(folder)
-        files = os.listdir(os.path.join(app.config['UPLOAD_FOLDER'], folder))
-        extensions = map(lambda f: get_extension(f).lower(), files)
-
-        if any(map(lambda e: e in ALLOWED_EXTENSIONS['video'], extensions)):
-            type = 'video'
-
-            for f in files:
-                if 'thumbnail' in f:
-                    thumbnail = url_for('uploaded_file', fpath=folder, filename=f)
-
-        else:
-            type = 'image'
-
-            for f in files:
-                if 'color' not in f:
-                    thumbnail = url_for("uploaded_file", fpath=folder, filename=f)
-
-        assert 'thumbnail' in locals(), f'thumbnail for {folder} not found'
-
-        result.append({
-            'type': type,
-            'thumbnail': thumbnail
-        })
-
-    return jsonify(result)
-
-
-# TODO: This should be a GET request
-@app.post('/result/')
-def result():
-    '''
-    This endpoint returns the urls of the given image/video (specified by its filename)
-    the colorized version of it.
-
-    Return type: json
-    '''
-    filename = request.get_json()['name'] if 'name' in request.get_json() else None
-
-    # get name and extension of origin img
-    name = get_name(filename)
-    extension = get_extension(filename)
-
-    thumbnail_url = None
-    if name.rsplit('_', 1)[1] == 'thumbnail':
-        thumbnailname = name
-        name = get_name(filename).rsplit('_', 1)[0]
-        thumbnail_url = url_for("uploaded_file", fpath=name, filename=thumbnailname)
-
-    colorname = name + "_color." + extension
-
-    # generate all urls
-    origin_url = url_for("uploaded_file", fpath=name, filename=filename)
-    colorized_url = url_for("uploaded_file", fpath=name, filename=colorname)
-
-    result = {
-        'origin': origin_url,
-        'colorized': colorized_url,
-        'thumbnail': thumbnail_url
-    }
-
-    return jsonify(result), 200
-
-
-@app.post('/delete/')
-def delete():
-    '''
-    This endpoint deletes the image/video (specified by its filename)
-
-    Return type: json
-    '''
-    filename = request.get_json()['name'] if 'name' in request.get_json() else None
-    if filename:
-        name = get_name(filename)
-        if name.rsplit('_', 1)[1] == 'thumbnail':
-            name = name.rsplit('_', 1)[0]
-        deletepath = os.path.join(app.config['UPLOAD_FOLDER'], name)
-        if os.path.exists(deletepath):
-            shutil.rmtree(deletepath)
-            return jsonify(msg="Deleted!"), 200
-        else:
-            return jsonify(msg="Pictures not found!"), 404
-    else:
-        return jsonify(msg="request is empty"), 400
-
-
-# colorize files
-@app.post('/colorize/')
-def colorize():
-    '''
-    This endpoint starts the colorizing process for the given image/video
-    (specified by its filename)
-
-    Return type: json
-    '''
-    filename = request.get_json()['name'] if 'name' in request.get_json() else None
-
-    if filename:
-        # 05/20 use newly added functions : get_name , get_extension
-        name = get_name(filename)
-        extension = get_extension(filename)
-
-        finpath = os.path.join(app.config['UPLOAD_FOLDER'], name, filename)
-        optfilename = name + "_color." + extension
-        foutpath = os.path.join(app.config['UPLOAD_FOLDER'], name, optfilename)
-
-        # colorize_image
-        if extension.lower() in ALLOWED_EXTENSIONS['pic']:
-            # temporarily use if True
-            if pipeline.colorize_image(finpath, foutpath) == 0:
-                # return page need further discussion
-                return jsonify(msg="Colorization successful."), 200
-            else:
-                return jsonify(msg="Colorization failed."), 400
-        else:
-            return jsonify(msg="Videos are not supported yet."), 400
-
-    else:
-        return jsonify(msg="No input file"), 400
-
-
-def allowed_file(filename):
     lower_extension = get_extension(filename).lower()
     if lower_extension in ALLOWED_EXTENSIONS['pic'] or lower_extension in \
             ALLOWED_EXTENSIONS['video']:
         return True
+
+    return False
 
 
 def get_extension(filename):
@@ -236,6 +264,15 @@ def get_extension(filename):
 
 def get_name(filename):
     return filename.rsplit('.', 1)[0]
+
+
+@app.errorhandler(RuntimeError)
+def handle_error(e):
+    print('------------------')
+    print('ERROR HANDLER CALLED')
+    print(f'{e.__class__}: {str(e)}')
+    print('------------------')
+    return jsonify(msg=f'An error occured: {str(e)}'), 500
 
 
 if __name__ == '__main__':
