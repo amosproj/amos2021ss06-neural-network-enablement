@@ -2,8 +2,8 @@ Welcome to Neural Network Enablement's documentation!
 =====================================================
 
 .. image:: /image/logo.png
-   :width: 400
    :align: center
+   :width: 400
 
 .. toctree::
    :maxdepth: 2

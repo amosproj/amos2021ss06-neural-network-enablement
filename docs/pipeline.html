@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>colorization &mdash; Neural Network Enablement  documentation</title>
+  <title>pipeline module &mdash; Neural Network Enablement  documentation</title>
   
 
   
@@ -41,8 +41,8 @@
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="acl_model module" href="acl_model.html" />
-    <link rel="prev" title="test_web module" href="test_web.html" /> 
+    <link rel="next" title="tests module" href="tests.html" />
+    <link rel="prev" title="model_processor module" href="model_processor.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -95,13 +95,13 @@
 <li class="toctree-l1"><a class="reference internal" href="Build%20%26%20Deploy.html">Build &amp; Deploy</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="Source%20Code%20Documentation.html">Source Code Documentation</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="Webservice.html">Webservice</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">colorization</a><ul>
+<li class="toctree-l2 current"><a class="reference internal" href="modules.html">colorization</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="acl_model.html">acl_model module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="acl_resource.html">acl_resource module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="atlas_utils.html">atlas_utils package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="colorize_process.html">colorize_process module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="model_processor.html">model_processor module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="pipeline.html">pipeline module</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">pipeline module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="tests.html">tests module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="videodata.html">videodata module</a></li>
 </ul>
@@ -158,13 +158,15 @@
         
           <li><a href="Source%20Code%20Documentation.html">Source Code Documentation</a> &raquo;</li>
         
-      <li>colorization</li>
+          <li><a href="modules.html">colorization</a> &raquo;</li>
+        
+      <li>pipeline module</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
           
-            <a href="_sources/modules.rst.txt" rel="nofollow"> View page source</a>
+            <a href="_sources/pipeline.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -177,30 +179,59 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="colorization">
-<h1>colorization<a class="headerlink" href="#colorization" title="Permalink to this headline">¶</a></h1>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="acl_model.html">acl_model module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="acl_resource.html">acl_resource module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="atlas_utils.html">atlas_utils package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="atlas_utils.html#subpackages">Subpackages</a><ul class="simple">
+  <div class="section" id="module-pipeline">
+<span id="pipeline-module"></span><h1>pipeline module<a class="headerlink" href="#module-pipeline" title="Permalink to this headline">¶</a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.colorize_image">
+<span class="sig-prename descclassname"><span class="pre">pipeline.</span></span><span class="sig-name descname"><span class="pre">colorize_image</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image_path_input</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image_path_output</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.colorize_image" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function does the complete processing of a given image.
+It combines all of the subtasks together:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>preprocess the image</p></li>
+<li><p>colorize the image</p></li>
+<li><p>postprocess the image</p></li>
 </ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="atlas_utils.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="atlas_utils.html#module-atlas_utils.acl_image">atlas_utils.acl_image module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="atlas_utils.html#module-atlas_utils.constants">atlas_utils.constants module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="atlas_utils.html#module-atlas_utils.utils">atlas_utils.utils module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="atlas_utils.html#module-atlas_utils">Module contents</a></li>
+</div></blockquote>
+<p>This function is called by the webservice.</p>
+<dl class="simple">
+<dt>image_path_input<span class="classifier">str</span></dt><dd><p>the path of the (gray) image to be processed</p>
+</dd>
+<dt>image_path_output<span class="classifier">str</span></dt><dd><p>the path of the (colorized) image after processing</p>
+</dd>
+<dt>return value<span class="classifier">int</span></dt><dd><p>on success this function returns 0
+on failure this function returns 1</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>colorize_image(‘/home/user/xyz/Pictures/pic1.jpg’,</dt><dd><p>‘/home/user/xyz/Pictures/pic1_colorized.jpg’)</p>
+</dd>
+</dl>
+<p>The directories already exists, and the image can be directly
+written to the given output path.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.colorize_video">
+<span class="sig-prename descclassname"><span class="pre">pipeline.</span></span><span class="sig-name descname"><span class="pre">colorize_video</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">video_path_input</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">video_path_output</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.colorize_video" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function does the complete processing of a given video.
+It combines all of the subtasks together:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>split video into images</p></li>
+<li><p>colorize each image</p></li>
+<li><p>combine images to a video</p></li>
 </ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="colorize_process.html">colorize_process module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="model_processor.html">model_processor module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pipeline.html">pipeline module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tests.html">tests module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="videodata.html">videodata module</a></li>
-</ul>
-</div>
+</div></blockquote>
+<p>This function is called by the webservice.</p>
+<dl class="simple">
+<dt>video_path_input<span class="classifier">str</span></dt><dd><p>the path of the (gray) video to be processed</p>
+</dd>
+<dt>video_path_output<span class="classifier">str</span></dt><dd><p>the path of the (colorized) video after processing</p>
+</dd>
+</dl>
+</dd></dl>
+
 </div>
 
 
@@ -209,8 +240,8 @@
           </div>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="acl_model.html" class="btn btn-neutral float-right" title="acl_model module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-        <a href="test_web.html" class="btn btn-neutral float-left" title="test_web module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="tests.html" class="btn btn-neutral float-right" title="tests module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="model_processor.html" class="btn btn-neutral float-left" title="model_processor module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>

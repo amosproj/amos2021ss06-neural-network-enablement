@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>colorization &mdash; Neural Network Enablement  documentation</title>
+  <title>colorize_process module &mdash; Neural Network Enablement  documentation</title>
   
 
   
@@ -41,8 +41,8 @@
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="acl_model module" href="acl_model.html" />
-    <link rel="prev" title="test_web module" href="test_web.html" /> 
+    <link rel="next" title="model_processor module" href="model_processor.html" />
+    <link rel="prev" title="atlas_utils package" href="atlas_utils.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -95,11 +95,11 @@
 <li class="toctree-l1"><a class="reference internal" href="Build%20%26%20Deploy.html">Build &amp; Deploy</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="Source%20Code%20Documentation.html">Source Code Documentation</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="Webservice.html">Webservice</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">colorization</a><ul>
+<li class="toctree-l2 current"><a class="reference internal" href="modules.html">colorization</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="acl_model.html">acl_model module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="acl_resource.html">acl_resource module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="atlas_utils.html">atlas_utils package</a></li>
-<li class="toctree-l3"><a class="reference internal" href="colorize_process.html">colorize_process module</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">colorize_process module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="model_processor.html">model_processor module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.html">pipeline module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="tests.html">tests module</a></li>
@@ -158,13 +158,15 @@
         
           <li><a href="Source%20Code%20Documentation.html">Source Code Documentation</a> &raquo;</li>
         
-      <li>colorization</li>
+          <li><a href="modules.html">colorization</a> &raquo;</li>
+        
+      <li>colorize_process module</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
           
-            <a href="_sources/modules.rst.txt" rel="nofollow"> View page source</a>
+            <a href="_sources/colorize_process.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -177,30 +179,63 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="colorization">
-<h1>colorization<a class="headerlink" href="#colorization" title="Permalink to this headline">¶</a></h1>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="acl_model.html">acl_model module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="acl_resource.html">acl_resource module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="atlas_utils.html">atlas_utils package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="atlas_utils.html#subpackages">Subpackages</a><ul class="simple">
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="atlas_utils.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="atlas_utils.html#module-atlas_utils.acl_image">atlas_utils.acl_image module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="atlas_utils.html#module-atlas_utils.constants">atlas_utils.constants module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="atlas_utils.html#module-atlas_utils.utils">atlas_utils.utils module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="atlas_utils.html#module-atlas_utils">Module contents</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="colorize_process.html">colorize_process module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="model_processor.html">model_processor module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pipeline.html">pipeline module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tests.html">tests module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="videodata.html">videodata module</a></li>
-</ul>
-</div>
+  <div class="section" id="module-colorize_process">
+<span id="colorize-process-module"></span><h1>colorize_process module<a class="headerlink" href="#module-colorize_process" title="Permalink to this headline">¶</a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="colorize_process.inference">
+<span class="sig-prename descclassname"><span class="pre">colorize_process.</span></span><span class="sig-name descname"><span class="pre">inference</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_image</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#colorize_process.inference" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function activate the model process after preprocess,
+and get result back.
+Parameters:
+———–
+model_path: str</p>
+<blockquote>
+<div><p>the path of offline model(<a href="#id1"><span class="problematic" id="id2">*</span></a>.om file)</p>
+</div></blockquote>
+<dl class="simple">
+<dt>input_image: numpy array</dt><dd><p>resized image with L_channel obtained from preprocess.</p>
+</dd>
+<dt>result<span class="classifier">numpy array</span></dt><dd><p>ab channels of the preprocessed image.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="colorize_process.postprocess">
+<span class="sig-prename descclassname"><span class="pre">colorize_process.</span></span><span class="sig-name descname"><span class="pre">postprocess</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_image_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inference_result</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#colorize_process.postprocess" title="Permalink to this definition">¶</a></dt>
+<dd><dl>
+<dt>This function converts LAB image to BGR image (colorization).</dt><dd><p>It combines L channel obtained from source image and ab channels
+from Inference result.</p>
+<p>Parameters:</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>input_image_path<span class="classifier">str</span></dt><dd><p>the path of the (gray) image to obtain L channel</p>
+</dd>
+<dt>inference_result<span class="classifier">str</span></dt><dd><p>Path to the .npy file containing the output of the inference function.
+(Consisting of ab channels)</p>
+</dd>
+<dt>return value<span class="classifier">numpy array</span></dt><dd><p>Colorized image.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="colorize_process.preprocess">
+<span class="sig-prename descclassname"><span class="pre">colorize_process.</span></span><span class="sig-name descname"><span class="pre">preprocess</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image_file</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#colorize_process.preprocess" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function downsizes the input image to modelWidth*modelHeight
+and extracts L_channel from the image.</p>
+<p>input:
+image_file : numpy array</p>
+<blockquote>
+<div><p>An image that is loaded from the specified file.</p>
+</div></blockquote>
+<dl class="simple">
+<dt>return value<span class="classifier">numpy array</span></dt><dd><p>L channel of the image subtracted by the 50 for mean-centering.</p>
+</dd>
+</dl>
+</dd></dl>
+
 </div>
 
 
@@ -209,8 +244,8 @@
           </div>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="acl_model.html" class="btn btn-neutral float-right" title="acl_model module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-        <a href="test_web.html" class="btn btn-neutral float-left" title="test_web module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="model_processor.html" class="btn btn-neutral float-right" title="model_processor module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="atlas_utils.html" class="btn btn-neutral float-left" title="atlas_utils package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>

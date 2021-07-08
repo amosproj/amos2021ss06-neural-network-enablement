@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>colorization &mdash; Neural Network Enablement  documentation</title>
+  <title>model_processor module &mdash; Neural Network Enablement  documentation</title>
   
 
   
@@ -41,8 +41,8 @@
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="acl_model module" href="acl_model.html" />
-    <link rel="prev" title="test_web module" href="test_web.html" /> 
+    <link rel="next" title="pipeline module" href="pipeline.html" />
+    <link rel="prev" title="colorize_process module" href="colorize_process.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -95,12 +95,12 @@
 <li class="toctree-l1"><a class="reference internal" href="Build%20%26%20Deploy.html">Build &amp; Deploy</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="Source%20Code%20Documentation.html">Source Code Documentation</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="Webservice.html">Webservice</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">colorization</a><ul>
+<li class="toctree-l2 current"><a class="reference internal" href="modules.html">colorization</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="acl_model.html">acl_model module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="acl_resource.html">acl_resource module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="atlas_utils.html">atlas_utils package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="colorize_process.html">colorize_process module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="model_processor.html">model_processor module</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">model_processor module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.html">pipeline module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="tests.html">tests module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="videodata.html">videodata module</a></li>
@@ -158,13 +158,15 @@
         
           <li><a href="Source%20Code%20Documentation.html">Source Code Documentation</a> &raquo;</li>
         
-      <li>colorization</li>
+          <li><a href="modules.html">colorization</a> &raquo;</li>
+        
+      <li>model_processor module</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
           
-            <a href="_sources/modules.rst.txt" rel="nofollow"> View page source</a>
+            <a href="_sources/model_processor.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -177,30 +179,41 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="colorization">
-<h1>colorization<a class="headerlink" href="#colorization" title="Permalink to this headline">¶</a></h1>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="acl_model.html">acl_model module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="acl_resource.html">acl_resource module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="atlas_utils.html">atlas_utils package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="atlas_utils.html#subpackages">Subpackages</a><ul class="simple">
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="atlas_utils.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="atlas_utils.html#module-atlas_utils.acl_image">atlas_utils.acl_image module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="atlas_utils.html#module-atlas_utils.constants">atlas_utils.constants module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="atlas_utils.html#module-atlas_utils.utils">atlas_utils.utils module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="atlas_utils.html#module-atlas_utils">Module contents</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="colorize_process.html">colorize_process module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="model_processor.html">model_processor module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pipeline.html">pipeline module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tests.html">tests module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="videodata.html">videodata module</a></li>
-</ul>
-</div>
+  <div class="section" id="module-model_processor">
+<span id="model-processor-module"></span><h1>model_processor module<a class="headerlink" href="#module-model_processor" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="model_processor.ModelProcessor">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">model_processor.</span></span><span class="sig-name descname"><span class="pre">ModelProcessor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">acl_resource</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#model_processor.ModelProcessor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="model_processor.ModelProcessor.__dict__">
+<span class="sig-name descname"><span class="pre">__dict__</span></span><em class="property"> <span class="pre">=</span> <span class="pre">mappingproxy({'__module__':</span> <span class="pre">'model_processor',</span> <span class="pre">'__init__':</span> <span class="pre">&lt;function</span> <span class="pre">ModelProcessor.__init__&gt;,</span> <span class="pre">'predict':</span> <span class="pre">&lt;function</span> <span class="pre">ModelProcessor.predict&gt;,</span> <span class="pre">'__dict__':</span> <span class="pre">&lt;attribute</span> <span class="pre">'__dict__'</span> <span class="pre">of</span> <span class="pre">'ModelProcessor'</span> <span class="pre">objects&gt;,</span> <span class="pre">'__weakref__':</span> <span class="pre">&lt;attribute</span> <span class="pre">'__weakref__'</span> <span class="pre">of</span> <span class="pre">'ModelProcessor'</span> <span class="pre">objects&gt;,</span> <span class="pre">'__doc__':</span> <span class="pre">None,</span> <span class="pre">'__annotations__':</span> <span class="pre">{}})</span></em><a class="headerlink" href="#model_processor.ModelProcessor.__dict__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="model_processor.ModelProcessor.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">acl_resource</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#model_processor.ModelProcessor.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="model_processor.ModelProcessor.__module__">
+<span class="sig-name descname"><span class="pre">__module__</span></span><em class="property"> <span class="pre">=</span> <span class="pre">'model_processor'</span></em><a class="headerlink" href="#model_processor.ModelProcessor.__module__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="model_processor.ModelProcessor.__weakref__">
+<span class="sig-name descname"><span class="pre">__weakref__</span></span><a class="headerlink" href="#model_processor.ModelProcessor.__weakref__" title="Permalink to this definition">¶</a></dt>
+<dd><p>list of weak references to the object (if defined)</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="model_processor.ModelProcessor.predict">
+<span class="sig-name descname"><span class="pre">predict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model_input</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#model_processor.ModelProcessor.predict" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 </div>
 
 
@@ -209,8 +222,8 @@
           </div>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="acl_model.html" class="btn btn-neutral float-right" title="acl_model module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-        <a href="test_web.html" class="btn btn-neutral float-left" title="test_web module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pipeline.html" class="btn btn-neutral float-right" title="pipeline module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="colorize_process.html" class="btn btn-neutral float-left" title="colorize_process module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>

@@ -4,4 +4,11 @@ colorization
 .. toctree::
    :maxdepth: 4
 
-   colorization
+   acl_model
+   acl_resource
+   atlas_utils
+   colorize_process
+   model_processor
+   pipeline
+   tests
+   videodata
