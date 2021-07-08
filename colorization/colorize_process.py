@@ -39,7 +39,7 @@ def preprocess(image_file):
     # channel[0] = L, [1] = A, [2] = B
     channels = cv2.split(resize_mat)
 
-    print(f'{len(channels)} channels')
+    # print(f'{len(channels)} channels')
 
     return channels[0] - 50
 
@@ -73,14 +73,14 @@ def inference(model_path, input_image):
     return canvas
 
 
-def postprocess(input_image_path, inference_result):
+def postprocess(image_input_path, inference_result):
     """This function converts LAB image to BGR image (colorization).
      It combines L channel obtained from source image and ab channels
      from Inference result.
 
      Parameters:
     -----------
-    input_image_path : str
+    image_input_path : str
         the path of the (gray) image to obtain L channel
 
     inference_result : str
@@ -96,8 +96,7 @@ def postprocess(input_image_path, inference_result):
     b_channel = inference_result[1, :, :]
 
     # pull out L channel in original/source image
-    mat = cv2.imread(input_image_path, cv2.IMREAD_COLOR)
-    print(mat.shape)
+    mat = cv2.imread(image_input_path, cv2.IMREAD_COLOR)
     resize_mat = mat.astype(np.float32)
     resize_mat = 1.0 * resize_mat / 255
     resize_mat = cv2.cvtColor(resize_mat, cv2.COLOR_BGR2Lab)
@@ -107,13 +106,12 @@ def postprocess(input_image_path, inference_result):
     # resize to match the size of original image L
     rows = mat.shape[0]
     cols = mat.shape[1]
-    print(rows)
     a_channel_resize = cv2.resize(a_channel, (cols, rows))
     b_channel_resize = cv2.resize(b_channel, (cols, rows))
 
     # result Lab image
     result_image = cv2.merge([l_channel, a_channel_resize, b_channel_resize])
-    print(result_image.shape)
+    print("result_image shape:", result_image.shape)
 
     # convert back to rgb
     output_image = cv2.cvtColor(result_image, cv2.COLOR_Lab2BGR)

@@ -10,7 +10,7 @@ import colorization.pipeline as pipeline
 UPLOAD_FOLDER = os.path.abspath(os.path.dirname(__file__)) + "/uploaded/"
 # limit type of extensions
 ALLOWED_EXTENSIONS = {
-    'pic': ['png', 'jpg', 'jpeg', 'gif'],
+    'pic': ['png', 'jpg', 'jpeg'],
     'video': ['mp4', 'mkv', 'webm']
 }
 
