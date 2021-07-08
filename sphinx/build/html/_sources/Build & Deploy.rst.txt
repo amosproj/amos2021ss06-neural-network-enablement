@@ -12,10 +12,10 @@ This scripts tests the versions of the default python3-interpreter and (if avail
 
 `/usr/local/python3.7.5/bin/python3.7`
 
-(That is the location, python is installed to when following the _[da-vinci-a-scaleable-architecture-for-neural-network-computing-v6.pdf](https://www.schihei.eu/blog/da-vinci-a-scalable-architecture-for-neural-network-computing-updated-v6)_, page 103.)
+(That is the location, python is installed to when following the da-vinci-a-scaleable-architecture-for-neural-network-computing-v6.pdf [https://www.schihei.eu/blog/da-vinci-a-scalable-architecture-for-neural-network-computing-updated-v6], page 103.)
 
 ffmpeg (4.1.3)
-We follow the guide from the _[da-vinci-a-scaleable-architecture-for-neural-network-computing-v6.pdf](https://www.schihei.eu/blog/da-vinci-a-scalable-architecture-for-neural-network-computing-updated-v6)_, page 119.
+We follow the guide from the da-vinci-a-scaleable-architecture-for-neural-network-computing-v6.pdf[https://www.schihei.eu/blog/da-vinci-a-scalable-architecture-for-neural-network-computing-updated-v6], page 119.
 
 Since we also need ffmpeg to support some codecs, the installation process is somewhat different:
 
