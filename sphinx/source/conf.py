@@ -15,6 +15,8 @@ import sys
 import mock
 sys.path.insert(0, os.path.abspath('../..'))
 sys.path.insert(0, os.path.abspath('../../colorization'))
+sys.path.insert(0, os.path.abspath('../../colorization/atlas_utils'))
+sys.path.insert(0, os.path.abspath('../../webservice'))
 MOCK_MODULES = ['acl']
 for mod_name in MOCK_MODULES:
     sys.modules[mod_name] = mock.Mock()
@@ -22,7 +24,7 @@ for mod_name in MOCK_MODULES:
 # -- Project information -----------------------------------------------------
 
 project = 'Neural Network Enablement'
-copyright = '2021, Susmitha'
+copyright = '2021, Susmitha, Wolfgang, Xiangxiang, Emma, Yilin, Maximilian, Philipp'
 author = 'Susmitha'
 
 
@@ -31,7 +33,7 @@ author = 'Susmitha'
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-extensions = ['sphinx.ext.napoleon','sphinx_rtd_theme']
+extensions = ['sphinx.ext.autodoc', 'sphinx.ext.napoleon', 'sphinx_rtd_theme']
 napoleon_google_docstring = False
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -39,14 +41,27 @@ templates_path = ['_templates']
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path.
-exclude_patterns = ['colorization.atlas_utils.lib.rst']
+exclude_patterns = ['atlas_utils.lib.rst', 'atlas_utils.lib.atlasutil_so']
+
+autodoc_default_options = {"members": True, "undoc-members": True, "private-members": True,
+                           "special-members": True, "show-inheritance": True}
 
 
+def skip(app, what, name, obj, would_skip, options):
+    if name in ("__init__", "__del__"):
+        return False
+    return would_skip
+
+
+def setup(app):
+    app.connect("autodoc-skip-member", skip)
 # -- Options for HTML output -------------------------------------------------
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
+
+
 html_theme = 'sphinx_rtd_theme'
 
 # Add any paths that contain custom static files (such as style sheets) here,

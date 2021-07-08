@@ -3,10 +3,10 @@ Welcome to Neural Network Enablement's documentation!
 
 .. image:: /image/logo.png
    :align: center
+   :width: 400
 
 .. toctree::
    :maxdepth: 2
-   :numbered:
    :caption: Table Of Contents:
 
    Description

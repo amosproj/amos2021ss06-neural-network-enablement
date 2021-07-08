@@ -99,7 +99,7 @@
 <li class="toctree-l3"><a class="reference internal" href="test_web.html">test_web module</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="colorization.html">Backend</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules.html">colorization</a></li>
 </ul>
 </li>
 </ul>
@@ -183,22 +183,17 @@
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="app.allowed_file">
-<span class="sig-prename descclassname"><span class="pre">app.</span></span><span class="sig-name descname"><span class="pre">allowed_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#app.allowed_file" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
 <dt class="sig sig-object py" id="app.colorize">
-<span class="sig-prename descclassname"><span class="pre">app.</span></span><span class="sig-name descname"><span class="pre">colorize</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#app.colorize" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">app.</span></span><span class="sig-name descname"><span class="pre">colorize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#app.colorize" title="Permalink to this definition">¶</a></dt>
 <dd><p>This endpoint starts the colorizing process for the given image/video
-(specified by its filename)</p>
+(specified by its folder name)</p>
 <p>Return type: json</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="app.delete">
-<span class="sig-prename descclassname"><span class="pre">app.</span></span><span class="sig-name descname"><span class="pre">delete</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#app.delete" title="Permalink to this definition">¶</a></dt>
-<dd><p>This endpoint deletes the image/video (specified by its filename)</p>
+<span class="sig-prename descclassname"><span class="pre">app.</span></span><span class="sig-name descname"><span class="pre">delete</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#app.delete" title="Permalink to this definition">¶</a></dt>
+<dd><p>This endpoint deletes the image/video (specified by its folder name)</p>
 <p>Return type: json</p>
 </dd></dl>
 
@@ -213,6 +208,11 @@
 <dd></dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="app.handle_error">
+<span class="sig-prename descclassname"><span class="pre">app.</span></span><span class="sig-name descname"><span class="pre">handle_error</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">e</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#app.handle_error" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="app.index">
 <span class="sig-prename descclassname"><span class="pre">app.</span></span><span class="sig-name descname"><span class="pre">index</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#app.index" title="Permalink to this definition">¶</a></dt>
 <dd><p>This endpoint displays the main html file.
@@ -222,9 +222,9 @@ Further functionality is provided via javascript.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="app.result">
-<span class="sig-prename descclassname"><span class="pre">app.</span></span><span class="sig-name descname"><span class="pre">result</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#app.result" title="Permalink to this definition">¶</a></dt>
-<dd><p>This endpoint returns the urls of the given image/video (specified by its filename)
-the colorized version of it.</p>
+<span class="sig-prename descclassname"><span class="pre">app.</span></span><span class="sig-name descname"><span class="pre">result</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#app.result" title="Permalink to this definition">¶</a></dt>
+<dd><p>This endpoint returns the urls of the given image/video (specified by its folder
+name) and of its colorized version.</p>
 <p>Return type: json</p>
 </dd></dl>
 
@@ -244,6 +244,12 @@ app.config[‘UPLOAD_FOLDER’]</p>
 <p>Return type: image</p>
 </dd></dl>
 
+<dl class="py function">
+<dt class="sig sig-object py" id="app.valid_filename">
+<span class="sig-prename descclassname"><span class="pre">app.</span></span><span class="sig-name descname"><span class="pre">valid_filename</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#app.valid_filename" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks if the given filename is valid.</p>
+</dd></dl>
+
 </div>
 
 
@@ -260,7 +266,7 @@ app.config[‘UPLOAD_FOLDER’]</p>
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright 2021, Susmitha, Wolfgang, XianXiang, Emma, Yilin.
+        &#169; Copyright 2021, Susmitha, Wolfgang, Xiangxiang, Emma, Yilin, Maximilian, Philipp.
 
     </p>
   </div>

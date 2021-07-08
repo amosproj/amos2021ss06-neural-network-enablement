@@ -43,11 +43,11 @@ Since we also need ffmpeg to support some codecs, the installation process is so
 
     `export LDFLAGS="-L/home/HwHiAiUser/ascend_ddk/arm/lib"`
 
-    ```
+
     ./configure --enable-shared --enable-pic --enable-static --disable-yasm \
     --enable-libmp3lame --enable-libopus --enable-libvpx --enable-libvorbis \
     --enable-libtheora --enable-libx264 --enable-gpl --prefix=/home/HwHiAiUser/ascend_ddk/arm
-    ```
+
 
     `make -j8`
 
