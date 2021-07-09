@@ -48,6 +48,7 @@ def inference(model_path, input_image):
     """
     This function activate the model process after preprocess,
     and get result back.
+
     Parameters:
     -----------
     model_path: str
