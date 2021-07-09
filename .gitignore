@@ -16,6 +16,10 @@ venv/
 .idea
 
 # Uploaded images
+webservice/uploaded/
 
-webservice/uploaded
+# Tmp folder to store intermediate results when colorizing images
 tmp/
+
+# Documentation build
+sphinx/build/
