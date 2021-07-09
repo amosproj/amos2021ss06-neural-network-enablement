@@ -4,7 +4,7 @@
 
 <p align="center">
 <a href="https://github.com/amosproj/amos-ss2021-neural-network-enablement">
-    <img src="Deliverables/2021-04-21%20Logo.PNG" alt="Logo" width="412" height="139">
+    <img src="sphinx/source/image/logo.png" alt="Logo" width="412" height="139">
   </a>
 </p>
 
@@ -33,13 +33,18 @@ The goal of the project is to transfer existing neural networks onto Huawei prov
     ● Onto dedicated hardware attached to a student workstation
 
 The main function of the neural network allows for colorization of black & white images.
-
 <p align="center">
-    <img src="Deliverables/screenshot/present%20colorize%20result.png" alt="Sample 
-Pictures" width="80%" height="80%">
+    <img src="sphinx/source/image/colorizeddog.png" alt="Sample Pictures" width="80%" height="80%">
 </p>
 
+
 Further function: colorize the black & white video.
+
+<p align="center">
+    <img src="sphinx/source/image/colorized_video.png" alt="Sample Pictures" width="80%" height="80%">
+</p>
+
+
 
 **Project Constraints:**
 
