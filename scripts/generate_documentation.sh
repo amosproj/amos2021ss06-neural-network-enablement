@@ -16,15 +16,22 @@ echo "======================================================================"
 echo "Generating Documentation"
 echo "======================================================================"
 
-venv/bin/sphinx-apidoc -o sphinx/source/ colorization
-venv/bin/sphinx-apidoc -o sphinx/source/ webservice
+
+source venv/bin/activate
+
+sphinx-apidoc -o sphinx/source/ colorization
+sphinx-apidoc -o sphinx/source/ webservice
+
 cd sphinx
 make clean
 make html
 cd ..
+
 rm -r docs/*
 cp -r sphinx/build/html/* docs/
 cp -r sphinx/build/html/.buildinfo docs/
+
+deactivate
 
 if [ $HOSTNAME != "davinci-mini" ]; then
     xdg-open docs/index.html
