@@ -17,6 +17,7 @@ echo "Generating Documentation"
 echo "======================================================================"
 
 
+# enter virtual environment
 source venv/bin/activate
 
 sphinx-apidoc -o sphinx/source/ colorization
@@ -31,6 +32,7 @@ rm -r docs/*
 cp -r sphinx/build/html/* docs/
 cp -r sphinx/build/html/.buildinfo docs/
 
+# leave virtual environment
 deactivate
 
 if [ $HOSTNAME != "davinci-mini" ]; then
