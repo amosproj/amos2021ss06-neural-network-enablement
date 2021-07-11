@@ -204,6 +204,3 @@ class BasicTests(unittest.TestCase):
                                      follow_redirects=True)
         self.assertEqual(response2.status_code, 400)
         self.assertIn(b'The file format is not supported', response2.data)
-
-    def test_upload_new(self):
-
