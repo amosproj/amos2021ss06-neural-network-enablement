@@ -98,7 +98,6 @@ class BasicTests(unittest.TestCase):
         d_path = os.path.join(app.config['UPLOAD_FOLDER'], foldername)
         self.assertEqual(os.path.exists(d_path), False)
 
-    # TODO : def test_integration_video(self):
     def test_integration_video(self):
         """
         Integration Test on the
@@ -132,31 +131,31 @@ class BasicTests(unittest.TestCase):
         self.assertEqual(len_before + 1, len_after)
         self.assertIn('_thumbnail', urls_after)
 
-        # # check colorize process, use folder name
-        # foldername = urls_after[0]['id']
-        # rsp_color = self.client.post(f'/media/{foldername}/colorize')
-        # self.assertEqual(rsp_color.status_code, 200)
-        #
-        # # check the colorized pic exists
-        # # change parameter, not json
-        # rsp_result = self.client.get(f'/media/{foldername}')
-        # self.assertEqual(rsp_result.status_code, 200)
-        #
-        # urls_result = json.loads(rsp_result.data)
-        # self.assertIn('colorized', urls_result)
-        # self.assertIn('origin', urls_result)
-        # self.assertIn('thumbnail', urls_result)
-        # self.assertIsNotNone(urls_result['colorized'])
-        # self.assertIsNotNone(urls_result['origin'])
-        # self.assertIsNotNone(urls_result['thumbnail'])
-        #
-        # # check delete video
-        # rsp_delete = self.client.delete(f'/media/{foldername}')
-        # self.assertEqual(rsp_delete.status_code, 200)
-        #
-        # # check files&folders is not there anymore
-        # d_path = os.path.join(app.config['UPLOAD_FOLDER'], foldername)
-        # self.assertEqual(os.path.exists(d_path), False)
+        # check colorize process, use folder name
+        foldername = urls_after[0]['id']
+        rsp_color = self.client.post(f'/media/{foldername}/colorize')
+        self.assertEqual(rsp_color.status_code, 200)
+
+        # check the colorized pic exists
+        # change parameter, not json
+        rsp_result = self.client.get(f'/media/{foldername}')
+        self.assertEqual(rsp_result.status_code, 200)
+
+        urls_result = json.loads(rsp_result.data)
+        self.assertIn('colorized', urls_result)
+        self.assertIn('origin', urls_result)
+        self.assertIn('thumbnail', urls_result)
+        self.assertIsNotNone(urls_result['colorized'])
+        self.assertIsNotNone(urls_result['origin'])
+        self.assertIsNotNone(urls_result['thumbnail'])
+
+        # check delete video
+        rsp_delete = self.client.delete(f'/media/{foldername}')
+        self.assertEqual(rsp_delete.status_code, 200)
+
+        # check files&folders is not there anymore
+        d_path = os.path.join(app.config['UPLOAD_FOLDER'], foldername)
+        self.assertEqual(os.path.exists(d_path), False)
 
     def test_delete(self):
         """
@@ -180,6 +179,12 @@ class BasicTests(unittest.TestCase):
         response1 = self.client.post('/media/colorize')
         self.assertEqual(response1.status_code, 405)
 
+        # get the url of a file that does not exist
+        no_folder = "no_folder"
+        response4 = self.client.get(f'/media/{no_folder}')
+        self.assertEqual(response4.status_code, 400)
+        self.assertIn(b"The file doesn't exist", response4.data)
+
     def test_upload(self):
         """
         Unit Test of the fail situation of uploading pictures or videos
@@ -201,3 +206,9 @@ class BasicTests(unittest.TestCase):
                                      follow_redirects=True)
         self.assertEqual(response2.status_code, 400)
         self.assertIn(b'The file format is not supported', response2.data)
+
+        # get the url of a file that does not exist
+        no_folder = "no_folder"
+        response3 = self.client.get(f'/media/{no_folder}')
+        self.assertEqual(response3.status_code, 400)
+        self.assertIn(b"The file doesn't exist", response3.data)
