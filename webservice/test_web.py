@@ -114,14 +114,14 @@ class BasicTests(unittest.TestCase):
 
         # check upload videos
         test_video_path = os.path.join(os.path.abspath(os.path.dirname(__file__)),
-                                     'test_video.mp4')
+                                       'test_video.mp4')
         with open(test_video_path, 'rb') as test_video:
             test_video_io = BytesIO(test_video.read())
 
         rsp_upload_v = self.client.post('/media/',
-                                      content_type='multipart/form-data',
-                                      data={'file': (test_video_io, 'test_video.mp4')},
-                                      follow_redirects=True)
+                                        content_type='multipart/form-data',
+                                        data={'file': (test_video_io, 'test_video.mp4')},
+                                        follow_redirects=True)
         self.assertEqual(rsp_upload_v.status_code, 200)
         self.assertIn(b'Upload successfully', rsp_upload_v.data)
 
@@ -144,7 +144,7 @@ class BasicTests(unittest.TestCase):
         urls_result = json.loads(rsp_result.data)
         self.assertIn('colorized', urls_result)
         self.assertIn('origin', urls_result)
-        self.assertIn('thumbnail',urls_result)
+        self.assertIn('thumbnail', urls_result)
         self.assertIsNotNone(urls_result['colorized'])
         self.assertIsNotNone(urls_result['origin'])
         self.assertIsNotNone(urls_result['thumbnail'])
