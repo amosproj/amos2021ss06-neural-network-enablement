@@ -131,31 +131,35 @@ class BasicTests(unittest.TestCase):
         len_after = len(urls_after)
         self.assertEqual(len_before + 1, len_after)
 
-        # check colorize process, use folder name
-        foldername = urls_after[0]['id']
-        rsp_color = self.client.post(f'/media/{foldername}/colorize')
-        self.assertEqual(rsp_color.status_code, 200)
+        # check the existence of thumbnail
 
-        # check the colorized pic exists
-        # change parameter, not json
-        rsp_result = self.client.get(f'/media/{foldername}')
-        self.assertEqual(rsp_result.status_code, 200)
 
-        urls_result = json.loads(rsp_result.data)
-        self.assertIn('colorized', urls_result)
-        self.assertIn('origin', urls_result)
-        self.assertIn('thumbnail', urls_result)
-        self.assertIsNotNone(urls_result['colorized'])
-        self.assertIsNotNone(urls_result['origin'])
-        self.assertIsNotNone(urls_result['thumbnail'])
 
-        # check delete video
-        rsp_delete = self.client.delete(f'/media/{foldername}')
-        self.assertEqual(rsp_delete.status_code, 200)
-
-        # check files&folders is not there anymore
-        d_path = os.path.join(app.config['UPLOAD_FOLDER'], foldername)
-        self.assertEqual(os.path.exists(d_path), False)
+        # # check colorize process, use folder name
+        # foldername = urls_after[0]['id']
+        # rsp_color = self.client.post(f'/media/{foldername}/colorize')
+        # self.assertEqual(rsp_color.status_code, 200)
+        #
+        # # check the colorized pic exists
+        # # change parameter, not json
+        # rsp_result = self.client.get(f'/media/{foldername}')
+        # self.assertEqual(rsp_result.status_code, 200)
+        #
+        # urls_result = json.loads(rsp_result.data)
+        # self.assertIn('colorized', urls_result)
+        # self.assertIn('origin', urls_result)
+        # self.assertIn('thumbnail', urls_result)
+        # self.assertIsNotNone(urls_result['colorized'])
+        # self.assertIsNotNone(urls_result['origin'])
+        # self.assertIsNotNone(urls_result['thumbnail'])
+        #
+        # # check delete video
+        # rsp_delete = self.client.delete(f'/media/{foldername}')
+        # self.assertEqual(rsp_delete.status_code, 200)
+        #
+        # # check files&folders is not there anymore
+        # d_path = os.path.join(app.config['UPLOAD_FOLDER'], foldername)
+        # self.assertEqual(os.path.exists(d_path), False)
 
     def test_delete(self):
         """
@@ -200,3 +204,6 @@ class BasicTests(unittest.TestCase):
                                      follow_redirects=True)
         self.assertEqual(response2.status_code, 400)
         self.assertIn(b'The file format is not supported', response2.data)
+
+    def test_upload_new(self):
+
