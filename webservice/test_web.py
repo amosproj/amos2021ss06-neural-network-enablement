@@ -129,7 +129,6 @@ class BasicTests(unittest.TestCase):
         urls_after = json.loads(rsp_all_2.data)
         len_after = len(urls_after)
         self.assertEqual(len_before + 1, len_after)
-        self.assertIn('_thumbnail', urls_after[-1])
 
         # check colorize process, use folder name
         foldername = urls_after[0]['id']
