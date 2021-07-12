@@ -64,7 +64,11 @@ OpenCV is automatically installed into the virtual environment, it doesn't have 
 
 **Setup**
 
-The script `scripts/setup.sh` sets up a virtual environment for python initially.
+The first step is to clone the repository from github:
+
+`git clone https://github.com/amosproj/amos-ss2021-neural-network-enablement`
+
+Then the script `scripts/setup.sh` sets up a virtual environment for python.
 
 If the environment is set up already, it updates the dependencies.
 
