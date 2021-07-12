@@ -61,7 +61,7 @@ repeat steps 2 to 4 for the rest of the videos. You need to repeat step 1 before
 
 1. Our currently supported format for images are jpg, png and jpeg. The colorized image will be in the same format as the original one.
 
-2. Our currently supported format for videos are only mp4. The colorized video will be in format webm.
+2. Our currently supported format for videos is only mp4. The colorized video will be in format webm.
 
 3. The following actions could cause some issues, so we recommend you to avoid while enjoying the colorization process:
 
@@ -69,7 +69,7 @@ repeat steps 2 to 4 for the rest of the videos. You need to repeat step 1 before
     
     b) After click on the colorize buttom of one item, please do not click it twice or click the colorize buttom of another item, before you see the result.
     
-    c) It will take approx. 1 sec. to colorize an image, and approx. 5 min to colorize a 4 sec. video, so please be pattioned of the waiting.
+    c) It will take approx. 1 sec. to colorize an image, and approx. 5 min to colorize a 4 sec. video, so please be patient of the waiting.
     
 We wish you a lot of fun using our product =)
 
