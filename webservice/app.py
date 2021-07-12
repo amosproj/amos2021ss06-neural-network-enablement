@@ -11,7 +11,7 @@ UPLOAD_FOLDER = os.path.abspath(os.path.dirname(__file__)) + "/uploaded/"
 # limit type of extensions
 ALLOWED_EXTENSIONS = {
     'pic': ['png', 'jpg', 'jpeg'],
-    'video': ['mp4', 'mkv', 'webm']
+    'video': ['mp4']
 }
 
 app = Flask(__name__)
