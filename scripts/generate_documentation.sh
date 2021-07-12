@@ -30,7 +30,9 @@ cd ..
 
 rm -r docs/*
 cp -r sphinx/build/html/* docs/
-cp -r sphinx/build/html/.buildinfo docs/
+
+cp sphinx/build/html/.buildinfo docs/
+cp sphinx/build/html/.nojekyll docs/
 
 # leave virtual environment
 deactivate
