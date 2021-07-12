@@ -35,6 +35,8 @@ cp -r sphinx/build/html/.buildinfo docs/
 # leave virtual environment
 deactivate
 
+echo "The HTML files were copied to the docs folder. The docs-folder is served by Github Pages."
+
 if [ $HOSTNAME != "davinci-mini" ]; then
     xdg-open docs/index.html
 fi
