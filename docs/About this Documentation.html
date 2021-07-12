@@ -166,8 +166,9 @@
   <div class="section" id="about-this-documentation">
 <h1>About this Documentation<a class="headerlink" href="#about-this-documentation" title="Permalink to this headline">¶</a></h1>
 <p><strong>Generating the documentation</strong></p>
-<p>The documentation sources are located in sphinx/source. The python doc-strings are extracted automatically using sphinx.</p>
-<p>One can generate the documentation by running <cite>scripts/generate_documentation.sh</cite></p>
+<p>We use sphinx to generate the documenation. It extracts doc-strings from the relevant python-files and combines them with the documentation from sphinx/source.</p>
+<p>The result is saved in the docs-folder. Don’t change anything here, as it will be overwritten when running the script.</p>
+<p>To generate the documentation run <cite>scripts/generate_documentation.sh</cite>.</p>
 <p><strong>Limitations</strong></p>
 <p>There are multiple errors that can occur during generating the documentation:</p>
 <ol class="arabic simple">
@@ -175,6 +176,10 @@
 </ol>
 <p>This error can be ignored.</p>
 <ol class="arabic simple" start="2">
+<li><p>modules.rst: WARNING: document isn’t included in any toctree</p></li>
+</ol>
+<p>This error can be ignored.</p>
+<ol class="arabic simple" start="3">
 <li><p>The extraction of the documentation for app.py fails</p></li>
 </ol>
 <p>Sphinx sometimes gets confused about relative imports. Removing the dots from the import-statements in all relevant python-files might help. (Only apply this change for generating the documentation)</p>
