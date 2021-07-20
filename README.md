@@ -11,7 +11,7 @@
 ---
 
 <h3 align="center">
-  <a href="https://amosproj.github.io/amos-ss2021-neural-network-enablement/">Documentation</a>
+  <a href="https://amosproj.github.io/amos2021ss06-neural-network-enablement/">Documentation</a>
 </h3>
 
 ---
